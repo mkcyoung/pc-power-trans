@@ -1,0 +1,364 @@
+/* Site Layout CSS */
+.wrapper{
+    font-family: "Avenir Next";
+    display: grid;
+    grid-template-columns: repeat(2, 450px) 200px 750px;
+    grid-template-rows: 0.5fr 125px 200px 200px 200px 200px 400px;
+    grid-template-areas: 
+            "title title title title "
+            "slider slider slider slider"
+            "power power power table1 "
+            "power power power table1 "
+            "power power power table1  "
+            "power power power table1 "
+            "info info info table1";
+    /* width: 100vw;
+    height: 100vh; */
+}
+
+.masthead{
+    grid-area: title;
+    font-size: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.view1{
+    grid-area: power;
+    /* background: royalblue; */
+}
+
+.view2{
+    grid-area: table1;
+}
+
+.viewsHead{
+    grid-area: slider;
+}
+
+.view3{
+    grid-area: info;
+}
+
+
+/* Nodes and links classing */
+.nodes{
+    stroke-width: 1px;
+    stroke:black;
+}
+.station_node{
+    stroke: black;
+    stroke-width: 1px;
+}
+.station_node:hover{
+    stroke-width: 5px;
+    filter: saturate(300%);
+}
+.node:hover{
+    stroke-width: 5px;
+    filter: saturate(300%);
+}
+.links{
+    /* stroke: rgb(90, 90, 90); */
+    stroke-width: 2px;
+}
+.linkT{
+    stroke:rgb(90, 90, 90);
+    stroke-width: 1px;
+}
+.link:hover{
+    stroke: rgb(251, 255, 14);
+    stroke-width: 18px;
+}
+.labels{
+    font-size: 15px;
+    font-weight: lighter;
+}
+.labelsT{
+    font-size: 19px;
+    font-weight: lighter;
+}
+
+.CHSP{
+    stroke-width: 4.5px;
+    /* filter: saturate(1); */
+}
+/* .charge{ */
+    /* fill: rgb(0, 153, 255) */
+/* } */
+/* .norm{ */
+    /* fill: rgb(230, 255, 206) */
+/* } */
+/* .transNode{ */
+    /* fill: rgb(0, 153, 255) */
+/* } */
+
+
+/*tooltip */
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    stroke: gray;
+    border-radius: 2px;
+    pointer-events: none;
+    font-family: "Avenir Next";
+}
+
+
+.tooltip h3{
+    margin: auto;
+    font-size: 24px;
+    font-weight:bolder;
+    color: #484b5a;
+}
+
+.tooltip p{
+    margin: auto;
+    font-size: 15px;
+    font-weight: bolder;
+    color: #81849a;
+}
+
+.s_tooltip{
+    position: absolute;
+    text-align: right;
+    width: 275px;
+    height: auto;
+    padding: 2px;
+    background: rgba(255, 255, 255, 1);
+    stroke: gray;
+    border-radius: 2px;
+    pointer-events: none;
+    font-family: "Avenir Next";
+}
+
+.s_tooltip h3{
+    margin: auto;
+    font-size: 40px;
+    font-weight:bolder;
+    color: #484b5a;
+}
+
+.s_tooltip p{
+    margin: auto;
+    font-size: 20px;
+    font-weight: bolder;
+    color: #81849a;
+}
+
+.net_headers{
+    font-size: 30px;
+    position: absolute;
+    font-weight: lighter;
+}
+
+/* Table styling */
+
+/*Table styling*/
+.view2 {
+    width: 750px;
+    padding: 0.5em;
+    float: left;
+    /*height:875px;*/
+    /*overflow: scroll;*/
+    /*overflow:auto;*/
+}
+
+#mytable2 tbody{
+    display:block;
+    height:1150px;
+    overflow:scroll;
+}
+table {
+    /*border-collapse: collapse;*/
+    font-family: "Avenir Next";
+}
+
+/*th {*/
+/*    font-weight: normal;*/
+/*    text-align: right;*/
+/*    min-width: 125px;*/
+/*}*/
+
+#mytable{
+    border-collapse: unset;
+    border-color: white;
+}
+
+thead th{
+    cursor: s-resize;
+    font-size: 20px;
+    font-weight: normal;
+    color: #484b5a;
+    /*padding-left: 4px;*/
+    /*padding-right: 4px;*/
+    min-width: 150px;
+    text-align: center;
+    background: rgba(23, 162, 184, 0.15);
+
+}
+
+
+tbody th{
+    font-weight: normal;
+    font-size: 16px;
+    text-align: left;
+    color:#484b5a;
+    padding-left: 4px;
+    /*padding-right: 4px;*/
+    min-width: 150px;
+}
+
+tbody td{
+    font-size: 16px;
+    font-weight: normal;
+    text-align: center;
+    color: #484b5a;
+    /*height: 32px;*/
+    padding-left: 3.75px;
+    /*padding-right: 4px;*/
+    min-width: 150px;
+
+}
+tbody tr:hover{
+    background-color: rgba(23, 162, 184, 0.15);
+}
+
+.view2 rect {
+    stroke: black;
+    stroke-width: 1.25px;
+}
+
+.locationR{
+    font-weight: bolder;
+    font-size: 20px;
+    /* -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: rgb(80, 80, 80); */
+}
+
+.busID{
+    text-align: center;
+    font-size: 20px;
+    font-weight: lighter;
+    
+
+}
+.speedR{
+    text-align: center;
+    font-size: 20px;
+    font-weight: lighter;
+    
+
+}
+
+/* slider styling */
+
+.slider {
+    -webkit-appearance: none;
+    width: 725px;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    margin-left: 20px;
+    /* position: absolute;
+    left: 100px; */
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgb(97, 76, 175);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #D4E157;
+    cursor: pointer;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider-label svg {
+    width: 750px;
+    height: 35px;
+}
+
+.slider-label svg text {
+    text-anchor: middle;
+}
+
+.slider-wrap {
+    display: inline-block;
+    position: absolute;
+    float: left;
+    width: 750px;
+    left: 545px;
+    top: 100px;
+}
+
+/* Scale Legend */
+#scale_leg{
+    font-size: 12pt;
+    font-weight: lighter;
+}
+
+/* Axis styling */
+.axis path{
+    fill: none;
+    stroke: none;
+    shape-rendering: crispEdges;
+}
+
+.axis line{
+    stroke-width: 0.75px;
+}
+
+.axis text{
+    font-family: "Avenir Next";
+    font-size: 18px;
+    font-weight: lighter;
+}
+
+.grid line{
+    stroke-width: .3px;
+}
+
+.grid path{
+    fill: none;
+    stroke: none;
+    shape-rendering: crispEdges;
+}
+
+/* .line-path{
+
+} */
+
+.chart-text{
+    font-size: 60px;
+    font-weight: bolder;
+    stroke: none;
+    fill: rgba(211, 211, 211, 0.678);
+}
+
+.axis-text{
+    font-size: 12px;
+    font-weight: bold;
+    fill: rgba(0, 0, 0, 0.678);
+}
