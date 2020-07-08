@@ -191,12 +191,14 @@ class PowNet {
             });
 
         let nodes = this.nodeLayer
-            .selectAll("circle")
+            .selectAll("rect")
             .data(this.data.nodes)
-            .join("circle")
+            .join("rect")
             .attr("class", d=> (d.chSP!=null) ? "charge "+d.id : "norm")
             .classed("node",true)
-            .attr("r", d => this.voltScale(d.volt[this.activeTime].value))
+            .attr("width","70px")
+            .attr("height","10px")
+            // .attr("r", d => this.voltScale(d.volt[this.activeTime].value))
             .attr("fill",d => this.aLoadScale(d.aLoad[this.activeTime].value))
             //tooltip!
             .on("mouseover", function (d) {
@@ -228,7 +230,7 @@ class PowNet {
             .enter().append("text");
 
         nodes
-            .attr("cx", function (d,i) {
+            .attr("x", function (d,i) {
                 let X_Start = 50;
                 // Main branch from n1 to 18
                 if(d.index < 18){
@@ -255,7 +257,7 @@ class PowNet {
                 }
                 
             })
-            .attr("cy", function (d,i) {
+            .attr("y", function (d,i) {
                 // Main branch from n1 to 18
                 let Y_Start = 50;
                 let Y_Spacing = 35;
