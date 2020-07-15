@@ -243,17 +243,17 @@ class PowNet {
                 }
                 //Branch off of 3 containing n23->25
                 if((d.index > 21) & (d.index < 25)){
-                    d.x = X_Start - 150;
+                    d.x = X_Start - 140;
                     return d.x;
                 }
                 //Branch off of 2 containing 19 -> 22
                 if((d.index > 17) & (d.index < 22)){
-                    d.x = X_Start + 150;
+                    d.x = X_Start + 130;
                     return d.x;
                 }
                 // Bracnh off of 6(may change to 13) containing 26->33
                 if( d.index > 24 ){
-                    d.x = X_Start + 150;
+                    d.x = X_Start + 130;
                     return d.x;
                 }
                 else{
@@ -263,7 +263,7 @@ class PowNet {
             })
             .attr("y", function (d,i) {
                 // Main branch from n1 to 18
-                let Y_Start = 50;
+                let Y_Start = 30;
                 let Y_Spacing = 35;
                 if(d.index < 18){
                     d.y = Y_Start + i*Y_Spacing;
@@ -304,7 +304,21 @@ class PowNet {
             });
 
         labels
-            .attr("x",d => d.x-30)
+            .attr("x",function (d,i){
+                //Branch off of 2 containing 19 -> 22
+                if((d.index > 17) & (d.index < 22)){
+                    d.x = d.x + (rect_width) +5;
+                    return d.x ;
+                }
+                // Branch off of 6 (may change to 13) containing 26->33
+                if(d.index > 24){
+                    d.x = d.x + (rect_width) +5;
+                    return d.x;
+                }
+                else{
+                    return d.x - 20;
+                }
+            })
             .attr("y",d => d.y-5)
             .text( d=> d.index+1)
             .attr("fill","black");
