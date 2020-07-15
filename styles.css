@@ -68,7 +68,7 @@
 }
 .link:hover{
     stroke: rgb(251, 255, 14);
-    stroke-width: 18px;
+    /* stroke-width: 18px; */
 }
 .labels{
     font-size: 15px;

@@ -122,7 +122,7 @@ class PowNet {
         this.voltScale = d3.scaleSqrt().range([4,15]).domain([min_volt,max_volt]);
         this.powLoadScale = d3.scaleSequential(d3.interpolateViridis).domain([min_chsp,max_chsp]);
 
-        this.currentScale = d3.scaleLinear().range([3,20]).domain([min_current,max_current]);
+        this.currentScale = d3.scaleLinear().range([5,20]).domain([min_current,max_current]);
         this.apfscale = d3.scaleSequential(d3.interpolateBlues).domain([min_apf,max_apf]);
         //Make an ordinal color scale for stations
         let pow_stations = ["n2","n13","n9","n33","n25","n31","n8"];
@@ -190,14 +190,18 @@ class PowNet {
                     .style("opacity", 0)
             });
 
+        // Set the width and height of the power grid rectangles
+        let rect_height = 12.5;
+        let rect_width = 80;
+
         let nodes = this.nodeLayer
             .selectAll("rect")
             .data(this.data.nodes)
             .join("rect")
             .attr("class", d=> (d.chSP!=null) ? "charge "+d.id : "norm")
             .classed("node",true)
-            .attr("width","70px")
-            .attr("height","10px")
+            .attr("width",`${rect_width}px`)
+            .attr("height",`${rect_height}px`)
             // .attr("r", d => this.voltScale(d.volt[this.activeTime].value))
             .attr("fill",d => this.aLoadScale(d.aLoad[this.activeTime].value))
             //tooltip!
@@ -231,25 +235,25 @@ class PowNet {
 
         nodes
             .attr("x", function (d,i) {
-                let X_Start = 50;
+                let X_Start = 200;
                 // Main branch from n1 to 18
                 if(d.index < 18){
-                    d.x = X_Start + i*10;
+                    d.x = X_Start;
                     return d.x;
                 }
                 //Branch off of 3 containing n23->25
                 if((d.index > 21) & (d.index < 25)){
-                    d.x = X_Start + (i-20)*50;
+                    d.x = X_Start - 150;
                     return d.x;
                 }
                 //Branch off of 2 containing 19 -> 22
                 if((d.index > 17) & (d.index < 22)){
-                    d.x = X_Start + (i-15)*50;
+                    d.x = X_Start + 150;
                     return d.x;
                 }
                 // Bracnh off of 6(may change to 13) containing 26->33
                 if( d.index > 24 ){
-                    d.x = X_Start + (i-23)*40;
+                    d.x = X_Start + 150;
                     return d.x;
                 }
                 else{
@@ -267,17 +271,17 @@ class PowNet {
                 }
                 //Branch off of 3 containing n23->25
                 if ((d.index > 21) & (d.index < 25)){
-                    d.y = Y_Start + 2*Y_Spacing;
+                    d.y = Y_Start + 85 + (i-20)*Y_Spacing;
                     return d.y;
                 }
                 //Branch off of 2 containing 19 -> 22
                 if((d.index > 17) & (d.index < 22)){
-                    d.y = Y_Start;
+                    d.y = Y_Start + 150 + (i-20)*Y_Spacing;
                     return d.y;
                 }
                 // Branch off of 6 (may change to 13) containing 26->33
                 if(d.index > 24){
-                    d.y = Y_Start + (i-20)*Y_Spacing;
+                    d.y = Y_Start + 100 + (i-20)*Y_Spacing;
                     return d.y;
                 }
                 else{
@@ -287,16 +291,16 @@ class PowNet {
 
         links
             .attr("x1", function (d) {
-                return d.source.x;
+                return d.source.x + rect_width/2;
             })
             .attr("y1", function (d) {
-                return d.source.y;
+                return d.source.y + rect_height/2;
             })
             .attr("x2", function (d) {
-                return d.target.x;
+                return d.target.x + rect_width/2;
             })
             .attr("y2", function (d) {
-                return d.target.y;
+                return d.target.y + rect_height/2;
             });
 
         labels
