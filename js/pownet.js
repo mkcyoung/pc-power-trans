@@ -8,6 +8,9 @@ class PowNet {
         this.data = data;
         this.activeTime = time;
 
+        // Let's create an object just of the charging stations
+        this.chargingStations = this.data.nodes.filter(f => f.chSP!=null);
+
         //Margins - the bostock way
         this.margin = {top: 20, right: 20, bottom: 20, left: 20};
         this.width = 1200 - this.margin.left - this.margin.right;
@@ -18,6 +21,7 @@ class PowNet {
     /** Builds network based on data passed into object */
     createNet(){
         console.log("Power Network Object: ",this.data)
+        
         
         //May need to use this later
         let that = this;
@@ -135,6 +139,10 @@ class PowNet {
         let netGroup = powSVG.append("g")
             .attr("transform","translate("+this.margin.left+","+this.margin.top+")");
 
+        //Create icons first so they are at the back
+        this.iconLayer = netGroup.append("g")
+            .attr("class","icons");
+
         // First we create the links in their own group that comes before the node 
         //  group (so the circles will always be on top of the lines)
         this.linkLayer = netGroup.append("g")
@@ -151,12 +159,12 @@ class PowNet {
         // Now we create the node group, and the nodes inside it
         this.nodeLayer = netGroup.append("g")
             .attr("class", "nodes");
-       
         
         //Create labels
         this.labelLayer = netGroup.append("g")
             .attr("class","labels");
 
+        
     }
 
     updateNet(){
@@ -191,7 +199,7 @@ class PowNet {
             });
 
         // Set the width and height of the power grid rectangles
-        let rect_height = 12.5;
+        let rect_height = 13;
         let rect_width = 80;
 
         let nodes = this.nodeLayer
@@ -202,6 +210,8 @@ class PowNet {
             .classed("node",true)
             .attr("width",`${rect_width}px`)
             .attr("height",`${rect_height}px`)
+            .attr("rx",'5px')
+            .attr("ry",'5px')
             // .attr("r", d => this.voltScale(d.volt[this.activeTime].value))
             .attr("fill",d => this.aLoadScale(d.aLoad[this.activeTime].value))
             //tooltip!
@@ -232,6 +242,12 @@ class PowNet {
             .selectAll("text")
             .data(this.data.nodes)
             .enter().append("text");
+
+        let icons = this.iconLayer
+            .selectAll(".icons")
+            .data(this.chargingStations)
+            .enter().append("image");
+        
 
         nodes
             .attr("x", function (d,i) {
@@ -303,25 +319,48 @@ class PowNet {
                 return d.target.y + rect_height/2;
             });
 
+        icons
+            // .attr("x",function (d,i){
+            //     //Branch off of 2 containing 19 -> 22
+            //     if((d.index > 17) & (d.index < 22)){
+            //         d.x = d.x + (rect_width) +10;
+            //         return d.x ;
+            //     }
+            //     // Branch off of 6 (may change to 13) containing 26->33
+            //     if(d.index > 24){
+            //         d.x = d.x + (rect_width) +10;
+            //         return d.x;
+            //     }
+            //     else{
+            //         return d.x - 25;
+            //     }
+            // })
+            .attr("x",d => d.x+75)
+            .attr("y",d => d.y-8)
+            .attr("xlink:href","icons/electricity.svg")
+            .attr("height","30px")
+            .attr("width","30px")
+
         labels
             .attr("x",function (d,i){
                 //Branch off of 2 containing 19 -> 22
                 if((d.index > 17) & (d.index < 22)){
-                    d.x = d.x + (rect_width) +5;
+                    d.x = d.x + (rect_width) +10;
                     return d.x ;
                 }
                 // Branch off of 6 (may change to 13) containing 26->33
                 if(d.index > 24){
-                    d.x = d.x + (rect_width) +5;
+                    d.x = d.x + (rect_width) +10;
                     return d.x;
                 }
                 else{
-                    return d.x - 20;
+                    return d.x - 25;
                 }
             })
-            .attr("y",d => d.y-5)
+            .attr("y",d => d.y+12)
             .text( d=> d.index+1)
             .attr("fill","black");
+
         
     }
 

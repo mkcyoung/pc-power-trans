@@ -46,6 +46,10 @@
     stroke-width: 1px;
     stroke:black;
 }
+/* .charge{
+    stroke-width: 4px;
+    stroke:rgb(33, 167, 0);
+} */
 .station_node{
     stroke: black;
     stroke-width: 1px;
