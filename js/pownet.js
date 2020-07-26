@@ -244,7 +244,7 @@ class PowNet {
             .enter().append("text");
 
         let icons = this.iconLayer
-            .selectAll(".icons")
+            .selectAll("image")
             .data(this.chargingStations)
             .enter().append("image");
         

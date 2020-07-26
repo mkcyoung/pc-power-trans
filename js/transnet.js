@@ -131,13 +131,13 @@ class TransNet {
             .style("left","675px")
             .style("top","175px")
             .attr("class","net_headers")
-            .text("BEB charging stops");
+            .text("Park City Transit System");
 
         d3.select(".viewsHead").append("div")
             .style("left","200px")
             .style("top","175px")
             .attr("class","net_headers")
-            .text("power grid");
+            .text("IEEE 33 bus system");
 
 
         // TODO, my idea here is to make a little legend with all 3 of the color scales up
@@ -340,55 +340,55 @@ class TransNet {
 
         nodes
             .attr("cx", function (d,i) {
-                let X_Start = 300;
+                let X_Start = 0;
                 switch(parseInt(d.StationID)){
                     case 1:
                         d.x = X_Start;
                         return d.x;
                     case 5:
-                        d.x = X_Start + 50;
+                        d.x = X_Start - 50;
                         return d.x;
                     case 7:
-                        d.x = X_Start -160;
+                        d.x = X_Start + 160;
                         return d.x;
                     case 3:
-                        d.x = X_Start -120;
+                        d.x = X_Start + 120;
                         return d.x;
                     case 2:
-                        d.x = X_Start -180;
+                        d.x = X_Start + 180;
                         return d.x;
                     case 6:
-                        d.x = X_Start  -210;
+                        d.x = X_Start + 210;
                         return d.x;
                     case 4:
-                        d.x = X_Start -280;
+                        d.x = X_Start + 280;
                         return d.x;
                 }
                 
             })
             .attr("cy", function (d,i) {
-                let Y_Start = that.height*(0.75);
+                let Y_Start = that.height*(0.05);
                 switch(parseInt(d.StationID)){
                     case 1:
                         d.y = Y_Start;
                         return d.y;
                     case 5:
-                        d.y = Y_Start - 300;
+                        d.y = Y_Start + 200;
                         return d.y;
                     case 7:
-                        d.y = Y_Start - 220;
+                        d.y = Y_Start + 220;
                         return d.y;
                     case 3:
-                        d.y = Y_Start -240;
+                        d.y = Y_Start + 240;
                         return d.y;
                     case 2:
-                        d.y = Y_Start - 400;
+                        d.y = Y_Start + 400;
                         return d.y;
                     case 6:
-                        d.y = Y_Start - 500;
+                        d.y = Y_Start + 500;
                         return d.y;
                     case 4:
-                        d.y = Y_Start -600;
+                        d.y = Y_Start + 600;
                         return d.y;
                 }
             });
