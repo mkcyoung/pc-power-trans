@@ -246,9 +246,9 @@ class TransNet {
     //    this.stations = CSGroup.append("g")
     //        .attr("class", "csgroup");
 
-        // //I'll creat lines first so they're beneath everything
-        // this.lineLayer = this.stations.append("g")
-        //     .attr("class","netlines");
+        //I'll create lines first so they're beneath everything
+        this.lineLayer = netGroup.append("g")
+            .attr("class","netlines");
 
         // First we create the links in their own group that comes before the node 
         //  group (so the circles will always be on top of the lines)
@@ -310,19 +310,21 @@ class TransNet {
             .attr("fill", d => this.powLoadScale(d.chSP[this.activeTime].value))
             //tooltip + linked styling when hovered over
             .on("mouseover", function (d) {
-                d3.select("#tooltip").transition()
+                d3.select("#s_tooltip").transition()
                     .duration(200)
                     .style("opacity", 0.9);
-                d3.select("#tooltip").html(that.tooltipRenderN(d))
-                    .style("left", (d3.event.pageX+15) + "px")
-                    .style("top", (d3.event.pageY+15) + "px");
+                d3.select("#s_tooltip").html(that.tooltipRenderS(d))
+                    .style("left","800px") //(d3.event.pageX+30)
+                    .style("top", "250px"); //(d3.event.pageY-80)
+                    // .style("left", (d3.event.pageX+15) + "px")
+                    // .style("top", (d3.event.pageY+15) + "px");
                 d3.selectAll("."+d.StationNode.id)
                     .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
                     .classed("CHSP",true);
                     
             })
             .on("mouseout", function (d) {
-                d3.select("#tooltip").transition()
+                d3.select("#s_tooltip").transition()
                     .duration(500)
                     .style("opacity", 0);
                 d3.selectAll("."+d.StationNode.id)
@@ -412,6 +414,55 @@ class TransNet {
             .attr("y",d => d.y-10)
             .text( d=> d.StationName)
             .attr("fill","black");
+
+        // Creating lines that connect the power and trans nodes together
+        // Faint until they are highlighted, then they darken, or maybe pulse or something cool
+
+        //Creating lines that connect node to power station
+        let lineFunction = d3.line()
+            .x(function(d){
+                return d.x;
+            })
+            .y(function(d){
+                return d.y;
+            });
+
+
+        this.lineOTTC = [{"x":20,"y":40},{"x":-200,"y":40},
+        {"x":-200,"y":73},{"x":-320,"y":73}];
+
+        this.lineKPR = [{"x":-50,"y":245},{"x":-175,"y":245},
+        {"x":-175,"y":5},{"x":-470,"y":5}, {"x":-470,"y":245}];
+
+        this.lineGS = [{"x":150,"y":263},{"x":-135,"y":263},
+        {"x":-135,"y":282},{"x":-320,"y":282}];
+
+        this.lineCTH = [{"x":130,"y":282},{"x":0,"y":282},
+        {"x":0,"y":330},{"x":-295,"y":330},{"x":-295,"y":317},{"x":-315,"y":317} ];
+
+
+        let line_data = null;
+
+        line_data = this.lineCTH;
+
+        //Path to trans
+        let path = that.lineLayer.append("path")
+            .attr("class","netline")
+            .attr("stroke","black")
+            .attr("stroke-width",0.5)
+            .attr("fill","none")
+            .attr("d",lineFunction(line_data));
+
+        let totalLength = path.node().getTotalLength();
+
+        path
+            .attr("stroke-dasharray",totalLength + " " +totalLength)
+            .attr("stroke-dashoffset",totalLength)
+            .transition()
+            .duration(750)
+            .attr("stroke-dashoffset",0);
+        
+
 
         // // Creating lines that will connect the trans nodes 
         // this.lineOTTC = [{"x":20,"y":50},{"x":80,"y":50},
@@ -877,6 +928,7 @@ class TransNet {
         time = this.activeTime;
         let that = this;
         let text = null;
+        // console.log(data)
         text = "<h3>" + data.StationName + " ("+ data.StationNode.id +")</h3>";
         //Adds in relevant data
         text = text + "<p> BEB Count: "+ data.BusData[time].total+ " busses</p>";
