@@ -320,24 +320,27 @@ class PowNet {
             });
 
         icons
-            // .attr("x",function (d,i){
-            //     //Branch off of 2 containing 19 -> 22
-            //     if((d.index > 17) & (d.index < 22)){
-            //         d.x = d.x + (rect_width) +10;
-            //         return d.x ;
-            //     }
-            //     // Branch off of 6 (may change to 13) containing 26->33
-            //     if(d.index > 24){
-            //         d.x = d.x + (rect_width) +10;
-            //         return d.x;
-            //     }
-            //     else{
-            //         return d.x - 25;
-            //     }
-            // })
-            .attr("x",d => d.x+75)
+            .attr("x",function (d,i){
+                // Branch off of 6 (may change to 13) containing 26->33
+                if(d.index > 24){
+                    return d.x - 30;
+                }
+                else{
+                    return d.x + 80;
+                }
+            })
+            // .attr("x",d => d.x+75)
             .attr("y",d => d.y-8)
-            .attr("xlink:href","icons/electricity.svg")
+            .attr("xlink:href","icons/plug.svg")
+            .attr("transform", function (d,i){
+                // Need to rotate around center of object which is coordinate + height/2 (or width/2 for x)
+                if(d.index > 24){
+                    return `rotate(-45 ${d.x-30+15} ${d.y-8+15})`;
+                }
+                else{
+                    return `rotate(135 ${d.x+80+15} ${d.y-8+15})`;
+                }
+            }) 
             .attr("height","30px")
             .attr("width","30px")
 
