@@ -163,9 +163,16 @@
 
 .netline{
     fill: none;
+    stroke: rgb(66, 66, 66);
+    opacity: 0.08;
+    stroke-width: 4;
+}
+
+.netline:hover{
+    fill: none;
     stroke: rgb(252, 236, 13);
     opacity: 1;
-    stroke-width: 3;
+    stroke-width: 5;
     stroke-dasharray: 10, 4;
 }
 

@@ -451,23 +451,23 @@ class TransNet {
 
         this.lineArray = [this.lineOTTC, this.lineKPR, this.lineGS, this.lineCTH, this.lineKJTC, this.lineEH, this.lineJRPR]
 
-        // console.log(this.lineArray)
         let line_data = null;
 
         line_data = this.lineJRPR;
-        // console.log("line data",line_data)
 
         //Path to trans
         let path = that.lineLayer.selectAll("path")
             .data(this.lineArray)
             .enter().append("path")
             .attr("class","netline")
-            .attr("d",d=> lineFunction(d));
-            // .attr("d",lineFunction(line_data));
+            .attr("id",(d,i) => `line-${i}`)
+            .attr("d",d => lineFunction(d))
+            .on("mouseover",animate)
+            .on("mouseout",stop);
 
-        animate();
+        // animate();
         function animate() {
-            d3.selectAll(".netline")
+            d3.select(this)
                 .transition()
                 .duration(500)
                 .ease(d3.easeLinear)
@@ -476,6 +476,22 @@ class TransNet {
                     })
                 .on("end", animate);
         }
+
+        function stop() {
+            d3.select(this)
+                .interrupt();
+        }
+
+        // function animate() {
+        //     d3.selectAll(".netline")
+        //         .transition()
+        //         .duration(500)
+        //         .ease(d3.easeLinear)
+        //         .styleTween("stroke-dashoffset", function() {
+        //             return d3.interpolate(0, 14);
+        //             })
+        //         .on("end", animate);
+        // }
         
 
 
