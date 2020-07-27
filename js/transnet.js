@@ -418,7 +418,7 @@ class TransNet {
         // Creating lines that connect the power and trans nodes together
         // Faint until they are highlighted, then they darken, or maybe pulse or something cool
 
-        //Creating lines that connect node to power station
+        //Creating lines that connect power station node to transportation node
         let lineFunction = d3.line()
             .x(function(d){
                 return d.x;
@@ -440,7 +440,7 @@ class TransNet {
         this.lineCTH = [{"x":130,"y":282},{"x":0,"y":282},
         {"x":0,"y":330},{"x":-295,"y":330},{"x":-295,"y":317},{"x":-320,"y":317}];
 
-        this.lineKJTC = [{"x":160,"y":440},{"x":100,"y":435},
+        this.lineKJTC = [{"x":160,"y":445},{"x":100,"y":445},{"x":100,"y":435},
         {"x":-300,"y":435},{"x":-300,"y":458},{"x":-320,"y":458}];
 
         this.lineEH = [{"x":205,"y":540},{"x":100,"y":540},
@@ -449,26 +449,32 @@ class TransNet {
         this.lineJRPR = [{"x":275,"y":645},{"x":-50,"y":645},
         {"x":-50,"y":557},{"x":-160,"y":557}];
 
+        this.lineArray = [this.lineOTTC, this.lineKPR, this.lineGS, this.lineCTH, this.lineKJTC, this.lineEH, this.lineJRPR]
 
+        // console.log(this.lineArray)
         let line_data = null;
 
         line_data = this.lineJRPR;
+        // console.log("line data",line_data)
 
         //Path to trans
-        let path = that.lineLayer.append("path")
+        let path = that.lineLayer.selectAll("path")
+            .data(this.lineArray)
+            .enter().append("path")
             .attr("class","netline")
-            .attr("d",lineFunction(line_data));
+            .attr("d",d=> lineFunction(d));
+            // .attr("d",lineFunction(line_data));
 
         animate();
         function animate() {
             d3.selectAll(".netline")
-            .transition()
-            .duration(500)
-            .ease(d3.easeLinear)
-            .styleTween("stroke-dashoffset", function() {
-                return d3.interpolate(0, 14);
-                })
-            .on("end", animate);
+                .transition()
+                .duration(500)
+                .ease(d3.easeLinear)
+                .styleTween("stroke-dashoffset", function() {
+                    return d3.interpolate(0, 14);
+                    })
+                .on("end", animate);
         }
         
 
