@@ -438,29 +438,38 @@ class TransNet {
         {"x":-135,"y":282},{"x":-320,"y":282}];
 
         this.lineCTH = [{"x":130,"y":282},{"x":0,"y":282},
-        {"x":0,"y":330},{"x":-295,"y":330},{"x":-295,"y":317},{"x":-315,"y":317} ];
+        {"x":0,"y":330},{"x":-295,"y":330},{"x":-295,"y":317},{"x":-320,"y":317}];
+
+        this.lineKJTC = [{"x":160,"y":440},{"x":100,"y":435},
+        {"x":-300,"y":435},{"x":-300,"y":458},{"x":-320,"y":458}];
+
+        this.lineEH = [{"x":205,"y":540},{"x":100,"y":540},
+        {"x":100,"y":487},{"x":-160,"y":487}];
+
+        this.lineJRPR = [{"x":275,"y":645},{"x":-50,"y":645},
+        {"x":-50,"y":557},{"x":-160,"y":557}];
 
 
         let line_data = null;
 
-        line_data = this.lineCTH;
+        line_data = this.lineJRPR;
 
         //Path to trans
         let path = that.lineLayer.append("path")
             .attr("class","netline")
-            .attr("stroke","black")
-            .attr("stroke-width",0.5)
-            .attr("fill","none")
             .attr("d",lineFunction(line_data));
 
-        let totalLength = path.node().getTotalLength();
-
-        path
-            .attr("stroke-dasharray",totalLength + " " +totalLength)
-            .attr("stroke-dashoffset",totalLength)
+        animate();
+        function animate() {
+            d3.selectAll(".netline")
             .transition()
-            .duration(750)
-            .attr("stroke-dashoffset",0);
+            .duration(500)
+            .ease(d3.easeLinear)
+            .styleTween("stroke-dashoffset", function() {
+                return d3.interpolate(0, 14);
+                })
+            .on("end", animate);
+        }
         
 
 

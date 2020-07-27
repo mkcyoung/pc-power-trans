@@ -332,7 +332,7 @@ class PowNet {
             })
             // .attr("x",d => d.x+75)
             .attr("y",d => d.y-8)
-            .attr("xlink:href","icons/plug.svg")
+            .attr("xlink:href","icons/outlet.svg")
             .attr("transform", function (d,i){
                 // Need to rotate around center of object which is coordinate + height/2 (or width/2 for x)
                 // if(d.index > 24){
@@ -341,8 +341,8 @@ class PowNet {
                 // else{
                 //     return `rotate(135 ${d.x+80+15} ${d.y-8+15})`;
                 // }
-                return `rotate(135 ${d.x+80+15} ${d.y-8+15})`
-            }) 
+                return `rotate(0 ${d.x+80+15} ${d.y-8+15})`
+            })
             .attr("height","30px")
             .attr("width","30px")
 

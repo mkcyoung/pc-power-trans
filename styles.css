@@ -161,6 +161,14 @@
     font-weight: lighter;
 }
 
+.netline{
+    fill: none;
+    stroke: rgb(252, 236, 13);
+    opacity: 1;
+    stroke-width: 3;
+    stroke-dasharray: 10, 4;
+}
+
 /* Table styling */
 
 /*Table styling*/
