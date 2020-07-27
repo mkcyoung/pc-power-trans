@@ -462,8 +462,40 @@ class TransNet {
             .attr("class","netline")
             .attr("id",(d,i) => `line-${i}`)
             .attr("d",d => lineFunction(d))
-            .on("mouseover",animate)
-            .on("mouseout",stop);
+            .on("mouseover",function(d){
+                // Checks first to see if its been clicked 
+                if (!d3.select(this).classed("clicked-line")){
+                // Sets active line class and calls animate - alt could do css hover
+                d3.select(this).classed("active-line",true);
+                animate.call(this,d);
+                }
+            })
+            .on("mouseout",function(d){
+                if (!d3.select(this).classed("clicked-line")){
+                // eliminate active line class and stops animation
+                d3.select(this).classed("active-line",false);
+                stop.call(this,d);
+                }
+            })
+            .on("click",function(d){
+                // sees if object has already been clicked
+                if (d3.select(this).classed("clicked-line")){
+                    console.log("been clicked")
+                    // removes clicked class
+                    d3.select(this).classed("clicked-line",false);
+                    //stops animation
+                    stop.call(this,d)
+                }
+                else{
+                    console.log("hasn't been clicked")
+                    // Adds clicked class
+                    d3.select(this).classed("clicked-line",true);
+                    //starts animation indefinitely
+                    animate.call(this,d)
+                }
+                
+
+            });
 
         // animate();
         function animate() {

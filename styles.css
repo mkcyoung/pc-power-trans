@@ -165,14 +165,27 @@
     fill: none;
     stroke: rgb(66, 66, 66);
     opacity: 0.08;
-    stroke-width: 4;
+    stroke-width: 7;
 }
 
-.netline:hover{
+/* .netline:hover{
     fill: none;
     stroke: rgb(252, 236, 13);
     opacity: 1;
     stroke-width: 5;
+    stroke-dasharray: 10, 4;
+} */
+
+.netline:hover{
+    stroke-width: 10;
+    stroke-dasharray: none;
+}
+
+.active-line{
+    fill: none;
+    stroke: rgb(252, 236, 13);
+    opacity: 1;
+    stroke-width: 6;
     stroke-dasharray: 10, 4;
 }
 
