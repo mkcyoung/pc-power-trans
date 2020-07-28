@@ -2,11 +2,17 @@
 class PowNet {
 
     // Creates a Power Network object
-    constructor(data,time){
+    constructor(data,time,transNetwork){
         //Assigning data variable
         console.log("pownet data:",data);
         this.data = data;
         this.activeTime = time;
+
+        // Reference to transNetwork object
+        this.transNet = transNetwork;
+        // console.log(this.transNet.Clicked(this.transNet.data.nodes[1]))
+        // console.log("trans data in pow",this.transNet.updateNet.Clicked.call(this.transNet.data.nodes[0]))
+        this.transNodes = this.transNet.data.nodes
 
         // Let's create an object just of the charging stations
         this.chargingStations = this.data.nodes.filter(f => f.chSP!=null);
@@ -124,7 +130,7 @@ class PowNet {
         //The first node has an insanely high max, so for the interest of the scale I'm gonna manually set ot
         this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,300])
         this.voltScale = d3.scaleSqrt().range([4,15]).domain([min_volt,max_volt]);
-        this.powLoadScale = d3.scaleSequential(d3.interpolateViridis).domain([min_chsp,max_chsp]);
+        this.powLoadScale = d3.scaleSequential(d3.interpolateGreens).domain([min_chsp,max_chsp]);
 
         this.currentScale = d3.scaleLinear().range([5,20]).domain([min_current,max_current]);
         this.apfscale = d3.scaleSequential(d3.interpolateBlues).domain([min_apf,max_apf]);
@@ -274,6 +280,9 @@ class PowNet {
                         d3.select(`#line-${d.id}`).classed("active-line",true);
                         //starts animation indefinitely
                         animate.call(d3.select(`#line-${d.id}`).node(),d)
+                        // Looping through data to select correct one
+                        let myNode = that.transNodes.filter(f => f.StationNode.id == d.id)[0]
+                        that.transNet.Clicked(myNode)
                     }
                 }
 
@@ -425,6 +434,7 @@ class PowNet {
             d3.select(this)
                 .interrupt();
         }
+        
 
         
     }

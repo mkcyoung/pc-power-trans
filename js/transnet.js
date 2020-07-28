@@ -102,7 +102,7 @@ class TransNet {
         this.buscountScale = d3.scaleSqrt().domain([min_bus_count,max_bus_count]).range([5,35]);
 
         //Color scale for station power
-        this.powLoadScale = d3.scaleSequential(d3.interpolateViridis).domain([min_chsp,max_chsp]);
+        this.powLoadScale = d3.scaleSequential(d3.interpolateGreens).domain([min_chsp,max_chsp]);
 
         // Scales for line chart
         this.powLoadLineScale = d3.scaleLinear().domain([min_chsp,max_chsp]).range([this.heightL+this.marginL.top,this.marginL.top]);
@@ -288,8 +288,8 @@ class TransNet {
         
         //Updates table with clicked seletion
         if(that.clicked != null){
-            Clicked(that.clicked);
-            that.updateLine();
+            this.Clicked(that.clicked);
+            this.updateLine();
         }
 
         // Now let's create the lines
@@ -333,7 +333,7 @@ class TransNet {
                     .duration(500)
                     .style("opacity", 0);
                 if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
-                    console.log("here")
+                    // console.log("here")
                     d3.selectAll("."+d.StationNode.id)
                         .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
                         .classed("CHSP",false);
@@ -363,6 +363,8 @@ class TransNet {
                     d3.select(`#line-${d.StationNode.id}`).classed("active-line",true);
                     //starts animation indefinitely
                     animate.call(d3.select(`#line-${d.StationNode.id}`).node(),d)
+
+                    that.Clicked(d)
                 }
             });
         
@@ -555,6 +557,7 @@ class TransNet {
                     d3.select(this).classed("clicked-line",true);
                     //starts animation indefinitely
                     animate.call(this,d)
+                    that.Clicked(d);
                 }
                 
 
@@ -747,96 +750,97 @@ class TransNet {
 
         
         //Clicked function
-        function Clicked(d) {
-            //console.log("in clicked")
-            //setting this so the tooltip updates on slider bar later - as well as table
-            that.clicked = d;
+        // function Clicked(d) {
+        //     //console.log("in clicked")
+        //     //setting this so the tooltip updates on slider bar later - as well as table
+        //     that.clicked = d;
+        //     console.log(that.clicked)
 
-            //Call update line
-            that.updateLine();
+        //     //Call update line
+        //     that.updateLine();
 
 
-            //console.log("this.clicked",that.clicked)
-            //console.log(d.BusData[that.activeTime].busses)
-            let busses = d.BusData[that.activeTime].busses;
-            busses = busses.map((c) => parseInt(c))
-            //console.log(busses)
-            let newData = that.bebs.filter((f,i) => busses.includes(f.BusID));
-            //console.log(newData)
-            that.table.BEB = newData;
-            that.table.updateTable();
+        //     //console.log("this.clicked",that.clicked)
+        //     //console.log(d.BusData[that.activeTime].busses)
+        //     let busses = d.BusData[that.activeTime].busses;
+        //     busses = busses.map((c) => parseInt(c))
+        //     //console.log(busses)
+        //     let newData = that.bebs.filter((f,i) => busses.includes(f.BusID));
+        //     //console.log(newData)
+        //     that.table.BEB = newData;
+        //     that.table.updateTable();
 
-            //Want to keep lines connecting other nodes and tooltip (copied from above - should make this a function)
-            d3.select("#s_tooltip_click").transition()
-                .duration(200)
-                .style("opacity", 1);
-            d3.select("#s_tooltip_click").html(that.tooltipRenderS(d))
-                .style("left","800px") //(d3.event.pageX+30)
-                .style("top", "250px"); //(d3.event.pageY-80)
+        //     //Want to keep lines connecting other nodes and tooltip (copied from above - should make this a function)
+        //     d3.select("#s_tooltip_click").transition()
+        //         .duration(200)
+        //         .style("opacity", 1);
+        //     d3.select("#s_tooltip_click").html(that.tooltipRenderS(d))
+        //         .style("left","800px") //(d3.event.pageX+30)
+        //         .style("top", "250px"); //(d3.event.pageY-80)
             
-            //Want to removes netlines
-            d3.selectAll(".netlineclick").remove();
-            d3.selectAll(".netline").remove();
+        //     //Want to removes netlines
+        //     // d3.selectAll(".netlineclick").remove();
+        //     // d3.selectAll(".netline").remove();
 
-            //Creating lines that connect node to power station
-            let lineFunction = d3.line()
-                .x(function(d){
-                    return d.x;
-                })
-                .y(function(d){
-                    return d.y;
-                });
+        //     // //Creating lines that connect node to power station
+        //     // let lineFunction = d3.line()
+        //     //     .x(function(d){
+        //     //         return d.x;
+        //     //     })
+        //     //     .y(function(d){
+        //     //         return d.y;
+        //     //     });
             
-            let line_data = null;
-            let line_data2 = null;
+        //     // let line_data = null;
+        //     // let line_data2 = null;
             
-            switch(parseInt(d.StationID)){
-                case 1:
-                   line_data = that.lineOTTC;
-                   line_data2 = that.lineOTTC2;
-                   break;
-                case 2:
-                    line_data = that.lineKJTC;
-                    line_data2 = that.lineKJTC2;
-                    break;
-                case 3:
-                    line_data = that.lineCTH;
-                    line_data2 = that.lineCTH2;
-                    break;
-                case 4:
-                    line_data = that.lineJRPR;
-                    line_data2 = that.lineJRPR2;
-                    break;
-                case 5:
-                    line_data = that.lineKPR;
-                    line_data2 = that.lineKPR2;
-                    break;
-                case 6:
-                    line_data = that.lineEH;
-                    line_data2 = that.lineEH2;
-                    break;
-                case 7:
-                    line_data = that.lineGS;
-                    line_data2 = that.lineGS2;
-                    break;
+        //     // switch(parseInt(d.StationID)){
+        //     //     case 1:
+        //     //        line_data = that.lineOTTC;
+        //     //        line_data2 = that.lineOTTC2;
+        //     //        break;
+        //     //     case 2:
+        //     //         line_data = that.lineKJTC;
+        //     //         line_data2 = that.lineKJTC2;
+        //     //         break;
+        //     //     case 3:
+        //     //         line_data = that.lineCTH;
+        //     //         line_data2 = that.lineCTH2;
+        //     //         break;
+        //     //     case 4:
+        //     //         line_data = that.lineJRPR;
+        //     //         line_data2 = that.lineJRPR2;
+        //     //         break;
+        //     //     case 5:
+        //     //         line_data = that.lineKPR;
+        //     //         line_data2 = that.lineKPR2;
+        //     //         break;
+        //     //     case 6:
+        //     //         line_data = that.lineEH;
+        //     //         line_data2 = that.lineEH2;
+        //     //         break;
+        //     //     case 7:
+        //     //         line_data = that.lineGS;
+        //     //         line_data2 = that.lineGS2;
+        //     //         break;
                     
-            }
+        //     // }
 
-            //Path to trans
-            let path = that.lineLayer.append("path")
-                .attr("class","netlineclick")
-                .attr("stroke","black")
-                .attr("stroke-width",0.5)
-                .attr("fill","none")
-                .attr("d",lineFunction(line_data));
+        // //     //Path to trans
+        // //     let path = that.lineLayer.append("path")
+        // //         .attr("class","netlineclick")
+        // //         .attr("stroke","black")
+        // //         .attr("stroke-width",0.5)
+        // //         .attr("fill","none")
+        // //         .attr("d",lineFunction(line_data));
 
-            let path2 = that.lineLayer.append("path")
-                .attr("class","netlineclick")
-                .attr("stroke","black")
-                .attr("stroke-width",0.5)
-                .attr("fill","none")
-                .attr("d",lineFunction(line_data2));
-        }
+        // //     let path2 = that.lineLayer.append("path")
+        // //         .attr("class","netlineclick")
+        // //         .attr("stroke","black")
+        // //         .attr("stroke-width",0.5)
+        // //         .attr("fill","none")
+        // //         .attr("d",lineFunction(line_data2));
+        // }
 
         // This clears a selection by listening for a click
         document.addEventListener("click", function(e) {
@@ -865,6 +869,99 @@ class TransNet {
         
         }, true);
 
+    }
+
+    //Clicked function
+    Clicked(d) {
+        //console.log("in clicked")
+        //setting this so the tooltip updates on slider bar later - as well as table
+        this.clicked = d;
+        console.log(this.clicked)
+
+        //Call update line
+        this.updateLine();
+
+
+        //console.log("this.clicked",that.clicked)
+        //console.log(d.BusData[that.activeTime].busses)
+        let busses = d.BusData[this.activeTime].busses;
+        busses = busses.map((c) => parseInt(c))
+        //console.log(busses)
+        let newData = this.bebs.filter((f,i) => busses.includes(f.BusID));
+        //console.log(newData)
+        this.table.BEB = newData;
+        this.table.updateTable();
+
+        //Want to keep lines connecting other nodes and tooltip (copied from above - should make this a function)
+        d3.select("#s_tooltip_click").transition()
+            .duration(200)
+            .style("opacity", 1);
+        d3.select("#s_tooltip_click").html(this.tooltipRenderS(d))
+            .style("left","800px") //(d3.event.pageX+30)
+            .style("top", "250px"); //(d3.event.pageY-80)
+        
+        //Want to removes netlines
+        // d3.selectAll(".netlineclick").remove();
+        // d3.selectAll(".netline").remove();
+
+        // //Creating lines that connect node to power station
+        // let lineFunction = d3.line()
+        //     .x(function(d){
+        //         return d.x;
+        //     })
+        //     .y(function(d){
+        //         return d.y;
+        //     });
+        
+        // let line_data = null;
+        // let line_data2 = null;
+        
+        // switch(parseInt(d.StationID)){
+        //     case 1:
+        //        line_data = that.lineOTTC;
+        //        line_data2 = that.lineOTTC2;
+        //        break;
+        //     case 2:
+        //         line_data = that.lineKJTC;
+        //         line_data2 = that.lineKJTC2;
+        //         break;
+        //     case 3:
+        //         line_data = that.lineCTH;
+        //         line_data2 = that.lineCTH2;
+        //         break;
+        //     case 4:
+        //         line_data = that.lineJRPR;
+        //         line_data2 = that.lineJRPR2;
+        //         break;
+        //     case 5:
+        //         line_data = that.lineKPR;
+        //         line_data2 = that.lineKPR2;
+        //         break;
+        //     case 6:
+        //         line_data = that.lineEH;
+        //         line_data2 = that.lineEH2;
+        //         break;
+        //     case 7:
+        //         line_data = that.lineGS;
+        //         line_data2 = that.lineGS2;
+        //         break;
+                
+        // }
+
+    //     //Path to trans
+    //     let path = that.lineLayer.append("path")
+    //         .attr("class","netlineclick")
+    //         .attr("stroke","black")
+    //         .attr("stroke-width",0.5)
+    //         .attr("fill","none")
+    //         .attr("d",lineFunction(line_data));
+
+    //     let path2 = that.lineLayer.append("path")
+    //         .attr("class","netlineclick")
+    //         .attr("stroke","black")
+    //         .attr("stroke-width",0.5)
+    //         .attr("fill","none")
+    //         .attr("d",lineFunction(line_data2));
     }
 
       /**
