@@ -216,25 +216,67 @@ class PowNet {
             .attr("fill",d => this.aLoadScale(d.aLoad[this.activeTime].value))
             //tooltip!
             .on("mouseover", function (d) {
+                // console.log(d)
+                // Highlights tooltip
                 d3.select("#tooltip").transition()
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#tooltip").html(that.tooltipRenderN(d))
                     .style("left", (d3.event.pageX+15) + "px")
                     .style("top", (d3.event.pageY+15) + "px");
-                d3.selectAll("."+d.id)
-                    .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
-                    .classed("CHSP",true);
+                if(d3.select(this).classed("charge")){
+                    // Checks first to see if its been clicked 
+                    if (!d3.select(`#line-${d.id}`).classed("clicked-line")){
+                        d3.selectAll("."+d.id)
+                            .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
+                            .classed("CHSP",true);
+                        //highlights line
+                        d3.select(`#line-${d.id}`).classed("active-line-hover",true);
+                    }
+                }
+                
             })
             .on("mouseout", function (d) {
+                // De-highlights tooltip
                 d3.select("#tooltip").transition()
                     .duration(500)
                     .style("opacity", 0);
-                d3.selectAll("."+d.id)
-                    .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
-                    .classed("CHSP",false);
-                d3.selectAll(".station_node")
-                    .attr("fill", d => that.stationColor(d.StationNode.id));
+
+                if(d3.select(this).classed("charge")){
+                    if (!d3.select(`#line-${d.id}`).classed("clicked-line")){
+                        d3.selectAll("."+d.id)
+                            .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
+                            .classed("CHSP",false);
+                        d3.selectAll(".station_node")
+                            .attr("fill", d => that.stationColor(d.StationNode.id));
+
+                        //de-highlights line
+                        d3.select(`#line-${d.id}`).classed("active-line-hover",false);
+                    }
+                }
+            })
+            .on("click", function (d){
+
+                if(d3.select(this).classed("charge")){
+                    // sees if object has already been clicked
+                    if (d3.select(`#line-${d.id}`).classed("clicked-line")){
+                        // console.log("been clicked")
+                        // removes clicked class and active line class
+                        d3.select(`#line-${d.id}`).classed("clicked-line",false);
+                        d3.select(`#line-${d.id}`).classed("active-line",false);
+                        //stops animation
+                        stop.call(d3.select(`#line-${d.id}`).node(),d)
+                    }
+                    else{
+                        // console.log("hasn't been clicked")
+                        // Adds clicked class and active line class
+                        d3.select(`#line-${d.id}`).classed("clicked-line",true);
+                        d3.select(`#line-${d.id}`).classed("active-line",true);
+                        //starts animation indefinitely
+                        animate.call(d3.select(`#line-${d.id}`).node(),d)
+                    }
+                }
+
             });
 
         
@@ -366,6 +408,23 @@ class PowNet {
             .attr("y",d => d.y+12)
             .text( d=> d.index+1)
             .attr("fill","black");
+
+
+        function animate() {
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .ease(d3.easeLinear)
+                .styleTween("stroke-dashoffset", function() {
+                    return d3.interpolate(0, 14);
+                    })
+                .on("end", animate);
+        }
+
+        function stop() {
+            d3.select(this)
+                .interrupt();
+        }
 
         
     }

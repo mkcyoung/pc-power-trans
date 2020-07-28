@@ -318,12 +318,12 @@ class TransNet {
                     .style("left","800px") //(d3.event.pageX+30)
                     .style("top", "250px"); //(d3.event.pageY-80)
                 // Checks first to see if its been clicked 
-                if (!d3.select(`#line-${d.StationName}`).classed("clicked-line")){
+                if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
                     d3.selectAll("."+d.StationNode.id)
                         .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
                         .classed("CHSP",true);
                     //highlights line
-                    d3.select(`#line-${d.StationName}`).classed("active-line-hover",true);
+                    d3.select(`#line-${d.StationNode.id}`).classed("active-line-hover",true);
                 }
                     
             })
@@ -332,7 +332,8 @@ class TransNet {
                 d3.select("#s_tooltip").transition()
                     .duration(500)
                     .style("opacity", 0);
-                if (!d3.select(`#line-${d.StationName}`).classed("clicked-line")){
+                if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
+                    console.log("here")
                     d3.selectAll("."+d.StationNode.id)
                         .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
                         .classed("CHSP",false);
@@ -340,31 +341,29 @@ class TransNet {
                         .attr("fill", d => that.stationColor(d.StationNode.id));
 
                     //de-highlights line
-                    d3.select(`#line-${d.StationName}`).classed("active-line-hover",false);
+                    d3.select(`#line-${d.StationNode.id}`).classed("active-line-hover",false);
                 }
                 
                 
             })
             .on("click", function(d){
                 // sees if object has already been clicked
-                if (d3.select(`#line-${d.StationName}`).classed("clicked-line")){
+                if (d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
                     // console.log("been clicked")
                     // removes clicked class and active line class
-                    d3.select(`#line-${d.StationName}`).classed("clicked-line",false);
-                    d3.select(`#line-${d.StationName}`).classed("active-line",false);
+                    d3.select(`#line-${d.StationNode.id}`).classed("clicked-line",false);
+                    d3.select(`#line-${d.StationNode.id}`).classed("active-line",false);
                     //stops animation
-                    stop.call(d3.select(`#line-${d.StationName}`).node(),d)
+                    stop.call(d3.select(`#line-${d.StationNode.id}`).node(),d)
                 }
                 else{
                     // console.log("hasn't been clicked")
                     // Adds clicked class and active line class
-                    d3.select(`#line-${d.StationName}`).classed("clicked-line",true);
-                    d3.select(`#line-${d.StationName}`).classed("active-line",true);
+                    d3.select(`#line-${d.StationNode.id}`).classed("clicked-line",true);
+                    d3.select(`#line-${d.StationNode.id}`).classed("active-line",true);
                     //starts animation indefinitely
-                    animate.call(d3.select(`#line-${d.StationName}`).node(),d)
+                    animate.call(d3.select(`#line-${d.StationNode.id}`).node(),d)
                 }
-
-
             });
         
 
@@ -486,7 +485,7 @@ class TransNet {
 
         // Adding line data to this.data
         this.data.nodes.forEach( (d,i) => {
-            console.log(d.StationName,this.lineArray[i],d.StationID)
+            // console.log(d.StationName,this.lineArray[i],d.StationID)
             d.line = this.lineArray[i];
         })
         // console.log("data with lines",this.data.nodes)
@@ -500,7 +499,7 @@ class TransNet {
             .data(this.data.nodes)
             .enter().append("path")
             .attr("class","netline")
-            .attr("id",(d,i) => `line-${d.StationName}`)
+            .attr("id",(d,i) => `line-${d.StationNode.id}`)
             .attr("d",d => lineFunction(d.line))
             .on("mouseover",function(d){
                 // Brings up tooltip
@@ -531,6 +530,7 @@ class TransNet {
                 if (!d3.select(this).classed("clicked-line")){
                 // eliminate active line class and stops animation
                 d3.select(this).classed("active-line",false);
+                d3.select(this).classed("active-line-hover",false);
 
                 
                 d3.selectAll("."+d.StationNode.id)
