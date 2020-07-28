@@ -451,43 +451,47 @@ class TransNet {
 
         this.lineArray = [this.lineOTTC, this.lineKPR, this.lineGS, this.lineCTH, this.lineKJTC, this.lineEH, this.lineJRPR]
 
-        let line_data = null;
+        // Adding line data to this.data
+        this.data.nodes.forEach( (d,i) => {
+            d.line = this.lineArray[i];
+        })
+        // console.log("data with lines",this.data.nodes)
 
-        line_data = this.lineJRPR;
+        // let line_data = null;
+
+        // line_data = this.lineJRPR;
 
         //Path to trans
         let path = that.lineLayer.selectAll("path")
-            .data(this.lineArray)
+            .data(this.data.nodes)
             .enter().append("path")
             .attr("class","netline")
             .attr("id",(d,i) => `line-${i}`)
-            .attr("d",d => lineFunction(d))
+            .attr("d",d => lineFunction(d.line))
             .on("mouseover",function(d){
                 // Checks first to see if its been clicked 
                 if (!d3.select(this).classed("clicked-line")){
                 // Sets active line class and calls animate - alt could do css hover
                 d3.select(this).classed("active-line",true);
-                animate.call(this,d);
                 }
             })
             .on("mouseout",function(d){
                 if (!d3.select(this).classed("clicked-line")){
                 // eliminate active line class and stops animation
                 d3.select(this).classed("active-line",false);
-                stop.call(this,d);
                 }
             })
             .on("click",function(d){
                 // sees if object has already been clicked
                 if (d3.select(this).classed("clicked-line")){
-                    console.log("been clicked")
+                    // console.log("been clicked")
                     // removes clicked class
                     d3.select(this).classed("clicked-line",false);
                     //stops animation
                     stop.call(this,d)
                 }
                 else{
-                    console.log("hasn't been clicked")
+                    // console.log("hasn't been clicked")
                     // Adds clicked class
                     d3.select(this).classed("clicked-line",true);
                     //starts animation indefinitely
