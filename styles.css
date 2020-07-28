@@ -181,6 +181,13 @@
     stroke-dasharray: none;
 }
 
+.active-line-hover{
+    stroke-width: 10;
+    stroke: rgb(252, 236, 13);
+    opacity: 1;
+    stroke-dasharray: none;
+}
+
 .active-line{
     fill: none;
     stroke: rgb(252, 236, 13);
