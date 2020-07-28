@@ -310,33 +310,61 @@ class TransNet {
             .attr("fill", d => this.powLoadScale(d.chSP[this.activeTime].value))
             //tooltip + linked styling when hovered over
             .on("mouseover", function (d) {
+                // Highlights tooltip
                 d3.select("#s_tooltip").transition()
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#s_tooltip").html(that.tooltipRenderS(d))
                     .style("left","800px") //(d3.event.pageX+30)
                     .style("top", "250px"); //(d3.event.pageY-80)
-                    // .style("left", (d3.event.pageX+15) + "px")
-                    // .style("top", (d3.event.pageY+15) + "px");
-                d3.selectAll("."+d.StationNode.id)
-                    .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
-                    .classed("CHSP",true);
-                //highlights line
-                d3.select(`#line-${d.StationName}`).classed("active-line-hover",true);
+                // Checks first to see if its been clicked 
+                if (!d3.select(`#line-${d.StationName}`).classed("clicked-line")){
+                    d3.selectAll("."+d.StationNode.id)
+                        .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
+                        .classed("CHSP",true);
+                    //highlights line
+                    d3.select(`#line-${d.StationName}`).classed("active-line-hover",true);
+                }
                     
             })
             .on("mouseout", function (d) {
+                // De-highlights tooltip
                 d3.select("#s_tooltip").transition()
                     .duration(500)
                     .style("opacity", 0);
-                d3.selectAll("."+d.StationNode.id)
-                    .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
-                    .classed("CHSP",false);
-                d3.selectAll(".station_node")
-                    .attr("fill", d => that.stationColor(d.StationNode.id));
+                if (!d3.select(`#line-${d.StationName}`).classed("clicked-line")){
+                    d3.selectAll("."+d.StationNode.id)
+                        .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
+                        .classed("CHSP",false);
+                    d3.selectAll(".station_node")
+                        .attr("fill", d => that.stationColor(d.StationNode.id));
 
-                //de-highlights line
-                d3.select(`#line-${d.StationName}`).classed("active-line-hover",false);
+                    //de-highlights line
+                    d3.select(`#line-${d.StationName}`).classed("active-line-hover",false);
+                }
+                
+                
+            })
+            .on("click", function(d){
+                // sees if object has already been clicked
+                if (d3.select(`#line-${d.StationName}`).classed("clicked-line")){
+                    // console.log("been clicked")
+                    // removes clicked class and active line class
+                    d3.select(`#line-${d.StationName}`).classed("clicked-line",false);
+                    d3.select(`#line-${d.StationName}`).classed("active-line",false);
+                    //stops animation
+                    stop.call(d3.select(`#line-${d.StationName}`).node(),d)
+                }
+                else{
+                    // console.log("hasn't been clicked")
+                    // Adds clicked class and active line class
+                    d3.select(`#line-${d.StationName}`).classed("clicked-line",true);
+                    d3.select(`#line-${d.StationName}`).classed("active-line",true);
+                    //starts animation indefinitely
+                    animate.call(d3.select(`#line-${d.StationName}`).node(),d)
+                }
+
+
             });
         
 
@@ -475,34 +503,36 @@ class TransNet {
             .attr("id",(d,i) => `line-${d.StationName}`)
             .attr("d",d => lineFunction(d.line))
             .on("mouseover",function(d){
-                // Checks first to see if its been clicked 
-                if (!d3.select(this).classed("clicked-line")){
-                // Sets active line class and calls animate - alt could do css hover
-                d3.select(this).classed("active-line",true);
-
-                // Highlighting of nodes and showing tooltip
+                // Brings up tooltip
                 d3.select("#s_tooltip").transition()
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#s_tooltip").html(that.tooltipRenderS(d))
                     .style("left","800px") //(d3.event.pageX+30)
                     .style("top", "250px"); //(d3.event.pageY-80)
-                    // .style("left", (d3.event.pageX+15) + "px")
-                    // .style("top", (d3.event.pageY+15) + "px");
+
+                // Checks first to see if its been clicked 
+                if (!d3.select(this).classed("clicked-line")){
+                // Sets active line class and calls animate - alt could do css hover
+                d3.select(this).classed("active-line",true);
+
+                // Highlighting of nodes 
                 d3.selectAll("."+d.StationNode.id)
                     .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
                     .classed("CHSP",true);
                 }
             })
             .on("mouseout",function(d){
-                if (!d3.select(this).classed("clicked-line")){
-                // eliminate active line class and stops animation
-                d3.select(this).classed("active-line",false);
-
                 //De-highlighting of nodes and tooltip
                 d3.select("#s_tooltip").transition()
                     .duration(500)
                     .style("opacity", 0);
+                    
+                if (!d3.select(this).classed("clicked-line")){
+                // eliminate active line class and stops animation
+                d3.select(this).classed("active-line",false);
+
+                
                 d3.selectAll("."+d.StationNode.id)
                     .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
                     .classed("CHSP",false);
