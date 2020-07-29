@@ -125,6 +125,7 @@ class TransNet {
         this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
         this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.busLineScale = d3.scaleLinear().domain([min_bus_count,max_bus_count]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
         //Setting custom max because the first node skews it - have this for color setting
         this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,300])
@@ -1046,6 +1047,11 @@ class TransNet {
             .attr("class","VoltSvg")
             .attr("height",300)
             .attr("width",700);
+
+        let BusSvg = d3.select(".view3").append("svg")
+            .attr("class","BusSvg")
+            .attr("height",300)
+            .attr("width",700);
         
 
         //Create an active power chart group
@@ -1057,6 +1063,9 @@ class TransNet {
 
         //Create an voltage chart group
         let VStatSvg = VoltSvg.append("g");
+
+        //Create a bus count chart group
+        let BusStatSvg = BusSvg.append("g");
 
         //Create label for group
         APStatSvg.append("text")
@@ -1074,6 +1083,11 @@ class TransNet {
             .attr("x",490)
             .attr("y",360);
 
+        BusStatSvg.append("text")
+            .attr("class","chart-text")
+            .attr("x",490)
+            .attr("y",360);
+
         //Create labels for axes
         // Active power
         APStatSvg.append("text")
@@ -1082,11 +1096,11 @@ class TransNet {
             .attr("y",15)
             .text("active power (kW)");
         
-        APStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
-            .text("intervals");
+        // APStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",570)
+        //     .attr("y",280)
+        //     .text("intervals");
 
         // Active load
         ALStatSvg.append("text")
@@ -1095,11 +1109,11 @@ class TransNet {
             .attr("y",15)
             .text("active load (kW)");
         
-        ALStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
-            .text("intervals");
+        // ALStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",570)
+        //     .attr("y",280)
+        //     .text("intervals");
 
         // Voltage
         VStatSvg.append("text")
@@ -1108,7 +1122,20 @@ class TransNet {
             .attr("y",15)
             .text("voltage (kV)");
         
-        VStatSvg.append("text")
+        // VStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",570)
+        //     .attr("y",280)
+        //     .text("intervals");
+
+        // Bus count
+        BusStatSvg.append("text")
+            .attr("class","axis-text")
+            .attr("x",70)
+            .attr("y",15)
+            .text("BEB count");
+        
+        BusStatSvg.append("text")
             .attr("class","axis-text")
             .attr("x",570)
             .attr("y",280)
@@ -1119,6 +1146,8 @@ class TransNet {
         let yScaleAP = this.powLoadLineScale;
         let yScaleAL = this.aLoadLineScale;
         let yScaleV = this.voltLineScale;
+        let yScaleBus = this.busLineScale;
+
         let xScale = this.timeScale;
 
 
@@ -1133,6 +1162,8 @@ class TransNet {
         yAxisAL.scale(yScaleAL);
         let yAxisV = d3.axisLeft().ticks(5);
         yAxisV.scale(yScaleV);
+        let yAxisBus = d3.axisLeft().ticks(5);
+        yAxisBus.scale(yScaleBus);
 
         //Gridlines
         // gridlines in y axis function 
@@ -1151,17 +1182,22 @@ class TransNet {
         //     );
 
         //X-axis
-        APStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-            .call(xAxis);
+        // APStatSvg.append("g")
+        //     .classed("axis",true)
+        //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+        //     .call(xAxis);
 
-        ALStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-            .call(xAxis);
+        // ALStatSvg.append("g")
+        //     .classed("axis",true)
+        //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+        //     .call(xAxis);
 
-        VStatSvg.append("g")
+        // VStatSvg.append("g")
+        //     .classed("axis",true)
+        //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+        //     .call(xAxis);
+
+        BusStatSvg.append("g")
             .classed("axis",true)
             .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
             .call(xAxis);
@@ -1183,7 +1219,10 @@ class TransNet {
             .attr("transform",`translate(${this.marginL.left},${0})`)
             .call(yAxisV);
         
-        
+        BusStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisBus);
 
         
         //Add data to chart
@@ -1204,6 +1243,9 @@ class TransNet {
 
         VStatSvg.append("path")
             .attr("class","line-V line-path");
+
+        BusStatSvg.append("path")
+            .attr("class","line-Bus line-path");
     }
 
     updateLine(){
@@ -1228,6 +1270,12 @@ class TransNet {
             .defined(d => !isNaN(d.value))
             .x((d,i) => this.timeScale(i))
             .y(d => this.voltLineScale(d.value));
+
+        let lineBus = d3.line()
+            // .curve(d3.curveStep)
+            .defined(d => !isNaN(d))
+            .x((d,i) => this.timeScale(i))
+            .y(d => this.busLineScale(d));
 
         d3.select(".line-AP")
             .datum(this.data.nodes[that.clicked.index].chSP.slice(0,this.activeTime))
@@ -1258,6 +1306,16 @@ class TransNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("d", lineV);
+
+        d3.select(".line-Bus")
+            .datum(this.data.nodes[that.clicked.index].BusData.slice(0,this.activeTime).map(f=>f.total))
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineBus);
 
         //Line chart label
         d3.select(".chart-text")
