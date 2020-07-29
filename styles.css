@@ -2,16 +2,24 @@
 .wrapper{
     font-family: "Avenir Next";
     display: grid;
-    grid-template-columns: repeat(2, 450px) 200px 750px;
+    /* grid-template-columns: repeat(2, 450px) 200px 750px; */
+    grid-template-columns: 700px 500px 500px 600px;
     grid-template-rows: 0.5fr 125px 200px 200px 200px 200px 400px;
     grid-template-areas: 
-            "title title title title "
+            /* "title title title title "
             "slider slider slider slider"
             "power power power table1 "
             "power power power table1 "
             "power power power table1  "
             "power power power table1 "
-            "info info info table1";
+            "info info info table1"; */
+            "title title title title "
+            "slider slider slider slider"
+            "info power power table1 "
+            "info power power table1 "
+            "info power power table1 "
+            "info power power table1 "
+            "info power power table1 ";
     /* width: 100vw;
     height: 100vh; */
 }
