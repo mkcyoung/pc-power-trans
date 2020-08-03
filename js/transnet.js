@@ -18,9 +18,11 @@ class TransNet {
         this.height = 900 - this.margin.top-this.margin.bottom; 
 
         //Margins - the bostock way - line chart
+        this.lineHeight = 200;
+        this.lineWidth = 500;
         this.marginL = {top: 20, right: 60, bottom: 60, left: 60};
-        this.widthL = 700 - this.marginL.left - this.marginL.right;
-        this.heightL = 300 - this.marginL.top-this.marginL.bottom; 
+        this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
+        this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
 
         this.clicked = null; //my click selection - used for updating tooltip later
     }
@@ -147,13 +149,13 @@ class TransNet {
 
          //Add text above nets
         d3.select(".viewsHead").append("div")
-            .style("left","675px")
+            .style("left","1000px")
             .style("top","175px")
             .attr("class","net_headers")
             .text("Park City Transit System");
 
         d3.select(".viewsHead").append("div")
-            .style("left","200px")
+            .style("left","600px")
             .style("top","175px")
             .attr("class","net_headers")
             .text("IEEE 33 bus system");
@@ -334,8 +336,8 @@ class TransNet {
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#s_tooltip").html(that.tooltipRenderS(d))
-                    .style("left","800px") //(d3.event.pageX+30)
-                    .style("top", "250px"); //(d3.event.pageY-80)
+                    .style("left","1220px") //(d3.event.pageX+30)
+                    .style("top", "235px"); //(d3.event.pageY-80)
                 // Checks first to see if its been clicked 
                 if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
                     d3.selectAll("."+d.StationNode.id)
@@ -528,8 +530,8 @@ class TransNet {
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#s_tooltip").html(that.tooltipRenderS(d))
-                    .style("left","800px") //(d3.event.pageX+30)
-                    .style("top", "250px"); //(d3.event.pageY-80)
+                    .style("left","1220px") //(d3.event.pageX+30)
+                    .style("top", "235px"); 
 
                 // Checks first to see if its been clicked 
                 if (!d3.select(this).classed("clicked-line")){
@@ -916,8 +918,8 @@ class TransNet {
             .duration(200)
             .style("opacity", 1);
         d3.select("#s_tooltip_click").html(this.tooltipRenderS(d))
-            .style("left","800px") //(d3.event.pageX+30)
-            .style("top", "250px"); //(d3.event.pageY-80)
+            .style("left","1220px") //(d3.event.pageX+30)
+            .style("top", "235px"); //(d3.event.pageY-80)
         
         //Want to removes netlines
         // d3.selectAll(".netlineclick").remove();
@@ -1032,26 +1034,30 @@ class TransNet {
 
         let that = this;
 
+        // Line chart height and width
+        let line_height = this.lineHeight; //300
+        let line_width = this.lineWidth; //700
+
         //Create line chart svg for active power
         let APSvg = d3.select(".view3").append("svg")
             .attr("class","APSvg")
-            .attr("height",300)
-            .attr("width",700);
+            .attr("height",line_height)
+            .attr("width",line_width);
 
         let ALSvg = d3.select(".view3").append("svg")
             .attr("class","ALSvg")
-            .attr("height",300)
-            .attr("width",700);
+            .attr("height",line_height)
+            .attr("width",line_width);
 
         let VoltSvg = d3.select(".view3").append("svg")
             .attr("class","VoltSvg")
-            .attr("height",300)
-            .attr("width",700);
+            .attr("height",line_height)
+            .attr("width",line_width);
 
         let BusSvg = d3.select(".view3").append("svg")
             .attr("class","BusSvg")
-            .attr("height",300)
-            .attr("width",700);
+            .attr("height",line_height)
+            .attr("width",line_width);
         
 
         //Create an active power chart group
@@ -1070,23 +1076,23 @@ class TransNet {
         //Create label for group
         APStatSvg.append("text")
             .attr("class","chart-text")
-            .attr("x",490)
+            .attr("x",line_width-160)
             .attr("y",60);
 
-        ALStatSvg.append("text")
-            .attr("class","chart-text")
-            .attr("x",490)
-            .attr("y",360);
+        // ALStatSvg.append("text")
+        //     .attr("class","chart-text")
+        //     .attr("x",490)
+        //     .attr("y",360);
 
-        VStatSvg.append("text")
-            .attr("class","chart-text")
-            .attr("x",490)
-            .attr("y",360);
+        // VStatSvg.append("text")
+        //     .attr("class","chart-text")
+        //     .attr("x",490)
+        //     .attr("y",360);
 
-        BusStatSvg.append("text")
-            .attr("class","chart-text")
-            .attr("x",490)
-            .attr("y",360);
+        // BusStatSvg.append("text")
+        //     .attr("class","chart-text")
+        //     .attr("x",490)
+        //     .attr("y",360);
 
         //Create labels for axes
         // Active power
@@ -1137,8 +1143,8 @@ class TransNet {
         
         BusStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
+            .attr("x",line_width-100)
+            .attr("y",line_height-20)
             .text("intervals");
 
         
@@ -1152,17 +1158,17 @@ class TransNet {
 
 
         //Xaxis group
-        let xAxis = d3.axisBottom();
+        let xAxis = d3.axisBottom().ticks(6);
         xAxis.scale(xScale);
 
         //Y axis group
-        let yAxisAP = d3.axisLeft().ticks(5);
+        let yAxisAP = d3.axisLeft().ticks(3);
         yAxisAP.scale(yScaleAP);
-        let yAxisAL = d3.axisLeft().ticks(5);
+        let yAxisAL = d3.axisLeft().ticks(3);
         yAxisAL.scale(yScaleAL);
-        let yAxisV = d3.axisLeft().ticks(5);
+        let yAxisV = d3.axisLeft().ticks(3);
         yAxisV.scale(yScaleV);
-        let yAxisBus = d3.axisLeft().ticks(5);
+        let yAxisBus = d3.axisLeft().ticks(3);
         yAxisBus.scale(yScaleBus);
 
         //Gridlines
