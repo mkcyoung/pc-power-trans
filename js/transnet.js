@@ -376,6 +376,9 @@ class TransNet {
                     d3.select(`#line-${d.StationNode.id}`).classed("active-line",false);
                     //stops animation
                     stop.call(d3.select(`#line-${d.StationNode.id}`).node(),d)
+                    //Clear path from line chart
+                    d3.selectAll(".line-path").style("visibility","hidden");
+                    d3.selectAll(".chart-text").style("visibility","hidden");
                 }
                 else{
                     // console.log("hasn't been clicked")
@@ -571,6 +574,9 @@ class TransNet {
                     d3.select(this).classed("clicked-line",false);
                     //stops animation
                     stop.call(this,d)
+                    //Clear path from line chart
+                    d3.selectAll(".line-path").style("visibility","hidden");
+                    d3.selectAll(".chart-text").style("visibility","hidden");
                 }
                 else{
                     // console.log("hasn't been clicked")
@@ -597,6 +603,7 @@ class TransNet {
         }
 
         function stop() {
+            // console.log("IN STOP",this)
             d3.select(this)
                 .interrupt();
         }
@@ -876,7 +883,15 @@ class TransNet {
             that.table.updateTable();
             
             //Remove net lines
-            d3.selectAll(".netlineclick").remove();
+            // d3.selectAll(".netlineclick").remove();
+
+            // stops animation
+            d3.selectAll(".clicked-line").interrupt()
+
+            // removes classes
+            d3.selectAll(".clicked-line")
+                .classed("clicked-line",false)
+                .classed("active-line",false);
 
             //Sets clicked to null
             that.clicked = null;
@@ -1032,6 +1047,10 @@ class TransNet {
     createLine(){
         //console.log("data in line:",this.data.nodes[0])
 
+        // I want to have all lines show up, and then have the user able to select them in 
+        // the same way they select the nodes and connections 
+        // Strategy will be to render lines in light gray first, then have them colored on highlight 
+
         let that = this;
 
         // Line chart height and width
@@ -1143,8 +1162,8 @@ class TransNet {
         
         BusStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",line_width-100)
-            .attr("y",line_height-20)
+            .attr("x",line_width-150)
+            .attr("y",line_height-10)
             .text("intervals");
 
         
@@ -1252,6 +1271,37 @@ class TransNet {
 
         BusStatSvg.append("path")
             .attr("class","line-Bus line-path");
+
+
+        // Add all relevant data 
+        //Making line function
+        // let lineAP = d3.line()
+        //     // .curve(d3.curveStep)
+        //     .defined(d => !isNaN(d.value))
+        //     .x((d,i) => this.timeScale(i))
+        //     .y(d => this.powLoadLineScale(d.value));
+
+            // .data(this.data.nodes)
+            // .enter().append("path")
+            // .attr("class","netline")
+            // .attr("id",(d,i) => `line-${d.StationNode.id}`)
+            // .attr("d",d => lineFunction(d.line))
+
+        // console.log("here",this.data.nodes.map(f=>f.chSP))
+        // APStatSvg.selectAll("path")
+        //     .data(this.data.nodes.map(f => f.chSP))
+        //     .enter().append("path")
+        //     .attr("class","line-AP")
+        //     .attr("id",(d,i) => `line-AP-${i}`)
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", '#dedede')//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 3)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineAP);
+
+
     }
 
     updateLine(){

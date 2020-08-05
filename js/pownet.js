@@ -272,6 +272,9 @@ class PowNet {
                         d3.select(`#line-${d.id}`).classed("active-line",false);
                         //stops animation
                         stop.call(d3.select(`#line-${d.id}`).node(),d)
+                        //Clear path from line chart
+                        d3.selectAll(".line-path").style("visibility","hidden");
+                        d3.selectAll(".chart-text").style("visibility","hidden");
                     }
                     else{
                         // console.log("hasn't been clicked")

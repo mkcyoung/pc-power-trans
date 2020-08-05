@@ -405,7 +405,7 @@ tbody tr:hover{
 }
 
 .axis-text{
-    font-size: 12px;
+    font-size: 20px;
     font-weight: bold;
     fill: rgba(0, 0, 0, 0.678);
 }
