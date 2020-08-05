@@ -13,6 +13,13 @@ class Table{
         this.width = 150 - this.margin.left - this.margin.right;
         this.height = 30 - this.margin.top-this.margin.bottom;
 
+        //Margins - the bostock way - line chart
+        this.lineHeight = 200;
+        this.lineWidth = 500;
+        this.marginL = {top: 20, right: 60, bottom: 60, left: 60};
+        this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
+        this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
+
         // I'm gonna make this an array of objects with keys and sorted values
         this.tableHeaders = [
             {
@@ -67,6 +74,11 @@ class Table{
     }
 
     createTable(){
+
+    // Scales for line chart
+    this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
+    this.energyLineScale = d3.scaleLinear().domain([this.min_energy,this.max_energy]).range([this.heightL+this.marginL.top,this.marginL.top]);
+    this.powerLineScale = d3.scaleLinear().domain([this.min_power,this.max_power]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
     //Scales
     this.energybarScale = d3.scaleLinear().domain([this.min_energy,this.max_energy]).range([this.margin.left,this.width-this.margin.right]);
@@ -295,6 +307,146 @@ class Table{
                     .classed("CHSP",false);
             });
         
+    }
+
+     /** Creates all bus line charts */
+     createLine(){
+        //console.log("data in line:",this.data.nodes[0])
+
+        let that = this;
+
+        // Line chart height and width
+        let line_height = this.lineHeight; //300
+        let line_width = this.lineWidth; //700
+
+        //Create line chart svg for active power
+        let energySvg = d3.select(".bus-charts").append("svg")
+            .attr("class","energySvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+
+        let powerSvg = d3.select(".bus-charts").append("svg")
+            .attr("class","powerSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+        
+
+        //Create an energy chart group
+        let energyG = energySvg.append("g");
+            // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
+
+        //Create a power chart group
+        let powerG = powerSvg.append("g");
+
+        //Create label for group
+        energyG.append("text")
+            .attr("class","chart-text")
+            .attr("x",line_width-160)
+            .attr("y",60);
+
+        //Create labels for axes
+        // energy
+        energyG.append("text")
+            .attr("class","axis-text")
+            .attr("x",70)
+            .attr("y",15)
+            .text("energy (kWh)");
+        
+        energyG.append("text")
+            .attr("class","axis-text")
+            .attr("x",570)
+            .attr("y",280)
+            .text("intervals");
+
+        // power
+        powerG.append("text")
+            .attr("class","axis-text")
+            .attr("x",70)
+            .attr("y",15)
+            .text("power(kWh)");
+        
+        powerG.append("text")
+            .attr("class","axis-text")
+            .attr("x",570)
+            .attr("y",280)
+            .text("intervals");
+
+        
+        // Scales for line chart
+        let yScaleEnergy = this.energyLineScale;
+        let yScalePower = this.powerLineScale;
+
+        let xScale = this.timeScale;
+
+
+        //Xaxis group
+        let xAxis = d3.axisBottom().ticks(6);
+        xAxis.scale(xScale);
+
+        //Y axis group
+        let yAxisEnergy = d3.axisLeft().ticks(3);
+        yAxisEnergy.scale(yScaleEnergy);
+        let yAxisPower = d3.axisLeft().ticks(3);
+        yAxisPower.scale(yScalePower);
+
+        //Gridlines
+        // gridlines in y axis function 
+        // function make_y_gridlines() {		
+        //     return d3.axisLeft(yScale)
+        //         .ticks(5)
+        // }
+
+        // // add the Y gridlines
+        // powStatSvg.append("g")			
+        //     .attr("class", "grid")
+        //     .attr("transform",`translate(${this.marginL.left},0)`)
+        //     .call(make_y_gridlines()
+        //         .tickSize(-(this.widthL))
+        //         .tickFormat("")
+        //     );
+
+        //X-axis
+        energyG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+
+        powerG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+        
+
+        //Y-axis
+        energyG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisEnergy);
+
+        powerG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisPower);
+
+        
+        //Add data to chart
+
+        //Making line function
+        // let line = d3.line()
+        //     // .curve(d3.curveStep)
+        //     .defined(d => !isNaN(d.value))
+        //     .x((d,i) => this.timeScale(i))
+        //     .y(d => this.powLoadLineScale(d.value));
+
+        //Drawing path
+        energyG.append("path")
+            .attr("class","line-AP line-path");
+
+        powerG.append("path")
+            .attr("class","line-AL line-path");
+
+
+
     }
 
     tooltipRenderB(data) {

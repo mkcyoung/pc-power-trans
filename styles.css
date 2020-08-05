@@ -14,12 +14,12 @@
             "power power power table1 "
             "info info info table1"; */
             "title title title title "
-            "slider slider slider slider"
+            "slider slider slider slider "
             "info power power table1 "
             "info power power table1 "
             "info power power table1 "
             "info power power table1 "
-            "info power power table1 ";
+            "info power power bus-info ";
     /* width: 100vw;
     height: 100vh; */
 }
@@ -48,6 +48,9 @@
     grid-area: info;
 }
 
+.bus-charts{
+    grid-area: bus-info;
+}
 
 /* Nodes and links classing */
 .nodes{
@@ -218,7 +221,7 @@
 
 #mytable2 tbody{
     display:block;
-    height:1150px;
+    height:775px;
     overflow:scroll;
 }
 table {

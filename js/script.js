@@ -266,7 +266,8 @@ Promise.all([
     // Pass data into table object
     let table = new Table(bebs,transNet,time)
     table.createTable();
-
+    table.createLine();
+    
     /** Pass data into TransNet class */
     let transNetwork = new TransNet(transNet,powNet,bebs,time,table,updateTime);
     transNetwork.createNet();
