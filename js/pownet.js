@@ -2,11 +2,13 @@
 class PowNet {
 
     // Creates a Power Network object
-    constructor(data,time,transNetwork){
+    constructor(data,time,transNetwork,bebs,table){
         //Assigning data variable
         console.log("pownet data:",data);
         this.data = data;
         this.activeTime = time;
+        this.bebs = bebs;
+        this.table = table;
 
         // Reference to transNetwork object
         this.transNet = transNetwork;
@@ -306,6 +308,14 @@ class PowNet {
                     // sees if object has already been clicked
                     if (d3.select(`#line-${d.id}`).classed("clicked-line")){
                         // console.log("been clicked")
+                        //Remove tooltip
+                        d3.select("#s_tooltip_click")
+                            .style("opacity", 0);
+
+                        //Restore table data
+                        that.table.BEB = that.bebs;
+                        that.table.updateTable();
+
                         // removes clicked class and active line class
                         d3.select(`#line-${d.id}`).classed("clicked-line",false);
                         d3.select(`#line-${d.id}`).classed("active-line",false);

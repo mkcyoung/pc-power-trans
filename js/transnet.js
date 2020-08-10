@@ -372,6 +372,14 @@ class TransNet {
                 // sees if object has already been clicked
                 if (d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
                     // console.log("been clicked")
+                    //Remove tooltip
+                    d3.select("#s_tooltip_click")
+                        .style("opacity", 0);
+
+                    //Restore table data
+                    that.table.BEB = that.bebs;
+                    that.table.updateTable();
+                    
                     // removes clicked class and active line class
                     d3.select(`#line-${d.StationNode.id}`).classed("clicked-line",false);
                     d3.select(`#line-${d.StationNode.id}`).classed("active-line",false);
@@ -571,6 +579,14 @@ class TransNet {
                 // sees if object has already been clicked
                 if (d3.select(this).classed("clicked-line")){
                     // console.log("been clicked")
+                    //Remove tooltip
+                    d3.select("#s_tooltip_click")
+                        .style("opacity", 0);
+
+                    //Restore table data
+                    that.table.BEB = that.bebs;
+                    that.table.updateTable();
+
                     // removes clicked class
                     d3.select(this).classed("clicked-line",false);
                     //stops animation
