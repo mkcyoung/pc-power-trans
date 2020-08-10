@@ -891,7 +891,8 @@ class TransNet {
             // removes classes
             d3.selectAll(".clicked-line")
                 .classed("clicked-line",false)
-                .classed("active-line",false);
+                .classed("active-line",false)
+                .classed("active-line-hover",false);
 
             //Sets clicked to null
             that.clicked = null;

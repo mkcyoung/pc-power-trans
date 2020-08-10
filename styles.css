@@ -48,8 +48,26 @@
     grid-area: info;
 }
 
+
+/* Bus chart styling */
 .bus-charts{
     grid-area: bus-info;
+}
+
+.bus-charts > svg{
+    display: inline-block;
+    position: relative;
+    
+}
+
+.energySvg{
+    top: 100px;
+}
+
+.powerSvg{
+    top: -100px;
+    left: 500px;
+
 }
 
 /* Nodes and links classing */

@@ -8,6 +8,9 @@ class Table{
         console.log("BEBdata",this.BEB)
         console.log("Station_Data",this.station)
 
+        //Clicked busses
+        this.clickedBusses = [];
+
         //Margins for table cells- the bostock way
         this.margin = {top: 10, right: 10, bottom: 10, left: 10};
         this.width = 150 - this.margin.left - this.margin.right;
@@ -198,6 +201,11 @@ class Table{
 
     updateTable(){
 
+        // checks to see if busses have been clicked
+        if(this.clickedBusses.length != 0){
+            this.updateLine();
+        }
+
         /** Updates the table with data **/
         let that = this;
 
@@ -305,6 +313,11 @@ class Table{
                     .style("opacity", 0);
                 d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]]) 
                     .classed("CHSP",false);
+            })
+            .on("click", function (d) {
+                that.clickedBusses.push(d);
+                that.updateLine();
+
             });
         
     }
@@ -440,10 +453,85 @@ class Table{
 
         //Drawing path
         energyG.append("path")
-            .attr("class","line-AP line-path");
+            .attr("class","line-Energy-faint line-path");
+
+        energyG.append("path")
+            .attr("class","line-Energy line-path");
 
         powerG.append("path")
-            .attr("class","line-AL line-path");
+            .attr("class","line-Power-faint line-path");
+
+        powerG.append("path")
+            .attr("class","line-Power line-path");
+
+
+        
+
+    }
+
+    // Updates the line chart with clicked data 
+    updateLine(){
+
+        let that = this;
+        console.log(that.clickedBusses)
+        let bus_data = that.clickedBusses.slice(-1)[0]
+
+        //Making line functions
+        let lineEnergy = d3.line()
+            // .curve(d3.curveStep)
+            .defined(d => !isNaN(d.value))
+            .x((d,i) => this.timeScale(i))
+            .y(d => this.energyLineScale(d.value));
+        
+        let linePower = d3.line()
+            // .curve(d3.curveStep)
+            .defined(d => !isNaN(d.value))
+            .x((d,i) => this.timeScale(i))
+            .y(d => this.powerLineScale(d.value));
+
+        
+
+        d3.select(".line-Energy")
+            .datum(bus_data.energy.slice(0,this.activeTime))
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#a3060c")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineEnergy);
+
+        d3.select(".line-Energy-faint")
+            .datum(bus_data.energy)
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#ccbbba")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 3)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineEnergy);
+
+        d3.select(".line-Power")
+            .datum(bus_data.power.slice(0,this.activeTime))
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#3842c7")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", linePower);
+
+        d3.select(".line-Power-faint")
+            .datum(bus_data.power)
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#bab6db")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 3)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", linePower);
+
+
 
 
 
