@@ -17,7 +17,7 @@ class Table{
         this.height = 30 - this.margin.top-this.margin.bottom;
 
         //Margins - the bostock way - line chart
-        this.lineHeight = 200;
+        this.lineHeight = 270;
         this.lineWidth = 500;
         this.marginL = {top: 20, right: 60, bottom: 60, left: 60};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
@@ -367,8 +367,8 @@ class Table{
         
         energyG.append("text")
             .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
+            .attr("x",line_width-150)
+            .attr("y",line_height-10)
             .text("intervals");
 
         // power
@@ -380,8 +380,8 @@ class Table{
         
         powerG.append("text")
             .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
+            .attr("x",line_width-150)
+            .attr("y",line_height-10)
             .text("intervals");
 
         
@@ -473,7 +473,7 @@ class Table{
     updateLine(){
 
         let that = this;
-        console.log(that.clickedBusses)
+        // console.log(that.clickedBusses)
         let bus_data = that.clickedBusses.slice(-1)[0]
 
         //Making line functions

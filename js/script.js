@@ -280,6 +280,7 @@ Promise.all([
     let powNetwork = new PowNet(powNet,time,transNetwork);
     powNetwork.createNet();
     powNetwork.updateNet();
+    powNetwork.createLine();
 
 
 });

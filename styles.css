@@ -19,7 +19,7 @@
             "info power power table1 "
             "info power power table1 "
             "info power power table1 "
-            "info power power bus-info ";
+            "info link-info link-info bus-info ";
     /* width: 100vw;
     height: 100vh; */
 }
@@ -48,6 +48,23 @@
     grid-area: info;
 }
 
+/* Link charts styling */
+.link-charts{
+    grid-area: link-info;
+}
+
+.link-charts > svg{
+    display: inline-block;
+    position: relative;
+}
+
+.currentSvg{
+    top:32px;
+}
+
+.APFSvg{
+    top:32px;
+}
 
 /* Bus chart styling */
 .bus-charts{
@@ -57,15 +74,15 @@
 .bus-charts > svg{
     display: inline-block;
     position: relative;
-    
+
 }
 
 .energySvg{
-    top: 100px;
+    top: 32px;
 }
 
 .powerSvg{
-    top: -100px;
+    top: -245px;
     left: 500px;
 
 }
@@ -239,7 +256,7 @@
 
 #mytable2 tbody{
     display:block;
-    height:775px;
+    height:760px;
     overflow:scroll;
 }
 table {

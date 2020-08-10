@@ -18,7 +18,7 @@ class TransNet {
         this.height = 900 - this.margin.top-this.margin.bottom; 
 
         //Margins - the bostock way - line chart
-        this.lineHeight = 200;
+        this.lineHeight = 270;
         this.lineWidth = 500;
         this.marginL = {top: 20, right: 60, bottom: 60, left: 60};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
@@ -1058,12 +1058,7 @@ class TransNet {
         let line_height = this.lineHeight; //300
         let line_width = this.lineWidth; //700
 
-        //Create line chart svg for active power
-        let APSvg = d3.select(".view3").append("svg")
-            .attr("class","APSvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
-
+        //Create line chart svgs for all the metrics
         let ALSvg = d3.select(".view3").append("svg")
             .attr("class","ALSvg")
             .attr("height",line_height)
@@ -1071,6 +1066,11 @@ class TransNet {
 
         let VoltSvg = d3.select(".view3").append("svg")
             .attr("class","VoltSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+
+        let APSvg = d3.select(".view3").append("svg")
+            .attr("class","APSvg")
             .attr("height",line_height)
             .attr("width",line_width);
 
