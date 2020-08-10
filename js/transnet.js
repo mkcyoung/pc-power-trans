@@ -122,6 +122,7 @@ class TransNet {
         //Color scale for station power
         this.powLoadScale = d3.scaleSequential(d3.interpolateGreens).domain([min_chsp,max_chsp]);
 
+        // console.log(min_aload,max_aload)
         // Scales for line chart
         this.powLoadLineScale = d3.scaleLinear().domain([min_chsp,max_chsp]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
@@ -894,8 +895,11 @@ class TransNet {
                 .classed("active-line",false)
                 .classed("active-line-hover",false);
 
-            //Sets clicked to null
+            //Sets clicked to null and other variables to 0
             that.clicked = null;
+            that.table.clickedBusses = [];
+            // that.powNet.clickedLinks = [];
+
 
             //Clear path from line chart
             d3.selectAll(".line-path").style("visibility","hidden");

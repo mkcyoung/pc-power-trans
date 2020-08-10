@@ -19,6 +19,7 @@ class PowNet {
 
         // array to store clicked link objects
         this.clickedLinks = [];
+        this.clickedNodes = [];
 
         //Margins - the bostock way
         this.margin = {top: 20, right: 20, bottom: 20, left: 20};
@@ -147,6 +148,11 @@ class PowNet {
         this.currentLineScale = d3.scaleLinear().domain([min_current,max_current]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.APFLineScale = d3.scaleLinear().domain([min_apf,max_apf]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
+        // scale for node line charts
+        // this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = d3.scaleLinear().domain([39.24485337,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
+
         this.currentScale = d3.scaleLinear().range([5,20]).domain([min_current,max_current]);
         this.apfscale = d3.scaleSequential(d3.interpolateBlues).domain([min_apf,max_apf]);
         //Make an ordinal color scale for stations
@@ -193,6 +199,9 @@ class PowNet {
         // checks to see if nodes or links have been clicked
         if(this.clickedLinks.length != 0){
             this.updateLine();
+        }
+        if(this.clickedNodes.length != 0){
+            this.updateLineNode();
         }
 
 
@@ -291,6 +300,9 @@ class PowNet {
             .on("click", function (d){
 
                 if(d3.select(this).classed("charge")){
+                    // remove other clicked nodes
+                    that.clickedNodes = [];
+
                     // sees if object has already been clicked
                     if (d3.select(`#line-${d.id}`).classed("clicked-line")){
                         // console.log("been clicked")
@@ -314,6 +326,12 @@ class PowNet {
                         let myNode = that.transNodes.filter(f => f.StationNode.id == d.id)[0]
                         that.transNet.Clicked(myNode)
                     }
+                }
+                // If a regular node is clicked
+                else{
+                    that.clickedNodes.push(d);
+                    that.updateLineNode();
+
                 }
 
             });
@@ -464,6 +482,18 @@ class PowNet {
             d3.select(this)
                 .interrupt();
         }
+
+
+        // This clears a selection by listening for a click
+        document.addEventListener("click", function(e) {
+            if (e.target.classList.contains("netsvg")){
+            
+            //Sets clicked to null and other variables to 0
+            that.clickedLinks = [];
+            that.clickedNodes = [];
+            }
+        
+        }, true);
         
 
         
@@ -674,6 +704,69 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("d", lineAPF);
+
+
+    }
+
+
+    updateLineNode(){
+        let that = this;
+        let node_data = that.clickedNodes.slice(-1)[0]
+
+        //Making line functions
+        let lineAL = d3.line()
+            // .curve(d3.curveStep)
+            .defined(d => !isNaN(d.value))
+            .x((d,i) => this.timeScale(i))
+            .y(d => this.aLoadLineScale(d.value));
+        
+        let lineVolt = d3.line()
+            // .curve(d3.curveStep)
+            .defined(d => !isNaN(d.value))
+            .x((d,i) => this.timeScale(i))
+            .y(d => this.voltLineScale(d.value));
+
+        
+
+        d3.select(".line-AL")
+            .datum(node_data.aLoad.slice(0,this.activeTime))
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#8426cc")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineAL);
+
+        // d3.select(".line-Current-faint")
+        //     .datum(link_data.current)
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#e8d2b6")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 3)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineCurrent);
+
+        d3.select(".line-V")
+            .datum(node_data.volt.slice(0,this.activeTime))
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#1a7301")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineVolt);
+
+        // d3.select(".line-APF-faint")
+        //     .datum(link_data.aPF)
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#adb3c9")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 3)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineAPF);
 
 
     }
