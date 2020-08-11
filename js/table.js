@@ -320,14 +320,43 @@ class Table{
                     .classed("CHSP",true);
                 
                 
-                // Checks first to see if its been clicked, then do relevant highlighting
+                // handles highlighting when bus is at a station
                 if (that.station_mapping[current_station] != undefined){
+                    // Checks first to see if its been clicked, then do relevant highlighting
                     if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
                         d3.selectAll("."+that.station_mapping[current_station])
                             .attr("fill", d => that.stationColor(current_station));
                         //highlights line
                         d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",true);
                     }
+                }
+                // handles highlihgting while on the road
+                else{
+                    // Idea is to loop through location array backwards then forwards and highlight those two stations
+                    // note: slice is start to end, end NOT included
+                    // console.log(Object.values(d.Location).slice(0,that.activeTime+1).reverse())
+                    // console.log(Object.values(d.Location).slice(that.activeTime,288))
+                    // Finding what location it came from
+                    let front = Object.values(d.Location).slice(0,that.activeTime+1).reverse();
+                    let previous_station = null;
+                    for (const item of front){
+                        if (item != current_station){
+                            previous_station = item;
+                            break;
+                        }
+                    }
+                    
+                    // Finding what location is next
+                    let back = Object.values(d.Location).slice(that.activeTime,288);
+                    let next_station = null;
+                    for (const item of back){
+                        if (item != current_station){
+                            next_station = item;
+                            break;
+                        }
+                    }
+                    console.log("previous station: ",previous_station,"next_station: ",next_station)
+
                 }
                 
             })
