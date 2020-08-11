@@ -140,8 +140,10 @@ class PowNet {
         //TODO set ranges
 
         //this.aLoadScale = d3.scaleSqrt().range([8,20]).domain([min_aload,max_aload]);
-        //The first node has an insanely high max, so for the interest of the scale I'm gonna manually set ot
+        //The first node has an insanely high max, so for the interest of the scale I'm gonna manually set it
+
         this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,300])
+        // console.log(min_aload,min_chsp,max_chsp)
         this.voltScale = d3.scaleSqrt().range([4,15]).domain([min_volt,max_volt]);
         this.powLoadScale = d3.scaleSequential(d3.interpolateGreens).domain([min_chsp,max_chsp]);
 

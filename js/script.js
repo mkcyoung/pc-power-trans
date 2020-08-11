@@ -266,7 +266,7 @@ Promise.all([
 
     let time = 50;
     // Pass data into table object
-    let table = new Table(bebs,transNet,time)
+    let table = new Table(bebs,transNet,time,null)
     table.createTable();
     table.createLine();
     
@@ -281,6 +281,9 @@ Promise.all([
     powNetwork.createNet();
     powNetwork.updateNet();
     powNetwork.createLine();
+
+    // Adding reference to table
+    table.transNet = transNetwork;
 
 
 });

@@ -1,7 +1,7 @@
 /** Class implementing the table */
 class Table{
 
-    constructor(BEBdata,station_Data,time){
+    constructor(BEBdata,station_Data,time,transNet){
         this.BEB = BEBdata;
         this.station = station_Data;
         this.activeTime = time;
@@ -10,6 +10,9 @@ class Table{
 
         //Clicked busses
         this.clickedBusses = [];
+
+        //Reference to transnet
+        this.transNet = transNet;
 
         //Margins for table cells- the bostock way
         this.margin = {top: 10, right: 10, bottom: 10, left: 10};
@@ -98,6 +101,11 @@ class Table{
     //Have to make a separate scale  with nodes as range b/c I'm a sloppy mthrfker
     this.stationColorNodes = d3.scaleOrdinal(d3.schemeTableau10).domain(pow_stations_nodes);
     //Create axes
+
+    // Scales from network used to recolor nodes of network after bus is de-highlighted
+    let min_aload = 29.43364003;
+    let min_chsp = 0;
+    let max_chsp = 500.0192227;
     
 
     //Implement sorting
@@ -298,21 +306,54 @@ class Table{
         //tooltip
         rows
             .on("mouseover", function (d) {
+                // console.log(d)
+                let current_station = d.Location[that.activeTime];
+
                 d3.select("#s_tooltip").transition()
                     .duration(200)
                     .style("opacity", 1);
                 d3.select("#s_tooltip").html(that.tooltipRenderB(d))
                     .style("left","1220px") //(d3.event.pageX+30)
                     .style("top", "235px"); 
+                // I want to highlight entire charging station
                 d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]])
                     .classed("CHSP",true);
+                
+                
+                // Checks first to see if its been clicked, then do relevant highlighting
+                if (that.station_mapping[current_station] != undefined){
+                    if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
+                        d3.selectAll("."+that.station_mapping[current_station])
+                            .attr("fill", d => that.stationColor(current_station));
+                        //highlights line
+                        d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",true);
+                    }
+                }
+                
             })
             .on("mouseout", function (d) {
+                let current_station = d.Location[that.activeTime];
+                // console.log(d)
+                // console.log(that.transNet)
+
                 d3.select("#s_tooltip").transition()
                     .duration(500)
                     .style("opacity", 0);
                 d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]]) 
                     .classed("CHSP",false);
+
+                // Dehighlight everything
+                if(that.station_mapping[current_station] != undefined){
+                    if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
+                        d3.selectAll("."+that.station_mapping[current_station])
+                        // Lesson here...this works because d refers to the data that's BOUND TO THE CIRCLE ELEMENT.. don't need the 
+                        // data in this class to access it... insane I didn't grasp that sooner...this makes things way easier moving forward.
+                            .attr("fill", d => { return (d.id != undefined) ? that.transNet.aLoadScale(d.aLoad[that.activeTime].value) : that.transNet.powLoadScale(d.chSP[that.activeTime].value)});
+
+                        //de-highlights line
+                        d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",false);
+                    }
+                }
             })
             .on("click", function (d) {
                 that.clickedBusses.push(d);
