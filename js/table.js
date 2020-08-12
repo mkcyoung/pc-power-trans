@@ -357,6 +357,76 @@ class Table{
                     }
                     console.log("previous station: ",previous_station,"next_station: ",next_station)
 
+                    // Now need to highlight going to and coming from stations....How can I make it obvious?
+                    // If previous and next station are the same
+                    if(previous_station == next_station){
+                        let station_sel = d3.select("."+that.station_mapping[previous_station]);
+                        repeat();
+
+                        station_sel.classed("previous",true);
+                        station_sel.classed("next",true);
+
+                        function repeat(){
+                            // Repeat coming from animation
+                            station_sel
+                                .attr("fill", 'red')
+                                .attr('stroke-width','5px')
+                                .transition()
+                                .duration(700)
+                                .attr("fill", 'lime')
+                                .transition()
+                                .duration(700)
+                                .attr('stroke-width','1px')
+                                .attr('fill', d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                                .on('end',repeat);
+                        }
+                    }
+                    else{
+                        // Select the two nodes
+                        console.log(that.station_mapping[previous_station])
+                        let prev_sel = d3.select("."+that.station_mapping[previous_station]);
+                        let next_sel = d3.select("."+that.station_mapping[next_station]);
+
+                        prev_sel.classed("previous",true);
+                        next_sel.classed("next",true);
+                        
+                        repeat_prev();
+                        repeat_next();
+                        // setTimeout(repeat_next,400)
+
+                        function repeat_prev(){
+                            // Repeat coming from animation
+                            prev_sel
+                                .attr("fill", 'red')
+                                .attr('stroke-width','5px')
+                                .transition()
+                                .duration(700)
+                                .attr('stroke-width','1px')
+                                .attr('fill', d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                                .transition()
+                                .duration(300)
+                                .on('end',repeat_prev);
+                            
+                        };
+
+                        function repeat_next(){
+                            // repeat going to animation
+                            next_sel
+                                .attr("fill", 'lime')
+                                .attr('stroke-width','5px')
+                                .transition()
+                                .duration(700)
+                                .attr('stroke-width','1px')
+                                .attr('fill', d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                                .transition()
+                                .duration(300)
+                                .on('end',repeat_next);
+                        }
+
+
+                    }
+
+
                 }
                 
             })
@@ -383,6 +453,45 @@ class Table{
                         d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",false);
                     }
                 }
+
+                // Handle the next and previous de-highlighting
+
+                let next = d3.select('.next');
+                let prev = d3.select('.previous');
+
+                stop(prev);
+                stop(next);
+                next.classed("next",false);
+                prev.classed("previous",false);
+                
+                // d3.select('.next')
+                //     .classed("next",false)
+                //     .interrupt()
+                //     .transition()
+                //     .duration(300)
+                //     .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                //     .attr("stroke-width","1px");
+                // d3.select('.previous')
+                //     .classed("previous",false)
+                //     .interrupt()
+                //     .transition()
+                //     .duration(300)
+                //     .attr('fill', d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                //     .attr('stroke-width','1px');
+
+                function stop(selection){
+                    selection.interrupt()
+                        .transition()
+                        .duration(300)
+                        .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                        .attr("stroke-width","1px");
+
+                }
+
+
+
+
+
             })
             .on("click", function (d) {
                 that.clickedBusses.push(d);
