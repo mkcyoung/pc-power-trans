@@ -250,7 +250,7 @@ Promise.all([
     //console.log("Trans net: ",transNet);
 
     function updateTime(time) {
-        //console.log(time)
+        console.log(time)
         transNetwork.activeTime = time;
         transNetwork.updateNet();
 
@@ -258,7 +258,9 @@ Promise.all([
         powNetwork.updateNet();
 
         table.activeTime = time;
-        table.createTable();
+        // console.log(table.BEB);
+        // table.createTable();
+        table.updateTable();
 
 
     }

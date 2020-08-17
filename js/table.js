@@ -211,6 +211,8 @@ class Table{
 
         // checks to see if busses have been clicked
         if(this.clickedBusses.length != 0){
+            // UPDATING LINE CHART
+            console.log("UPDATING LINE CHART")
             this.updateLine();
         }
 
@@ -355,7 +357,7 @@ class Table{
                             break;
                         }
                     }
-                    console.log("previous station: ",previous_station,"next_station: ",next_station)
+                    // console.log("previous station: ",previous_station,"next_station: ",next_station)
 
                     // Now need to highlight going to and coming from stations....How can I make it obvious?
                     // If previous and next station are the same
@@ -404,7 +406,7 @@ class Table{
                                 .attr('stroke-width','1px')
                                 .attr('fill', d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
                                 .transition()
-                                .duration(300)
+                                .duration(600)
                                 .on('end',repeat_prev);
                             
                         };
@@ -415,9 +417,10 @@ class Table{
                                 .attr("fill", 'lime')
                                 .attr('stroke-width','5px')
                                 .transition()
-                                .duration(700)
+                                .duration(800)
                                 .attr('stroke-width','1px')
                                 .attr('fill', d => that.transNet.powLoadScale(d.chSP[that.activeTime].value))
+                                .delay(200)
                                 .transition()
                                 .duration(300)
                                 .on('end',repeat_next);
@@ -494,8 +497,60 @@ class Table{
 
             })
             .on("click", function (d) {
-                that.clickedBusses.push(d);
-                that.updateLine();
+                let transNodes = that.transNet.data.nodes;
+
+                // First check to see if bus has already been clicked
+                if (that.clickedBusses.includes(d)){
+                    //clear stuff
+
+
+                }
+                // If it hasn't been clicked 
+                else{
+                    // Push clicked buss to clicked busses list, this gets reset when stuff is cleared
+                    that.clickedBusses.push(d);
+
+                    //Update line chart with bus data...need to eventually allow this to throw multiple lines on
+                    that.updateLine();
+
+                    // If the bus is at a charging station, push all of the relevant charging station data to the charts
+                    // console.log(that.transNet)
+                    // console.log(that.station_mapping[d.Location[that.activeTime]])
+
+                    let station_id = that.station_mapping[d.Location[that.activeTime]]
+                    // console.log("hasn't been clicked")
+                    // Checks to make sure it's a bus at a station
+                    if (station_id != undefined){
+                        // Adds clicked class and active line class
+                        d3.select(`#line-${station_id}`).classed("clicked-line",true);
+                        d3.select(`#line-${station_id}`).classed("active-line",true);
+                        //starts animation indefinitely
+                        animate.call(d3.select(`#line-${station_id}`).node(),d)
+                        // Looping through data to select correct one
+                        let myNode = transNodes.filter(f => f.StationNode.id == station_id)[0]
+                        that.transNet.Clicked(myNode,true)
+                    }
+            
+
+                }
+
+                function animate() {
+                    d3.select(this)
+                        .transition()
+                        .duration(500)
+                        .ease(d3.easeLinear)
+                        .styleTween("stroke-dashoffset", function() {
+                            return d3.interpolate(0, 14);
+                            })
+                        .on("end", animate);
+                }
+        
+                function stop() {
+                    d3.select(this)
+                        .interrupt();
+                }
+                
+
 
             });
         
@@ -630,18 +685,23 @@ class Table{
         //     .x((d,i) => this.timeScale(i))
         //     .y(d => this.powLoadLineScale(d.value));
 
-        //Drawing path
-        energyG.append("path")
-            .attr("class","line-Energy-faint line-path");
+        //Create data bindings here
 
-        energyG.append("path")
-            .attr("class","line-Energy line-path");
+        //Creating paths
+        // energyG.append("path")
+        //     .attr("class","line-Energy-faint line-path");
 
-        powerG.append("path")
-            .attr("class","line-Power-faint line-path");
+        // energyG.append("path")
+        //     .attr("class","line-Energy line-path");
 
-        powerG.append("path")
-            .attr("class","line-Power line-path");
+        // energyG.append("path")
+        //     .attr("class","line-Energy line-path");
+
+        // powerG.append("path")
+        //     .attr("class","line-Power-faint line-path");
+
+        // powerG.append("path")
+        //     .attr("class","line-Power line-path");
 
 
         
@@ -652,8 +712,11 @@ class Table{
     updateLine(){
 
         let that = this;
-        // console.log(that.clickedBusses)
-        let bus_data = that.clickedBusses.slice(-1)[0]
+        // console.log(that.clickedBusses.slice(-1))
+        // let bus_data = that.clickedBusses.slice(-1)[0]
+        let bus_data = that.clickedBusses;
+        // console.log(bus_data)
+        // console.log('here',bus_data.map(f => f.energy))
 
         //Making line functions
         let lineEnergy = d3.line()
@@ -669,46 +732,71 @@ class Table{
             .y(d => this.powerLineScale(d.value));
 
         
+        console.log('CLICKED BUS DATA:',bus_data)
+        // console.log( d3.select('.energySvg').selectAll(".line-Energy"))
 
-        d3.select(".line-Energy")
-            .datum(bus_data.energy.slice(0,this.activeTime))
+        
+        // I think this is just creating new lines
+        let lines = d3.select('.energySvg').selectAll("path")
+            .data(bus_data)
+            // .data(bus_data.map(f => f.energy.slice(0,this.activeTime)))
+        // console.log("lines selection with data",lines)
+        // console.log("line energy selection:",d3.selectAll('path'))
+        //remove 
+        // console.log(lines.exit)
+        // lines.exit().remove();
+
+        //enter / update / exit using join
+        lines
+            .join("path")
             .style("visibility","visible")
             .attr("fill", "none")
             .attr("stroke", "#a3060c")//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineEnergy);
+            .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)));
 
-        d3.select(".line-Energy-faint")
-            .datum(bus_data.energy)
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", "#ccbbba")//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 3)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", lineEnergy);
+        // d3.select(".line-Energy")
+        //     .datum(bus_data.energy)
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#a3060c")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 4)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineEnergy);
 
-        d3.select(".line-Power")
-            .datum(bus_data.power.slice(0,this.activeTime))
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", "#3842c7")//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 4)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", linePower);
 
-        d3.select(".line-Power-faint")
-            .datum(bus_data.power)
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", "#bab6db")//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 3)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", linePower);
+        // d3.select(".line-Energy-faint")
+        //     .datum(bus_data.energy)
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#ccbbba")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 3)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineEnergy);
+
+        // d3.select(".line-Power")
+        //     .datum(bus_data.power.slice(0,this.activeTime))
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#3842c7")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 4)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", linePower);
+
+        // d3.select(".line-Power-faint")
+        //     .datum(bus_data.power)
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#bab6db")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 3)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", linePower);
 
 
 

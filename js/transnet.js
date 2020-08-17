@@ -310,8 +310,11 @@ class TransNet {
         
         //Updates table with clicked seletion
         if(that.clicked != null){
-            this.Clicked(that.clicked);
+
+            // TODO - need to figure out how to not update table here when I originally click on a bus 
+            this.Clicked(that.clicked,false);
             this.updateLine();
+
         }
 
         // Now let's create the lines
@@ -397,7 +400,7 @@ class TransNet {
                     //starts animation indefinitely
                     animate.call(d3.select(`#line-${d.StationNode.id}`).node(),d)
 
-                    that.Clicked(d)
+                    that.Clicked(d,false)
                 }
             });
         
@@ -601,7 +604,7 @@ class TransNet {
                     d3.select(this).classed("clicked-line",true);
                     //starts animation indefinitely
                     animate.call(this,d)
-                    that.Clicked(d);
+                    that.Clicked(d,false);
                 }
                 
 
@@ -929,7 +932,7 @@ class TransNet {
     }
 
     //Clicked function
-    Clicked(d) {
+    Clicked(d,from_table) {
         //console.log("in clicked")
         //setting this so the tooltip updates on slider bar later - as well as table
         this.clicked = d;
@@ -938,16 +941,20 @@ class TransNet {
         //Call update line
         this.updateLine();
 
-
         //console.log("this.clicked",that.clicked)
         //console.log(d.BusData[that.activeTime].busses)
-        let busses = d.BusData[this.activeTime].busses;
-        busses = busses.map((c) => parseInt(c))
-        //console.log(busses)
-        let newData = this.bebs.filter((f,i) => busses.includes(f.BusID));
-        //console.log(newData)
-        this.table.BEB = newData;
-        this.table.updateTable();
+
+        // Checks to see if we got here from the table, if not, we update the table with station busses
+        if (from_table==false){
+            let busses = d.BusData[this.activeTime].busses;
+            busses = busses.map((c) => parseInt(c))
+            //console.log(busses)
+            let newData = this.bebs.filter((f,i) => busses.includes(f.BusID));
+            //console.log(newData)
+            this.table.BEB = newData;
+            this.table.updateTable();
+        }
+        
 
         //Want to keep lines connecting other nodes and tooltip (copied from above - should make this a function)
         d3.select("#s_tooltip_click").transition()

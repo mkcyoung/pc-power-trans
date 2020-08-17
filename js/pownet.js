@@ -336,7 +336,7 @@ class PowNet {
                         animate.call(d3.select(`#line-${d.id}`).node(),d)
                         // Looping through data to select correct one
                         let myNode = that.transNodes.filter(f => f.StationNode.id == d.id)[0]
-                        that.transNet.Clicked(myNode)
+                        that.transNet.Clicked(myNode,false)
                     }
                 }
                 // If a regular node is clicked
