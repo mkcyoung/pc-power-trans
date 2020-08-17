@@ -385,7 +385,7 @@ class Table{
                     }
                     else{
                         // Select the two nodes
-                        console.log(that.station_mapping[previous_station])
+                        // console.log(that.station_mapping[previous_station])
                         let prev_sel = d3.select("."+that.station_mapping[previous_station]);
                         let next_sel = d3.select("."+that.station_mapping[next_station]);
 
@@ -605,6 +605,16 @@ class Table{
             .attr("y",line_height-10)
             .text("intervals");
 
+        energyG.append('text')
+            .attr("class","energy-info-text")
+            .attr("font-weight","bold")
+            .attr("font-size","20px")
+            .attr("fill",'rgba(0, 0, 0, 0.378)')
+            .attr("x",70)
+            .attr("y",203);
+            // .attr("x",250) //Top left
+            // .attr("y",16);
+
         // power
         powerG.append("text")
             .attr("class","axis-text")
@@ -617,6 +627,13 @@ class Table{
             .attr("x",line_width-150)
             .attr("y",line_height-10)
             .text("intervals");
+
+        powerG.append('text')
+            .attr("class","power-info-text")
+            .attr("font-weight","lighter")
+            .attr("font-size","20px")
+            .attr("x",300)
+            .attr("y",18);
 
         
         // Scales for line chart
@@ -704,7 +721,31 @@ class Table{
         //     .attr("class","line-Power line-path");
 
 
+        // Make a group for line paths
+        d3.select('.energySvg').append('g').attr("class","faintEnergyLines")
+        d3.select('.energySvg').append('g').attr("class","energyLines")
         
+        // making dot for highlighting line
+        let dot = d3.select('.energyLines').append("g")
+            .attr("class","dot")
+            .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 15)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "middle")
+            .attr("y", -8);
+        // d3.select("#s_tooltip").html(that.tooltipRenderB(d))
+        //             .style("left","1220px") //(d3.event.pageX+30)
+        //             .style("top", "235px"); 
+
+        // Make tooltip for bus charts
 
     }
 
@@ -737,7 +778,9 @@ class Table{
 
         
         // I think this is just creating new lines
-        let lines = d3.select('.energySvg').selectAll("path")
+        let energyLines = d3.select('.energyLines').selectAll("path")
+            .data(bus_data)
+        let faintEnergyLines = d3.select('.faintEnergyLines').selectAll("path")
             .data(bus_data)
             // .data(bus_data.map(f => f.energy.slice(0,this.activeTime)))
         // console.log("lines selection with data",lines)
@@ -746,8 +789,18 @@ class Table{
         // console.log(lines.exit)
         // lines.exit().remove();
 
+        faintEnergyLines
+            .join("path")
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", "#ccbbba")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", d => lineEnergy(d.energy));
+
         //enter / update / exit using join
-        lines
+        energyLines
             .join("path")
             .style("visibility","visible")
             .attr("fill", "none")
@@ -756,6 +809,11 @@ class Table{
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)));
+
+        // this code initiates the hover functionality
+        d3.select('.energySvg').call(this.hover,energyLines,this.energyLineScale,this,bus_data,"energy")
+
+        
 
         // d3.select(".line-Energy")
         //     .datum(bus_data.energy)
@@ -804,6 +862,60 @@ class Table{
 
     }
 
+    hover(svg,path,yScale,scope,data,source){
+        let time = Array.from(Array(288).keys())
+        console.log("in hover",path)
+        let that = scope;
+
+        svg.on("mousemove",moved)
+        svg.on("mouseenter",entered)
+        svg.on("mouseleave",left);
+
+        let dot = d3.select(".dot");
+
+        function moved() {
+            console.log("MOVED")
+            d3.event.preventDefault();
+            const mouse = d3.mouse(this);
+            // Scale for x axis
+            const xm = that.timeScale.invert(mouse[0]);
+            // console.log(xm)
+            // const xm = x.invert(mouse[0]);
+            // Scale for y axis
+            const ym = yScale.invert(mouse[1]);
+            // console.log(ym)
+            // const ym = y.invert(mouse[1]);
+            const i1 = d3.bisectLeft(time, xm, 1);
+            const i0 = i1 - 1;
+            // console.log(i1,i0)
+            const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
+            // console.log(i)
+            console.log("x",xm,"y",ym,"time",i)
+            const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
+            // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
+            console.log("S",s)
+            // raise brings current to the top
+            path.attr("stroke", d => d === s ? "red" : "gray").filter(d => d === s).raise();
+            dot.attr("transform", `translate(${that.timeScale(time[i])},${yScale(s[source][i].value)})`);
+            // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
+            dot.select("text").text(i);
+            d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh")
+        }
+        
+        function entered() {
+            console.log("ENTERED")
+            path.style("mix-blend-mode", null).attr("stroke", "red");
+            dot.attr("display", null);
+        }
+        
+        function left() {
+            console.log("LEFT")
+            path.style("mix-blend-mode", "multiply").attr("stroke", "gray");
+            dot.attr("display", "none");
+        }
+
+    }
+
     tooltipRenderB(data) {
         let that = this;
         let text = null;
@@ -814,6 +926,15 @@ class Table{
         text = text + "<p> Energy : "+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh</p>";
         text = text + "<p> Power : "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh</p>";
         text = text + "<p> Speed : "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph</p>";
+        return text;
+    }
+
+    tooltipRenderBusCharts(data) {
+        let that = this;
+        let text = null;
+        text = "<h3>" + data.id + " ("+ data.BusID +")</h3>";
+        //Adds in relevant data
+        text = text + "<p> Location: "+ data.Location[that.activeTime] + "</p>";
         return text;
     }
 

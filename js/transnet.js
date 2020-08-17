@@ -312,7 +312,7 @@ class TransNet {
         if(that.clicked != null){
 
             // TODO - need to figure out how to not update table here when I originally click on a bus 
-            this.Clicked(that.clicked,false);
+            // this.Clicked(that.clicked,false);
             this.updateLine();
 
         }
@@ -949,7 +949,17 @@ class TransNet {
             let busses = d.BusData[this.activeTime].busses;
             busses = busses.map((c) => parseInt(c))
             //console.log(busses)
-            let newData = this.bebs.filter((f,i) => busses.includes(f.BusID));
+            let stationBusses = this.bebs.filter((f,i) => busses.includes(f.BusID));
+            let allOtherBusses = this.bebs.filter((f,i) => !busses.includes(f.BusID));
+            // console.log('IN CLICKED',stationBusses.concat(allOtherBusses))
+            let newData = stationBusses.concat(allOtherBusses)
+
+            // So here, instead of just having busses at a station populate table, will just resort the table,
+            // so that the station busses are all located at the top of the table 
+
+            // not sure best way, maybe loop through and move rows that at station to the top of the table one by one
+            // console.log("in clicked",newData)
+
             //console.log(newData)
             this.table.BEB = newData;
             this.table.updateTable();
