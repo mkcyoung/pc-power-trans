@@ -116,6 +116,9 @@ class Table{
 
     headers
         .on("click", (d, i) => {
+            // d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","rgba(23, 162, 184, 0.15)")
+            // d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color","null")
+            // d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","red")
 
             //BEB
             if (i == 0) {
@@ -210,13 +213,6 @@ class Table{
 
     updateTable(){
 
-        // checks to see if busses have been clicked
-        if(this.clickedBusses.length != 0){
-            // UPDATING LINE CHART
-            console.log("UPDATING LINE CHART")
-            this.updateLine();
-        }
-
         /** Updates the table with data **/
         let that = this;
 
@@ -305,6 +301,7 @@ class Table{
                 }
                 
             });
+
     
         //tooltip
         rows
@@ -502,15 +499,55 @@ class Table{
 
                 // First check to see if bus has already been clicked
                 if (that.clickedBusses.includes(d)){
-                    //clear stuff
+                    //clear background
+                    d3.select(this).style("background-color",null)
+                    // remove buss from clicked busses
+                    that.clickedBusses = that.clickedBusses.filter( f => f != d);
+                    // remove line from linechart
+                    that.updateLine();
 
+                    //remove station data
+                    // removes any other selected bus stations
+                    //Remove tooltip
+                    d3.select("#s_tooltip_click")
+                        .style("opacity", 0);
+                    
+                    //Remove net lines
+                    // d3.selectAll(".netlineclick").remove();
 
-                }
+                    // stops animation
+                    d3.selectAll(".clicked-line").interrupt()
+
+                    // removes classes
+                    d3.selectAll(".clicked-line")
+                        .classed("clicked-line",false)
+                        .classed("active-line",false)
+                        .classed("active-line-hover",false);
+
+                    that.transNet.clicked = null;
+
+                    //Clear path from line chart
+                    d3.selectAll(".line-path").style("visibility","hidden");
+                    d3.selectAll(".chart-text").style("visibility","hidden");
+
+                }   
                 // If it hasn't been clicked 
                 else{
                     // Push clicked buss to clicked busses list, this gets reset when stuff is cleared
                     that.clickedBusses.push(d);
 
+                    // console.log(that.clickedBusses.map(m => m.id))
+                    // let clickedBussesIDs = that.clickedBusses.map(m => m.id)
+                    // Highlight the selected bus row - this works but if you change the time it doesn't
+                    // stick with the right bus.... how to fix this...
+                    // d3.select(this).style("background-color","rgba(23, 162, 184, 0.15)")
+                    // console.log(d3.selectAll('tr').nodes().filter( f => console.log(f.__data__)))
+                    // console.log(d)
+                    // console.log('HERE',d3.selectAll('.busID').filter( f => f.id == d.id))
+                    // let clickedBussesIDs = that.clickedBusses.map(m => m.id)
+                    // d3.selectAll('.busID').filter( f => clickedBussesIDs.includes(f.id)).style("background-color","rgba(23, 162, 184, 0.15)")
+                    d3.selectAll('tr').filter( f => that.clickedBusses.includes(f)).style("background-color","rgba(23, 162, 184, 0.15)")
+                    // d3.selectAll('tr').filter( f => !(that.clickedBusses.includes(f))).style("background-color","null")
                     //Update line chart with bus data...need to eventually allow this to throw multiple lines on
                     that.updateLine();
 
@@ -520,8 +557,34 @@ class Table{
 
                     let station_id = that.station_mapping[d.Location[that.activeTime]]
                     // console.log("hasn't been clicked")
+
+
+                    // removes any other selected bus stations
+                    //Remove tooltip
+                    d3.select("#s_tooltip_click")
+                        .style("opacity", 0);
+                    
+                    //Remove net lines
+                    // d3.selectAll(".netlineclick").remove();
+
+                    // stops animation
+                    d3.selectAll(".clicked-line").interrupt()
+
+                    // removes classes
+                    d3.selectAll(".clicked-line")
+                        .classed("clicked-line",false)
+                        .classed("active-line",false)
+                        .classed("active-line-hover",false);
+
+                    that.transNet.clicked = null;
+
+                    //Clear path from line chart
+                    d3.selectAll(".line-path").style("visibility","hidden");
+                    d3.selectAll(".chart-text").style("visibility","hidden");
+
                     // Checks to make sure it's a bus at a station
                     if (station_id != undefined){
+                        
                         // Adds clicked class and active line class
                         d3.select(`#line-${station_id}`).classed("clicked-line",true);
                         d3.select(`#line-${station_id}`).classed("active-line",true);
@@ -554,6 +617,23 @@ class Table{
 
 
             });
+
+
+        // checks to see if busses have been clicked and decides if it needs to update charts accordingly
+        if(this.clickedBusses.length != 0){
+            // UPDATING LINE CHART
+            console.log("UPDATING LINE CHART")
+            this.updateLine();
+            // Keeps correct and selected rows highlighted
+            console.log( d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)))
+            console.log(d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))))
+            d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","rgba(23, 162, 184, 0.15)")
+            d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color",null)
+            // d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color","null")
+        }
+        else{
+            d3.selectAll('tr').style("background-color","null")
+        }
         
     }
 
@@ -725,10 +805,13 @@ class Table{
         // Make a group for line paths
         d3.select('.energySvg').append('g').attr("class","faintEnergyLines")
         d3.select('.energySvg').append('g').attr("class","energyLines")
+
+        d3.select('.powerSvg').append('g').attr("class","faintPowerLines")
+        d3.select('.powerSvg').append('g').attr("class","powerLines")
         
         // making dot for highlighting line
         let dot = d3.select('.energyLines').append("g")
-            .attr("class","dot")
+            .attr("class","energy-dot")
             .attr("display","none");
 
         dot.append("circle")
@@ -737,11 +820,28 @@ class Table{
         dot.append("text")
             // .attr("font-family", "sans-serif")
             .attr("font-family", "Avenir Next")
-            .attr("font-size", 15)
+            .attr("font-size", 18)
             .attr("font-weight","bold")
             .attr("fill", "#484b5a")
-            .attr("text-anchor", "middle")
-            .attr("y", -8);
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+
+        let dotP = d3.select('.powerLines').append("g")
+            .attr("class","power-dot")
+            .attr("display","none");
+
+        dotP.append("circle")
+            .attr("r",2.5);
+
+        dotP.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+        
         // d3.select("#s_tooltip").html(that.tooltipRenderB(d))
         //             .style("left","1220px") //(d3.event.pageX+30)
         //             .style("top", "235px"); 
@@ -777,44 +877,129 @@ class Table{
         console.log('CLICKED BUS DATA:',bus_data)
         // console.log( d3.select('.energySvg').selectAll(".line-Energy"))
 
+        let energyColor = d3.color('#ad2800')
+        let powerColor = d3.color('#1640b3')
+
         
         // I think this is just creating new lines
         let energyLines = d3.select('.energyLines').selectAll("path")
             .data(bus_data)
         let faintEnergyLines = d3.select('.faintEnergyLines').selectAll("path")
             .data(bus_data)
-            // .data(bus_data.map(f => f.energy.slice(0,this.activeTime)))
-        // console.log("lines selection with data",lines)
-        // console.log("line energy selection:",d3.selectAll('path'))
-        //remove 
-        // console.log(lines.exit)
-        // lines.exit().remove();
 
-        faintEnergyLines
-            .join("path")
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", 'rgba(0, 0, 0, 0.1)')//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 4)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", d => lineEnergy(d.energy));
+        let powerLines = d3.select('.powerLines').selectAll("path")
+            .data(bus_data)
+        let faintPowerLines = d3.select('.faintPowerLines').selectAll("path")
+            .data(bus_data)
 
-        //enter / update / exit using join
+        //enter / update / exit the traditional way
+
+        // Remove stuff from exit array
+        energyLines.exit().remove();
+        faintEnergyLines.exit().remove();
+
+        powerLines.exit().remove();
+        faintPowerLines.exit().remove();
+
+
+        // ENERGY
+        energyLines = energyLines.enter().append('path')
+            .merge(energyLines);
         energyLines
-            .join("path")
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", "#a3060c")//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 4)
+            .attr("stroke", energyColor)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 2)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)));
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)))
+        
+        faintEnergyLines = faintEnergyLines.enter().append('path')
+            .merge(faintEnergyLines);
+        faintEnergyLines
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", energyColor.copy({opacity: 0.3}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
+            .attr("stroke-width", 2)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineEnergy(d.energy))
 
-        // this code initiates the hover functionality
-        d3.select('.energySvg').call(this.hover,energyLines,this.energyLineScale,this,bus_data,"energy")
+
+        //POWER
+        powerLines = powerLines.enter().append('path')
+            .merge(powerLines);
+        powerLines
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", powerColor)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 2)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => linePower(d.power.slice(0,this.activeTime)))
+        
+        faintPowerLines = faintPowerLines.enter().append('path')
+            .merge(faintPowerLines);
+        faintPowerLines
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", powerColor.copy({opacity: 0.3}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
+            .attr("stroke-width", 2)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => linePower(d.power))
+        
+
+        // this code initiates the hover functionality, use only if have 1 or more line
+        if (that.clickedBusses.length > 0){
+            d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor)
+            d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor)
+        }
+        else{
+            d3.select('.energySvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+            d3.select('.energy-info-text').html('');
+
+            d3.select('.powerSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+            d3.select('.power-info-text').html('');
+        }
 
         
+        //using join
+        // energyLines
+        //     .join("path")
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "rgb(163, 6, 12)")//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 4)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .style("mix-blend-mode", "multiply")
+        //     .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)));
+
+        // faintEnergyLines
+        //     .join("path")
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", 'rgba(163, 6, 12,0.1)')//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 4)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .style("mix-blend-mode", "multiply")
+        //     .attr("d", d => lineEnergy(d.energy));
+
+
 
         // d3.select(".line-Energy")
         //     .datum(bus_data.energy)
@@ -863,20 +1048,23 @@ class Table{
 
     }
 
-    hover(svg,path,yScale,scope,data,source){
+    hover(svg,path,yScale,scope,data,source,color){
         let time = Array.from(Array(288).keys())
         console.log("in hover",path)
         let that = scope;
 
         svg.on("mousemove",moved)
         svg.on("mouseenter",entered)
-        svg.on("mouseleave",left);
-        svg.on("click",clicked);
+        svg.on("mouseleave",left)
+        svg.on("click",clicked)
+        // svg.on("doublecick",dblclicked)
 
-        let dot = d3.select(".dot");
+        let dot = d3.select(`.${source}-dot`);
+
+        // console.log("PATH",path)
 
         function moved() {
-            console.log("MOVED")
+            // console.log("MOVED")
             d3.event.preventDefault();
             const mouse = d3.mouse(this);
             // Scale for x axis
@@ -892,33 +1080,46 @@ class Table{
             // console.log(i1,i0)
             const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
             // console.log(i)
-            console.log("x",xm,"y",ym,"time",i)
+            // console.log("x",xm,"y",ym,"time",i)
             const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
             // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
-            console.log("S",s)
+            // console.log("S",s)
             // raise brings current to the top
-            path.attr("stroke", d => d === s ? "red" : "gray").filter(d => d === s).raise();
+            // path.attr("stroke",d => console.log("D",d))
+            // path.attr("stroke", d => d === s ? "rgb(163, 6, 12,0.5)" : "rgb(163, 6, 12,0.1)").filter(d => d === s).raise();
+            path.attr("stroke", d => d === s ? color.copy({opacity:0.7}) : color.copy({opacity:0.1})).filter(d => d === s).raise();
+            path.attr("stroke-width", d => d === s ? 4 : 2).filter(d => d === s).raise();
+
+            dot.raise();
+            // path.filter(d => d === s).raise();
             dot.attr("transform", `translate(${that.timeScale(time[i])},${yScale(s[source][i].value)})`);
             // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
             dot.select("text").text(i);
-            console.log(s)
             d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
         }
         
         function entered() {
-            console.log("ENTERED")
-            path.style("mix-blend-mode", null).attr("stroke", "red");
+            // console.log("ENTERED")
+            path.style("mix-blend-mode", null).attr("stroke", "#ddd");
             dot.attr("display", null);
+
+            
+
         }
         
         function left() {
-            console.log("LEFT")
-            path.style("mix-blend-mode", "multiply").attr("stroke", "gray");
+            // console.log("LEFT")
+            // Need to rehighlight the latest clicked and populate with current time
+            d3.select('.energy-info-text').html('');
+
+
+
+            path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
             dot.attr("display", "none");
         }
 
         function clicked() {
-            console.log("CLICKED")
+            // console.log("CLICKED")
             d3.event.preventDefault();
             const mouse = d3.mouse(this);
             // Scale for x axis
@@ -939,11 +1140,73 @@ class Table{
             // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
             console.log("S",s)
 
+            // Updates current time by clicking on chart
             that.updateTime(i);
             d3.select(".slider-wrap").remove();
             that.transNet.drawTimeBar();
 
+            // Clear everything
+            //Remove tooltip
+            d3.select("#s_tooltip_click")
+                .style("opacity", 0);
+            
+            //Remove net lines
+            // d3.selectAll(".netlineclick").remove();
+
+            // stops animation
+            d3.selectAll(".clicked-line").interrupt()
+
+            // removes classes
+            d3.selectAll(".clicked-line")
+                .classed("clicked-line",false)
+                .classed("active-line",false)
+                .classed("active-line-hover",false);
+
+            that.transNet.clicked = null;
+
+            //Clear path from line chart
+            d3.selectAll(".line-path").style("visibility","hidden");
+            d3.selectAll(".chart-text").style("visibility","hidden");
+
+            // Clears all station selections and selects station the bus is currently at
+            let station_id = that.station_mapping[s.Location[i]]
+            let transNodes = that.transNet.data.nodes;
+            if (station_id != undefined){
+                // Adds clicked class and active line class
+                d3.select(`#line-${station_id}`).classed("clicked-line",true);
+                d3.select(`#line-${station_id}`).classed("active-line",true);
+                //starts animation indefinitely
+                animate.call(d3.select(`#line-${station_id}`).node())
+                // Looping through data to select correct one
+                let myNode = transNodes.filter(f => f.StationNode.id == station_id)[0]
+                that.transNet.Clicked(myNode,false)
+            }
+
+            function animate() {
+                d3.select(this)
+                    .transition()
+                    .duration(500)
+                    .ease(d3.easeLinear)
+                    .styleTween("stroke-dashoffset", function() {
+                        return d3.interpolate(0, 14);
+                        })
+                    .on("end", animate);
+            }
+
+            function stop() {
+                d3.select(this)
+                    .interrupt();
+            }
+
         }
+
+        // function dblclicked(){
+
+        //     console.log("DOUBLE CLICKED")
+        //     d3.event.preventDefault();
+
+
+        // }
 
     }
 
@@ -957,15 +1220,6 @@ class Table{
         text = text + "<p> Energy : "+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh</p>";
         text = text + "<p> Power : "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh</p>";
         text = text + "<p> Speed : "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph</p>";
-        return text;
-    }
-
-    tooltipRenderBusCharts(data) {
-        let that = this;
-        let text = null;
-        text = "<h3>" + data.id + " ("+ data.BusID +")</h3>";
-        //Adds in relevant data
-        text = text + "<p> Location: "+ data.Location[that.activeTime] + "</p>";
         return text;
     }
 

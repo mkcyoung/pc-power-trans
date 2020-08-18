@@ -916,7 +916,7 @@ class TransNet {
 
             //Sets clicked to null and other variables to 0
             that.clicked = null;
-            that.table.clickedBusses = [];
+            // that.table.clickedBusses = [];
             // that.powNet.clickedLinks = [];
 
 
