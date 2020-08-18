@@ -268,7 +268,7 @@ Promise.all([
 
     let time = 50;
     // Pass data into table object
-    let table = new Table(bebs,transNet,time,null)
+    let table = new Table(bebs,transNet,time,null,updateTime)
     table.createTable();
     table.createLine();
     

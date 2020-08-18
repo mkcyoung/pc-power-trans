@@ -1,12 +1,13 @@
 /** Class implementing the table */
 class Table{
 
-    constructor(BEBdata,station_Data,time,transNet){
+    constructor(BEBdata,station_Data,time,transNet,updateTime){
         this.BEB = BEBdata;
         this.station = station_Data;
         this.activeTime = time;
         console.log("BEBdata",this.BEB)
         console.log("Station_Data",this.station)
+        this.updateTime = updateTime;
 
         //Clicked busses
         this.clickedBusses = [];
@@ -793,7 +794,7 @@ class Table{
             .join("path")
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", "#ccbbba")//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", 'rgba(0, 0, 0, 0.1)')//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
@@ -870,6 +871,7 @@ class Table{
         svg.on("mousemove",moved)
         svg.on("mouseenter",entered)
         svg.on("mouseleave",left);
+        svg.on("click",clicked);
 
         let dot = d3.select(".dot");
 
@@ -899,7 +901,8 @@ class Table{
             dot.attr("transform", `translate(${that.timeScale(time[i])},${yScale(s[source][i].value)})`);
             // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
             dot.select("text").text(i);
-            d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh")
+            console.log(s)
+            d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
         }
         
         function entered() {
@@ -912,6 +915,34 @@ class Table{
             console.log("LEFT")
             path.style("mix-blend-mode", "multiply").attr("stroke", "gray");
             dot.attr("display", "none");
+        }
+
+        function clicked() {
+            console.log("CLICKED")
+            d3.event.preventDefault();
+            const mouse = d3.mouse(this);
+            // Scale for x axis
+            const xm = that.timeScale.invert(mouse[0]);
+            // console.log(xm)
+            // const xm = x.invert(mouse[0]);
+            // Scale for y axis
+            const ym = yScale.invert(mouse[1]);
+            // console.log(ym)
+            // const ym = y.invert(mouse[1]);
+            const i1 = d3.bisectLeft(time, xm, 1);
+            const i0 = i1 - 1;
+            // console.log(i1,i0)
+            const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
+            // console.log(i)
+            console.log("x",xm,"y",ym,"time",i)
+            const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
+            // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
+            console.log("S",s)
+
+            that.updateTime(i);
+            d3.select(".slider-wrap").remove();
+            that.transNet.drawTimeBar();
+
         }
 
     }
