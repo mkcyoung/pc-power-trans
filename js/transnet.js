@@ -157,7 +157,6 @@ class TransNet {
         let net_Group = powSVG.append('g')
             .attr("class","net-group")
 
-        
 
          //Add text above nets
         // d3.select(".viewsHead").append("div")
@@ -290,8 +289,6 @@ class TransNet {
         this.linkLayer = netGroup.append("g")
             .attr("class", "links");
 
-       
-        
         //Create labels
         this.labelLayer = netGroup.append("g")
         .attr("class","labelsT");
@@ -488,7 +485,7 @@ class TransNet {
                 
             })
             .attr("cy", function (d,i) {
-                let Y_Start = that.height*(0.05);
+                let Y_Start = that.margin.top+22;
                 switch(parseInt(d.StationID)){
                     case 1:
                         d.y = Y_Start;
