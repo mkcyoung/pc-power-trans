@@ -275,17 +275,50 @@ Promise.all([
     /** Pass data into TransNet class */
     let transNetwork = new TransNet(transNet,powNet,bebs,time,table,updateTime);
     transNetwork.createNet();
+    transNetwork.createSlider();
     transNetwork.updateNet();
     transNetwork.createLine();
     
     /** Pass data into PowNet class */
     let powNetwork = new PowNet(powNet,time,transNetwork,bebs,table);
     powNetwork.createNet();
+    powNetwork.createTooltip();
     powNetwork.updateNet();
     powNetwork.createLine();
 
     // Adding reference to table
     table.transNet = transNetwork;
+
+
+    // Handling resizing stuff
+    window.addEventListener("resize", resize);
+    // var redraw = document.getElementById("redraw");
+    function resize (event) {
+        // Gets new sizes and sets new canvas dimensions
+        let view1 = d3.select('.view1').node()
+
+        // // retrieves new size
+        let boundingRect = view1.getBoundingClientRect();
+
+        // // stores new size width
+        let newWidth = boundingRect.width;
+        // // stores new size height
+        let newHeight = boundingRect.height;
+
+        //set new width and height
+        transNetwork.WIDTH = 3200; //newWidth;
+        transNetwork.HEIGHT = newHeight;
+
+        // redraw
+        transNetwork.removeNet()
+
+        transNetwork.createNet()
+        transNetwork.updateNet()
+
+        powNetwork.createNet()
+        powNetwork.updateNet()
+        
+    }
 
 
 });

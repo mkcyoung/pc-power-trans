@@ -23,10 +23,15 @@ class PowNet {
         this.clickedLinks = [];
         this.clickedNodes = [];
 
+        //getting bouding box for svg
+        let boundingRect =  d3.select(".view1").node().getBoundingClientRect()
+        this.WIDTH = boundingRect.width;
+        this.HEIGHT = boundingRect.height;
+
         //Margins - the bostock way
         this.margin = {top: 20, right: 20, bottom: 20, left: 20};
-        this.width = 1200 - this.margin.left - this.margin.right;
-        this.height = 900 - this.margin.top-this.margin.bottom;
+        // this.width = 1200 - this.margin.left - this.margin.right;
+        // this.height = 900 - this.margin.top-this.margin.bottom;
 
         //Margins - the bostock way - line chart
         this.lineHeight = 270;
@@ -40,6 +45,10 @@ class PowNet {
     /** Builds network based on data passed into object */
     createNet(){
         console.log("Power Network Object: ",this.data)
+
+        // Setting height of svg dynamically
+        this.width = this.WIDTH - this.margin.left - this.margin.right;
+        this.height = this.HEIGHT - this.margin.top-this.margin.bottom; 
         
         
         //May need to use this later
@@ -180,14 +189,6 @@ class PowNet {
         //  group (so the circles will always be on top of the lines)
         this.linkLayer = netGroup.append("g")
             .attr("class", "links");
-         
-
-        //make tooltip div
-        d3.select(".view1")
-            .append("div")
-            .attr("class", "tooltip")
-            .attr("id","tooltip")
-            .style("opacity", 0);
 
         // Now we create the node group, and the nodes inside it
         this.nodeLayer = netGroup.append("g")
@@ -198,6 +199,17 @@ class PowNet {
             .attr("class","labels");
 
         
+    }
+
+    createTooltip(){
+
+        //make tooltip div
+        d3.select(".view1")
+            .append("div")
+            .attr("class", "tooltip")
+            .attr("id","tooltip")
+            .style("opacity", 0);
+
     }
 
     updateNet(){
@@ -511,6 +523,12 @@ class PowNet {
         
 
         
+    }
+
+    removeNet(){
+        /** Clears existing Net**/
+        d3.select(".netsvg").remove()
+
     }
 
     /** Creates all bus line charts */

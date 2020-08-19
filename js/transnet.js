@@ -12,10 +12,15 @@ class TransNet {
         this.table = table;
         this.updateTime = updateTime;
 
+        //getting bouding box for svg
+        let boundingRect =  d3.select(".view1").node().getBoundingClientRect()
+        this.WIDTH = 3200; //boundingRect.width;
+        this.HEIGHT = boundingRect.height;
+
         //Margins - the bostock way
         this.margin = {top: 20, right: 20, bottom: 20, left: 20};
-        this.width = 1200 - this.margin.left - this.margin.right;
-        this.height = 900 - this.margin.top-this.margin.bottom; 
+        // this.width = this.WIDTH - this.margin.left - this.margin.right;
+        // this.height = this.HEIGHT - this.margin.top-this.margin.bottom; 
 
         //Margins - the bostock way - line chart
         this.lineHeight = 270;
@@ -28,6 +33,10 @@ class TransNet {
     }
 
     createNet(){
+
+        this.width = this.WIDTH - this.margin.left - this.margin.right;
+        this.height = this.HEIGHT - this.margin.top-this.margin.bottom; 
+
         //TODO potentially highlight routes along the transportation system
         //console.log("In trans net");
         //Select view1 and append an svg to it
@@ -148,13 +157,7 @@ class TransNet {
         let net_Group = powSVG.append('g')
             .attr("class","net-group")
 
-        //Appending time bar
-        let time_bar = d3.select(".viewsHead")
-            .append('div')
-            .attr('id', 'activeTime-bar')
-            .style("display","flex")
-            .style("align-items","center")
-            .style("justify-content","center");
+        
 
          //Add text above nets
         // d3.select(".viewsHead").append("div")
@@ -271,7 +274,7 @@ class TransNet {
         //Bus net
         let netGroup = net_Group.append("g")
             // .attr("class","net-group")
-            .attr("transform","translate("+(this.width/2 + 60)+","+this.margin.top+")");
+            .attr("transform","translate("+(650)+","+this.margin.top+")");
 
 
     //    // Create 7 nodes representing each station
@@ -287,19 +290,7 @@ class TransNet {
         this.linkLayer = netGroup.append("g")
             .attr("class", "links");
 
-        //make Station tooltip div
-        d3.select(".view1")
-            .append("div")
-            .attr("class", "s_tooltip")
-            .attr("id","s_tooltip_click")
-            .style("opacity", 0);
-
-        //make Station tooltip div
-        d3.select(".view1")
-            .append("div")
-            .attr("class", "s_tooltip")
-            .attr("id","s_tooltip")
-            .style("opacity", 0);
+       
         
         //Create labels
         this.labelLayer = netGroup.append("g")
@@ -310,92 +301,46 @@ class TransNet {
             .attr("class", "nodes");
 
 
+        
+
+    }
+
+    createSlider(){
+
+        //Appending time bar
+        let time_bar = d3.select(".viewsHead")
+            .append('div')
+            .attr('id', 'activeTime-bar')
+            .style("display","flex")
+            .style("align-items","center")
+            .style("justify-content","center");
+
+         //make Station tooltip div
+         d3.select(".view1")
+         .append("div")
+         .attr("class", "s_tooltip")
+         .attr("id","s_tooltip_click")
+         .style("opacity", 0);
+
+        //make Station tooltip div
+        d3.select(".view1")
+            .append("div")
+            .attr("class", "s_tooltip")
+            .attr("id","s_tooltip")
+            .style("opacity", 0);
+
         //Draw time bar
         this.drawTimeBar();
 
-        // //getting bouding box for zoom
-        // let boundingRect =  d3.select(".netsvg").getBoundingClientRect()
-        // this.WIDTH = boundingRect.width-6;
-        // this.HEIGHT = boundingRect.height-8;
-        
-        // // Adding zoom
-        // d3.select(".netsvg").call(d3.zoom()
-        //     .extent([[0, 0], [this.width, this.height]])
-        //     .scaleExtent([1, 8])
-        //     // .transform()
-        //     // .translateBy(d3.select('.netsvg').selectAll('.net-group'),)
-        //     .on("zoom", zoomed));
-
-
-        // function zoomed() {
-        //     // console.log(d3.select(".netsvg").selectAll('g').attr("transform",d => 'translate')); //d3.event.transform
-        //     // var t = d3.transform(d3.select(".netsvg").selectAll('g').attr("transform")),
-        //     //     x = t.translate[0],
-        //     //     y = t.translate[1];
-        //     // console.log(x,y)
-
-        //     console.log("D3 EVENT",d3.event.transform)
-
-        //     // let newTransform = null;
-        //     d3.select('.netsvg').selectAll('.net-group').attr('transform', function(){
-        //         // console.log(d3.select(this).attr("transform"))
-        //         // console.log("zooom transform",d3.zoomTransform(this))
-        //         // console.log("zooom new transform",d3.zoomTransform(this))
-        //         let currentTransform = getTransformation(d3.select(this).attr("transform"));
-        //         console.log("CURRENT tranform data",currentTransform)
-        //         // console.log("NEW transform (x,y) scale",d3.event.transform.x,d3.event.transform.y,d3.event.transform.k)
-        //         let k = d3.event.transform.k;
-        //         let newX = parseFloat(currentTransform.translateX) + parseFloat(d3.event.transform.x);
-        //         let newY = parseFloat(currentTransform.translateY) + parseFloat(d3.event.transform.y);
-        //         // console.log("translate("+newX+","+ newY + ")" + " scale(" + newScale +")")
-        //         return "translate("+ newX + ","+ newY + ")" + "scale(" + k +")";
-        //         // return d3.select(this).attr("transform")
-        //     });
-
-
-        //     function getTransformation(transform) {
-        //         // Create a dummy g for calculation purposes only. This will never
-        //         // be appended to the DOM and will be discarded once this function 
-        //         // returns.
-        //         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                
-        //         // Set the transform attribute to the provided string value.
-        //         g.setAttributeNS(null, "transform", transform);
-                
-        //         // consolidate the SVGTransformList containing all transformations
-        //         // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
-        //         // its SVGMatrix. 
-        //         var matrix = g.transform.baseVal.consolidate().matrix;
-                
-        //         // Below calculations are taken and adapted from the private function
-        //         // transform/decompose.js of D3's module d3-interpolate.
-        //         var {a, b, c, d, e, f} = matrix;   // ES6, if this doesn't work, use below assignment
-        //         // var a=matrix.a, b=matrix.b, c=matrix.c, d=matrix.d, e=matrix.e, f=matrix.f; // ES5
-        //         var scaleX, scaleY, skewX;
-        //         if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
-        //         if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
-        //         if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
-        //         if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
-        //         return {
-        //           translateX: e,
-        //           translateY: f,
-        //           rotate: Math.atan2(b, a) * 180 / Math.PI,
-        //           skewX: Math.atan(skewX) * 180 / Math.PI,
-        //           scaleX: scaleX,
-        //           scaleY: scaleY
-        //         };
-        //     }
-                        
-        // }
     }
 
     updateNet(){
         let that = this;
 
         //getting bouding box for zoom
-        let boundingRect =  d3.select(".netsvg").node().getBoundingClientRect()
-        this.WIDTH = boundingRect.width;
-        this.HEIGHT = boundingRect.height;
+        // let boundingRect =  d3.select(".netsvg").node().getBoundingClientRect()
+        // this.WIDTH = boundingRect.width;
+        // this.HEIGHT = boundingRect.height;
         
         // Adding zoom
         d3.select(".netsvg").call(d3.zoom()
@@ -406,93 +351,9 @@ class TransNet {
 
 
         function zoomed() {
-            // console.log(d3.select(".netsvg").selectAll('g').attr("transform",d => 'translate')); //d3.event.transform
-            // var t = d3.transform(d3.select(".netsvg").selectAll('g').attr("transform")),
-            //     x = t.translate[0],
-            //     y = t.translate[1];
-            // console.log(x,y)
-            // d3.select('.netsvg').selectAll('.net-group').attr("transform",d3.event.transform)
-            // console.log("D3 EVENT",d3.event.transform)
             let transform = d3.event.transform;
-            // let tx = transform.x
-            // let ty = transform.y
-            // let k = transform.k
-            // // var updatedScale = transform.rescaleX(xScale);
-            // let t = d3.zoomIdentity.translateBy(tx, ty).scale(k);
-
-
-            
             d3.select('.net-group').attr("transform",transform.toString())
             
-
-            // // let newTransform = null;
-            // d3.select('.netsvg').selectAll('.net-group').attr('transform', function(){
-            //     // console.log(d3.select(this).attr("transform"))
-            //     console.log("zooom transform",d3.zoomTransform(this))
-            //     let transform = d3.zoomTransform(this);
-                
-            //     // console.log("zooom new transform",d3.zoomTransform(this))
-            //     let currentTransform = getTransformation(d3.select(this).attr("transform"));
-            //     console.log("CURRENT tranform data",currentTransform)
-            //     // console.log("NEW transform (x,y) scale",d3.event.transform.x,d3.event.transform.y,d3.event.transform.k)
-            //     let k = d3.event.transform.k;
-            //     let x = d3.event.transform.x;
-            //     let y = d3.event.transform.y;
-
-            //     let newX = parseFloat(currentTransform.translateX)*k + parseFloat(x);
-            //     let newY = parseFloat(currentTransform.translateY)*k + parseFloat(y);
-
-            //     // console.log("APPLY X",transform.applyX(currentTransform.translateX))
-
-            //     // let newTransform= transform.translate(currentTransform.translateX,currentTransform.translateY).scale(k);
-            //     // let newTransform = transform.translate(x+currentTransform.translateX,y+currentTransform.translateY).scale(k);
-
-            //     // let newTransform = transform.translate(currentTransform.translateX,currentTransform.translateY)
-            //     // console.log("NEW TRANSFORM",newTransform)
-            //     // console.log("translate("+newX+","+ newY + ")" + " scale(" + newScale +")")
-            //     let newTransformManual = Object({k:k,x:newX,y:newY})
-            //     // return "translate("+ newX + ","+ newY + ")" + "scale(" + k +")";
-            //     return "translate("+ newX + ","+ newY + ")";
-            //     // return "translate("+ newTransform.x + ","+ newTransform.y + ")" + "scale(" + newTransform.k +")";
-            //     console.log("NEW TRANSFORM MANUAL",newTransformManual)
-            //     // console.log("NEW TRANSFORM COMPUTED",newTransform)
-            //     // return newTransform
-            //     // return d3.select(this).attr("transform")
-            // });
-
-
-            // function getTransformation(transform) {
-            //     // Create a dummy g for calculation purposes only. This will never
-            //     // be appended to the DOM and will be discarded once this function 
-            //     // returns.
-            //     var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                
-            //     // Set the transform attribute to the provided string value.
-            //     g.setAttributeNS(null, "transform", transform);
-                
-            //     // consolidate the SVGTransformList containing all transformations
-            //     // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
-            //     // its SVGMatrix. 
-            //     var matrix = g.transform.baseVal.consolidate().matrix;
-                
-            //     // Below calculations are taken and adapted from the private function
-            //     // transform/decompose.js of D3's module d3-interpolate.
-            //     var {a, b, c, d, e, f} = matrix;   // ES6, if this doesn't work, use below assignment
-            //     // var a=matrix.a, b=matrix.b, c=matrix.c, d=matrix.d, e=matrix.e, f=matrix.f; // ES5
-            //     var scaleX, scaleY, skewX;
-            //     if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
-            //     if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
-            //     if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
-            //     if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
-            //     return {
-            //       translateX: e,
-            //       translateY: f,
-            //       rotate: Math.atan2(b, a) * 180 / Math.PI,
-            //       skewX: Math.atan(skewX) * 180 / Math.PI,
-            //       scaleX: scaleX,
-            //       scaleY: scaleY
-            //     };
-            // }
                         
         }
         
@@ -1267,6 +1128,12 @@ class TransNet {
                     .html(that.tooltipRenderS(that.clicked));
             }
         });
+    }
+
+    removeNet(){
+        /** Clears existing Net**/
+        d3.select(".netsvg").remove()
+
     }
 
     /** Creates all power line charts */
