@@ -201,16 +201,6 @@ class PowNet {
         
     }
 
-    createTooltip(){
-
-        //make tooltip div
-        d3.select(".view1")
-            .append("div")
-            .attr("class", "tooltip")
-            .attr("id","tooltip")
-            .style("opacity", 0);
-
-    }
 
     updateNet(){
 
@@ -240,15 +230,15 @@ class PowNet {
             })
             //tooltip!
             .on("mouseover", function (d) {
-                d3.select("#tooltip").transition()
+                // Highlights tooltip
+                d3.selectAll(".info-panel").transition()
                     .duration(200)
                     .style("opacity", 0.9);
-                d3.select("#tooltip").html(that.tooltipRenderL(d))
-                    .style("left", (d3.event.pageX+15) + "px")
-                    .style("top", (d3.event.pageY+15) + "px")
+                d3.select("#data-id").html(that.tooltipRenderID_L(d))
+                d3.select("#data-info").html(that.tooltipRenderINFO_L(d))
             })
             .on("mouseout", function (d) {
-                d3.select("#tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(500)
                     .style("opacity", 0)
             })
@@ -278,12 +268,11 @@ class PowNet {
             .on("mouseover", function (d) {
                 // console.log(d)
                 // Highlights tooltip
-                d3.select("#tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(200)
                     .style("opacity", 0.9);
-                d3.select("#tooltip").html(that.tooltipRenderN(d))
-                    .style("left", (d3.event.pageX+15) + "px")
-                    .style("top", (d3.event.pageY+15) + "px");
+                d3.select("#data-id").html(that.tooltipRenderID_N(d))
+                d3.select("#data-info").html(that.tooltipRenderINFO_N(d))
                 if(d3.select(this).classed("charge")){
                     // Checks first to see if its been clicked 
                     if (!d3.select(`#line-${d.id}`).classed("clicked-line")){
@@ -298,7 +287,7 @@ class PowNet {
             })
             .on("mouseout", function (d) {
                 // De-highlights tooltip
-                d3.select("#tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(500)
                     .style("opacity", 0);
 
@@ -866,17 +855,25 @@ class PowNet {
      * @param data
      * @returns {string}
      */
-    tooltipRenderN(data) {
+    tooltipRenderID_N(data) {
         let that = this;
         let text = null;
-        (data.chSP != null) ? text = "<h3> <span>&#9889;</span> Node: " + data.id + "</h3>": 
-        text = "<h3> Node: " + data.id + "</h3>";
+        (data.chSP != null) ? text = "<h3> <span>&#9889;</span>" + data.id + "</h3>": 
+        text = "<h3>" + data.id + "</h3>";
+        return text;
+    }
+
+    tooltipRenderINFO_N(data) {
+        let that = this;
+        let text = '';
         //Adds in relevant data
-        text = text + "<p> Active Load: "+ parseFloat(data.aLoad[that.activeTime].value).toFixed(2)+" kW</p>";
-        text = text + "<p> Voltage: "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV</p>";
+        text = text + "<p> <b> Active Load:</b> "+ parseFloat(data.aLoad[that.activeTime].value).toFixed(2)+" kW</p>";
         if (data.chSP != null){
-            text = text + "<p> Active Power: "+ parseFloat(data.chSP[that.activeTime].value).toFixed(2)+" kW</p>"
+            text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV &emsp; <b> Active Power: </b> "+ parseFloat(data.chSP[that.activeTime].value).toFixed(2)+" kW</p>";
         } 
+        else{
+            text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV</p>";
+        }
         return text;
     }
 
@@ -885,13 +882,18 @@ class PowNet {
      * @param data
      * @returns {string}
      */
-    tooltipRenderL(data) {
+    tooltipRenderID_L(data) {
         let that = this;
         let text = "<h3>" + data.source.id + ' <span>&#8594;</span> ' + data.target.id +"</h3>";
-        //Adds in relevant data
-        text = text + "<p> Current: "+ parseFloat(data.current[that.activeTime].value).toFixed(2)+" A</p>";
-        text = text + "<p> Acitve Power Flow: "+ parseFloat(data.aPF[that.activeTime].value).toFixed(2)+" kW</p>";
-        text = text + "<p> Max Line Current: "+ data.mLC.toFixed(2)+" A</p>"
+        return text;
+    }
+
+    tooltipRenderINFO_L(data) {
+        let that = this;
+        let text = ''
+        text = text + "<p> <b> Acitve Power Flow: </b> "+ parseFloat(data.aPF[that.activeTime].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Current: </b> "+ parseFloat(data.current[that.activeTime].value).toFixed(2)+" A &emsp; <b> Max Current: </b>"+ data.mLC.toFixed(2)+" A </p>";
+        
         return text;
     }
 

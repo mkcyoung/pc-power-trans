@@ -282,7 +282,6 @@ Promise.all([
     /** Pass data into PowNet class */
     let powNetwork = new PowNet(powNet,time,transNetwork,bebs,table);
     powNetwork.createNet();
-    powNetwork.createTooltip();
     powNetwork.updateNet();
     powNetwork.createLine();
     powNetwork.handleZoom();
