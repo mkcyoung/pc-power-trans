@@ -167,7 +167,9 @@ class PowNet {
         //Creating svg selection
         let powSVG = d3.select(".view1").select("svg");
 
-        let netGroup = powSVG.append("g")
+        let net_Group = powSVG.select(".net-group")
+        let netGroup = net_Group.append("g")
+            // .attr("class","net-group")
             .attr("transform","translate("+this.margin.left+","+this.margin.top+")");
 
         //Create icons first so they are at the back

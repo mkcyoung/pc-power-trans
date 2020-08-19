@@ -1,10 +1,17 @@
 /* Site Layout CSS */
-.wrapper{
+.container{
     font-family: "Avenir Next";
+    max-width: 3200px;
+
+    /* margin-right: auto; 
+    margin-left:  auto;  */
     display: grid;
     /* grid-template-columns: repeat(2, 450px) 200px 750px; */
-    grid-template-columns: 450px 525px 500px 600px;
-    grid-template-rows: 0.5fr 125px 200px 200px 200px 200px 400px;
+    /* grid-template-columns: 450px 525px 500px 600px; */
+    /* grid-template-columns: 600px 600px 600px; */
+    grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
+    /* grid-template-rows: 0.5fr 125px 200px 200px 200px 200px 400px; */
+    grid-template-rows: repeat(minmax(0, 1fr),8);
     grid-template-areas: 
             /* "title title title title "
             "slider slider slider slider"
@@ -13,44 +20,130 @@
             "power power power table1  "
             "power power power table1 "
             "info info info table1"; */
-            "title title title title "
+            /* "title title title title "
             "slider slider slider slider "
             "info power power table1 "
             "info power power table1 "
             "info power power table1 "
             "info power power table1 "
-            "info link-info link-info bus-info ";
+            "info link-info link-info bus-info "; */
+            "station-info title bus-info"
+            "station-info slider bus-info"
+            "station-info data-panel bus-info "
+            "station-info power bus-info"
+            "node-info power table1"
+            "node-info power table1"
+            "node-info power table1 "
+            "node-info power table1 "
+            "link-info power table1 "
+            "link-info power table1 "
+            "link-info power table1 "
+            "link-info power table1 ";
     /* width: 100vw;
     height: 100vh; */
+    width: 100vw;
+    height: 99vh;
 }
 
+/* Setting variables */
+:root{
+    /* graph borders */
+    --border-color: rgba(99, 99, 99, 0.199);
+    --border-width: 4px;
+    /* dropdown alignment */
+    --button-top: 0px;
+    --slider-top: 0%;
+    --slider-left: 0%;
+    /* canvas background */
+    /* --canvas-color: #e3e3e3 */
+    --canvas-color: white;
+    --border-margins: 5px;
+    --border-width: 3px;
+    --border-radius: 20px;
+
+}
+
+
+
 .masthead{
+    position:relative;
+    overflow: scroll;
     grid-area: title;
-    font-size: 50px;
+    font-size: 40px;
+    /* margin: 1px; */
     text-align: center;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .view1{
+    /* position:relative; */
+    overflow: hidden;
     grid-area: power;
+    margin: var(--border-margins);
+    border: var(--border-width)solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
     /* background: royalblue; */
 }
 
 .view2{
+    /* position:relative; */
+    margin: var(--border-margins);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: scroll;
     grid-area: table1;
 }
 
 .viewsHead{
+    /* position:relative; */
+    /* align-items: center; */
+    overflow: visible;
     grid-area: slider;
+    margin:var(--border-margins);
+    border: var(--border-width)solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
 }
 
-.view3{
+/* .view3{
     grid-area: info;
+} */
+
+.dataPanel{
+    overflow: scroll;
+    grid-area: data-panel;
+    height: 50px;
+    margin: var(--border-margins);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+
+}
+
+.station-charts{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: scroll;
+    grid-area: station-info;
+    margin: var(--border-margins);
+}
+
+.node-charts{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: scroll;
+    grid-area: node-info;
+    margin: var(--border-margins);
 }
 
 /* Link charts styling */
 .link-charts{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: scroll;
     grid-area: link-info;
+    margin: var(--border-margins);
 }
 
 .link-charts > svg{
@@ -68,7 +161,12 @@
 
 /* Bus chart styling */
 .bus-charts{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: scroll;
     grid-area: bus-info;
+    margin: var(--border-margins);
 }
 
 .bus-charts > svg{
@@ -246,7 +344,7 @@
 
 /*Table styling*/
 .view2 {
-    width: 750px;
+    /* width: 750px; */
     padding: 0.5em;
     float: left;
     /*height:875px;*/
@@ -391,11 +489,13 @@ tbody tr:hover{
 
 .slider-wrap {
     display: inline-block;
-    position: absolute;
-    float: left;
+    position: relative;
+    /* float: left; */
+    /* align-items: center; */
+    margin:0;
     width: 750px;
-    left: 545px;
-    top: 100px;
+    /* left: 50%; */
+    margin-top:20px;
 }
 
 /* Scale Legend */
