@@ -11,7 +11,7 @@
     /* grid-template-columns: 600px 600px 600px; */
     grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
     /* grid-template-rows: 0.5fr 125px 200px 200px 200px 200px 400px; */
-    grid-template-rows: repeat(minmax(0, 1fr),8);
+    grid-template-rows: repeat(minmax(0, 1fr),12);
     grid-template-areas: 
             /* "title title title title "
             "slider slider slider slider"

@@ -158,18 +158,6 @@ class TransNet {
             .attr("class","net-group")
 
 
-         //Add text above nets
-        // d3.select(".viewsHead").append("div")
-        //     .style("left","1000px")
-        //     .style("top","175px")
-        //     .attr("class","net_headers")
-        //     .text("Park City Transit System");
-
-        // d3.select(".viewsHead").append("div")
-        //     .style("left","600px")
-        //     .style("top","175px")
-        //     .attr("class","net_headers")
-        //     .text("IEEE 33 bus system");
 
 
         // TODO, my idea here is to make a little legend with all 3 of the color scales up
@@ -266,19 +254,12 @@ class TransNet {
             .style("font-weight","light")
             .text(`${max_apf.toFixed(1)}`);
 
-        // /** Charging station interface */
-        // let CSGroup = powSVG.append("g")
-        //     .attr("transform","translate("+(this.width/2-70)+","+this.margin.top+")");
 
         //Bus net
         let netGroup = net_Group.append("g")
             // .attr("class","net-group")
             .attr("transform","translate("+(650)+","+this.margin.top+")");
 
-
-    //    // Create 7 nodes representing each station
-    //    this.stations = CSGroup.append("g")
-    //        .attr("class", "csgroup");
 
         //I'll create lines first so they're beneath everything
         this.lineLayer = netGroup.append("g")
@@ -298,6 +279,36 @@ class TransNet {
             .attr("class", "nodes");
 
 
+        // Make labels
+        let labelGroup = net_Group.append("g")
+            .attr("transform","translate("+(0)+","+this.margin.top+")")
+
+        labelGroup.append("text")
+            .attr("transform","translate("+(100)+","+-this.margin.top+")")
+            .attr("font-size","35px")
+            .attr("font-weight","light")
+            .attr("fill","rgba(0,0,0,0.5")
+            .text("IEEE 33 bus system")
+
+        labelGroup.append("text")
+            .attr("transform","translate("+(500)+","+-this.margin.top+")")
+            .attr("font-size","35px")
+            .attr("font-weight","light")
+            .attr("fill","rgba(0,0,0,0.5")
+            .text("Park City transit system")
+
+         //Add text above nets
+        // d3.select(".viewsHead").append("div")
+        //     .style("left","1000px")
+        //     .style("top","175px")
+        //     .attr("class","net_headers")
+        //     .text("Park City Transit System");
+
+        // d3.select(".viewsHead").append("div")
+        //     .style("left","600px")
+        //     .style("top","175px")
+        //     .attr("class","net_headers")
+        //     .text("IEEE 33 bus system");
         
 
     }
@@ -333,26 +344,6 @@ class TransNet {
 
     updateNet(){
         let that = this;
-
-        //getting bouding box for zoom
-        // let boundingRect =  d3.select(".netsvg").node().getBoundingClientRect()
-        // this.WIDTH = boundingRect.width;
-        // this.HEIGHT = boundingRect.height;
-        
-        // Adding zoom
-        d3.select(".netsvg").call(d3.zoom()
-            // .extent([[0, 0], [this.width, this.height]])
-            // .scaleExtent([1, 8])
-            // .transform()
-            .on("zoom", zoomed));
-
-
-        function zoomed() {
-            let transform = d3.event.transform;
-            d3.select('.net-group').attr("transform",transform.toString())
-            
-                        
-        }
         
         //Updates table with clicked seletion
         if(that.clicked != null){
@@ -674,267 +665,6 @@ class TransNet {
                 .interrupt();
         }
 
-        // function animate() {
-        //     d3.selectAll(".netline")
-        //         .transition()
-        //         .duration(500)
-        //         .ease(d3.easeLinear)
-        //         .styleTween("stroke-dashoffset", function() {
-        //             return d3.interpolate(0, 14);
-        //             })
-        //         .on("end", animate);
-        // }
-        
-
-
-        // // Creating lines that will connect the trans nodes 
-        // this.lineOTTC = [{"x":20,"y":50},{"x":80,"y":50},
-        // {"x":80,"y":645},{"x":413,"y":645}];
-        // this.lineOTTC2 = [{"x":20,"y":50},{"x":20,"y":10},
-        // {"x":-470,"y":10},{"x":-470,"y":60},
-        // {"x":-470,"y":85},{"x":-440,"y":85}];
-
-        // this.lineKJTC = [{"x":20,"y":145},{"x":80,"y":145},
-        // {"x":80,"y":245},{"x":235,"y":245}];
-        // this.lineKJTC2 = [{"x":20,"y":145},{"x":-200,"y":145},
-        // {"x":-200,"y":470},{"x":-310,"y":470}];
-
-        // this.lineCTH = [{"x":20,"y":240},{"x":200,"y":240},
-        // {"x":200,"y":350},{"x":310,"y":350},
-        // {"x":310,"y":395}];
-        // this.lineCTH2 = [{"x":20,"y":240},{"x":-200,"y":240},
-        // {"x":-200,"y":330},{"x":-355,"y":330}];
-
-        // this.lineJRPR = [{"x":20,"y":335},{"x":150,"y":335},
-        // {"x":150,"y":55}];
-        // this.lineJRPR2 = [{"x":20,"y":335},{"x":-80,"y":335},
-        // {"x":-80,"y":480}];
-        
-        // this.lineKPR = [{"x":20,"y":430},{"x":200,"y":430},
-        // {"x":200,"y":550},{"x":480,"y":550},
-        // {"x":480,"y":350}];
-        // this.lineKPR2 = [{"x":20,"y":430},{"x":-50,"y":430},
-        // {"x":-50,"y":120},{"x":-230,"y":120}];
-
-        // this.lineEH = [{"x":20,"y":525},{"x":175,"y":525},
-        // {"x":175,"y":145},{"x":215,"y":145}];
-        // this.lineEH2 = [{"x":20,"y":525},{"x":-30,"y":525},
-        // {"x":-30,"y":400},{"x":-150,"y":400}];
-
-        // this.lineGS = [{"x":20,"y":620},{"x":270,"y":620},
-        // {"x":270,"y":415}];
-        // this.lineGS2 = [{"x":20,"y":620},{"x":-150,"y":620},
-        // {"x":-150,"y":675},{"x":-420,"y":675},
-        // {"x":-420,"y":295},{"x":-380,"y":295}];
-
-        // Now let's create Station node area
-        // let station_nodes = this.stations.selectAll("circle")
-        //     .data(this.data.nodes) //I want this to contain everything relevant to the stations
-        //     .join("circle")
-        //     .attr("cx", 20)
-        //     .attr("cy", (d,i) => 50 + i*95)
-        //     .attr("class", d => d.StationNode.id)
-        //     .classed("station_node",true)
-        //     .attr("r", 25)
-        //     .attr("fill", d => this.stationColor(d.StationNode.id))
-        //     //tooltip!
-        //     .on("mouseover", function (d) {
-        //         d3.select("#s_tooltip").transition()
-        //             .duration(200)
-        //             .style("opacity", 1);
-        //         d3.select("#s_tooltip").html(that.tooltipRenderS(d))
-        //             .style("left","800px") //(d3.event.pageX+30)
-        //             .style("top", "250px"); //(d3.event.pageY-80)
-        //         d3.selectAll("."+d.StationNode.id)
-        //             .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
-        //             .classed("CHSP",true);
-        //         //Creating lines that connect node to power station
-        //         let lineFunction = d3.line()
-        //             .x(function(d){
-        //                 return d.x;
-        //             })
-        //             .y(function(d){
-        //                 return d.y;
-        //             });
-                
-        //         let line_data = null;
-        //         let line_data2 = null;
-                
-        //         switch(parseInt(d.StationID)){
-        //             case 1:
-        //                line_data = that.lineOTTC;
-        //                line_data2 = that.lineOTTC2;
-        //                break;
-        //             case 2:
-        //                 line_data = that.lineKJTC;
-        //                 line_data2 = that.lineKJTC2;
-        //                 break;
-        //             case 3:
-        //                 line_data = that.lineCTH;
-        //                 line_data2 = that.lineCTH2;
-        //                 break;
-        //             case 4:
-        //                 line_data = that.lineJRPR;
-        //                 line_data2 = that.lineJRPR2;
-        //                 break;
-        //             case 5:
-        //                 line_data = that.lineKPR;
-        //                 line_data2 = that.lineKPR2;
-        //                 break;
-        //             case 6:
-        //                 line_data = that.lineEH;
-        //                 line_data2 = that.lineEH2;
-        //                 break;
-        //             case 7:
-        //                 line_data = that.lineGS;
-        //                 line_data2 = that.lineGS2;
-        //                 break;
-        //         }
-
-        //         //Path to trans
-        //         let path = that.lineLayer.append("path")
-        //             .attr("class","netline")
-        //             .attr("stroke","black")
-        //             .attr("stroke-width",0.5)
-        //             .attr("fill","none")
-        //             .attr("d",lineFunction(line_data));
-
-        //         let totalLength = path.node().getTotalLength();
-
-        //         path
-        //             .attr("stroke-dasharray",totalLength + " " +totalLength)
-        //             .attr("stroke-dashoffset",totalLength)
-        //             .transition()
-        //             .duration(750)
-        //             .attr("stroke-dashoffset",0);
-
-        //         // Path to power
-        //         let path2 = that.lineLayer.append("path")
-        //             .attr("class","netline")
-        //             .attr("stroke","black")
-        //             .attr("stroke-width",0.5)
-        //             .attr("fill","none")
-        //             .attr("d",lineFunction(line_data2));
-
-        //         let totalLength2 = path2.node().getTotalLength();
-
-        //         path2
-        //             .attr("stroke-dasharray",totalLength2 + " " +totalLength2)
-        //             .attr("stroke-dashoffset",totalLength2)
-        //             .transition()
-        //             .duration(750)
-        //             .attr("stroke-dashoffset",0);
-
-        //     })
-        //     .on("mouseout", function (d) {
-        //         d3.select("#s_tooltip").transition()
-        //             .duration(500)
-        //             .style("opacity", 0);
-        //         d3.selectAll("."+d.StationNode.id)
-        //             .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
-        //             .classed("CHSP",false);
-        //         d3.selectAll(".station_node")
-        //             .attr("fill", d => that.stationColor(d.StationNode.id));
-
-        //         d3.selectAll(".netline").remove();
-
-        //     })
-        //     //Updates table to consist of only busses at this station
-        //     .on("click", Clicked);
-
-        
-        //Clicked function
-        // function Clicked(d) {
-        //     //console.log("in clicked")
-        //     //setting this so the tooltip updates on slider bar later - as well as table
-        //     that.clicked = d;
-        //     console.log(that.clicked)
-
-        //     //Call update line
-        //     that.updateLine();
-
-
-        //     //console.log("this.clicked",that.clicked)
-        //     //console.log(d.BusData[that.activeTime].busses)
-        //     let busses = d.BusData[that.activeTime].busses;
-        //     busses = busses.map((c) => parseInt(c))
-        //     //console.log(busses)
-        //     let newData = that.bebs.filter((f,i) => busses.includes(f.BusID));
-        //     //console.log(newData)
-        //     that.table.BEB = newData;
-        //     that.table.updateTable();
-
-        //     //Want to keep lines connecting other nodes and tooltip (copied from above - should make this a function)
-        //     d3.select("#s_tooltip_click").transition()
-        //         .duration(200)
-        //         .style("opacity", 1);
-        //     d3.select("#s_tooltip_click").html(that.tooltipRenderS(d))
-        //         .style("left","800px") //(d3.event.pageX+30)
-        //         .style("top", "250px"); //(d3.event.pageY-80)
-            
-        //     //Want to removes netlines
-        //     // d3.selectAll(".netlineclick").remove();
-        //     // d3.selectAll(".netline").remove();
-
-        //     // //Creating lines that connect node to power station
-        //     // let lineFunction = d3.line()
-        //     //     .x(function(d){
-        //     //         return d.x;
-        //     //     })
-        //     //     .y(function(d){
-        //     //         return d.y;
-        //     //     });
-            
-        //     // let line_data = null;
-        //     // let line_data2 = null;
-            
-        //     // switch(parseInt(d.StationID)){
-        //     //     case 1:
-        //     //        line_data = that.lineOTTC;
-        //     //        line_data2 = that.lineOTTC2;
-        //     //        break;
-        //     //     case 2:
-        //     //         line_data = that.lineKJTC;
-        //     //         line_data2 = that.lineKJTC2;
-        //     //         break;
-        //     //     case 3:
-        //     //         line_data = that.lineCTH;
-        //     //         line_data2 = that.lineCTH2;
-        //     //         break;
-        //     //     case 4:
-        //     //         line_data = that.lineJRPR;
-        //     //         line_data2 = that.lineJRPR2;
-        //     //         break;
-        //     //     case 5:
-        //     //         line_data = that.lineKPR;
-        //     //         line_data2 = that.lineKPR2;
-        //     //         break;
-        //     //     case 6:
-        //     //         line_data = that.lineEH;
-        //     //         line_data2 = that.lineEH2;
-        //     //         break;
-        //     //     case 7:
-        //     //         line_data = that.lineGS;
-        //     //         line_data2 = that.lineGS2;
-        //     //         break;
-                    
-        //     // }
-
-        // //     //Path to trans
-        // //     let path = that.lineLayer.append("path")
-        // //         .attr("class","netlineclick")
-        // //         .attr("stroke","black")
-        // //         .attr("stroke-width",0.5)
-        // //         .attr("fill","none")
-        // //         .attr("d",lineFunction(line_data));
-
-        // //     let path2 = that.lineLayer.append("path")
-        // //         .attr("class","netlineclick")
-        // //         .attr("stroke","black")
-        // //         .attr("stroke-width",0.5)
-        // //         .attr("fill","none")
-        // //         .attr("d",lineFunction(line_data2));
-        // }
 
         // This clears a selection by listening for a click
         document.addEventListener("click", function(e) {
@@ -974,6 +704,9 @@ class TransNet {
             
         
         }, true);
+
+
+        
 
     }
 

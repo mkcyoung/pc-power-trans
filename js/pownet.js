@@ -520,6 +520,60 @@ class PowNet {
             }
         
         }, true);
+
+
+
+        // HANDLING ZOOMING BASED ON SVG SIZE
+
+        // Gets new sizes and sets new canvas dimensions
+        let view1 = d3.select('.view1').node()
+
+        // // retrieves new size
+        let boundingRect = view1.getBoundingClientRect();
+        // console.log("BOUNDING RECT",boundingRect)
+
+        // // stores new size width
+        let newWidth = boundingRect.width;
+        // // stores new size height
+        let newHeight = boundingRect.height;
+
+        // Get bounds of net group
+        let gBox = d3.select('.net-group').node().getBBox();
+        console.log("gbox",gBox)
+        let x0 = gBox.x;
+        let x1 = gBox.x + gBox.width;
+        let y0 = gBox.y;
+        let y1 = gBox.y + gBox.height;
+
+        // calculate new scale
+        let k = Math.min(8, 0.9 / Math.max((gBox.width) / (newWidth), (gBox.height) / newHeight))
+        console.log("scale",k)
+        // Adding zoom
+
+        const zoom = d3.zoom()
+            .on("zoom", zoomed);
+        
+        d3.select(".netsvg").call(d3.zoom()
+            // .extent([[0, 0], [this.width, this.height]])
+            // .scaleExtent([1, 8])
+            // .transform()
+            .on("zoom", zoomed));
+
+        d3.select(".netsvg").call(
+            zoom.transform,
+            d3.zoomIdentity
+                .translate(newWidth / 2, newHeight / 2)
+                .scale(k)
+                .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
+        );
+
+
+        function zoomed() {
+            let transform = d3.event.transform;
+            d3.select('.net-group').attr("transform",transform.toString())
+            
+                        
+        }
         
 
         
