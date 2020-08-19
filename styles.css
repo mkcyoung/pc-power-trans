@@ -63,8 +63,9 @@
 
     overflow: visible;
     margin: var(--border-margins);
-    /* border: var(--border-width)solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius); */
+    border: var(--border-width)solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    padding: 15px;
 }
 
 #data-id{
@@ -290,6 +291,18 @@
     /* padding: auto; */
     font-size: 40px;
     font-weight:bold;
+    margin: 0;
+    padding: 0;
+
+}
+
+#data-id p{
+    margin: 0;
+    padding: 0;
+    line-height: 1px;
+    font-size: 18px;
+    font-weight: light;
+    color: #808080;
 }
 
 #data-info p{

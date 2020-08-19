@@ -309,12 +309,11 @@ class Table{
                 // console.log(d)
                 let current_station = d.Location[that.activeTime];
 
-                d3.select("#s_tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(200)
-                    .style("opacity", 1);
-                d3.select("#s_tooltip").html(that.tooltipRenderB(d))
-                    .style("left","1220px") //(d3.event.pageX+30)
-                    .style("top", "235px"); 
+                    .style("opacity", 0.9);
+                d3.select("#data-id").html(that.tooltipRenderID(d))
+                d3.select("#data-info").html(that.tooltipRenderINFO(d))
                 // I want to highlight entire charging station
                 d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]])
                     .classed("CHSP",true);
@@ -436,7 +435,7 @@ class Table{
                 // console.log(d)
                 // console.log(that.transNet)
 
-                d3.select("#s_tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(500)
                     .style("opacity", 0);
                 d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]]) 
@@ -1210,16 +1209,19 @@ class Table{
 
     }
 
-    tooltipRenderB(data) {
+    tooltipRenderID(data) {
         let that = this;
-        let text = null;
-        text = "<h3>" + data.id + " ("+ data.BusID +")</h3>";
-        //Adds in relevant data
-        text = text + "<p> Location: "+ data.Location[that.activeTime] + "</p>";
-        text = text + "<p> Route: "+ data.route + "</p>";
-        text = text + "<p> Energy : "+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh</p>";
-        text = text + "<p> Power : "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh</p>";
-        text = text + "<p> Speed : "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph</p>";
+        let text = '';
+        text = "<h3>" + data.id + "</h3>";
+        text = text + "<p>"+ data.Location[that.activeTime] + " </p>";
+        return text;
+    }
+
+    tooltipRenderINFO(data) {
+        let that = this;
+        let text = '';
+        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh &emsp; <b> Power : </b> "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh </p>";
+        text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph &emsp; <b> Route: </b> "+ data.route + "    </p>";
         return text;
     }
 

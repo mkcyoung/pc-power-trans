@@ -323,21 +323,6 @@ class TransNet {
             .style("align-items","center")
             .style("justify-content","center");
 
-        //  //make Station tooltip div
-        //  d3.select(".data-panel")
-        //     .append("div")
-        //     .attr("class", "s_tooltip")
-        //     .attr("id","s_tooltip_click")
-        //     .style("opacity", 0);
-
-
-        // //make Station tooltip div
-        // d3.select(".data-panel")
-        //     .append("div")
-        //     .attr("class", "s_tooltip")
-        //     .attr("id","s_tooltip")
-        //     .style("opacity", 0);
-
         //Draw time bar
         this.drawTimeBar();
 
