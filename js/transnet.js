@@ -378,8 +378,7 @@ class TransNet {
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#data-id").html(that.tooltipRenderID(d))
-                d3.select("#data-info-1").html(that.tooltipRenderINFO_STATION(d))
-                d3.select("#data-info-2").html(that.tooltipRenderINFO_POWER(d))
+                d3.select("#data-info").html(that.tooltipRenderINFO_STATION(d))
                 // Checks first to see if its been clicked 
                 if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
                     d3.selectAll("."+d.StationNode.id)
@@ -583,8 +582,7 @@ class TransNet {
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#data-id").html(that.tooltipRenderID(d))
-                d3.select("#data-info-1").html(that.tooltipRenderINFO_STATION(d))
-                d3.select("#data-info-2").html(that.tooltipRenderINFO_POWER(d))
+                d3.select("#data-info").html(that.tooltipRenderINFO_STATION(d))
 
                 // Checks first to see if its been clicked 
                 if (!d3.select(this).classed("clicked-line")){
@@ -1205,18 +1203,8 @@ class TransNet {
         let that = this;
         let text = '';
         //Adds in relevant data
-        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p>";
-        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
-        return text;
-    }
-
-    tooltipRenderINFO_POWER(data,time){
-        time = this.activeTime;
-        let that = this;
-        let text = '';
-        //Adds in relevant data
-        text = text + "<p> <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
+        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses &emsp; <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW &emsp; <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;
     }
 

@@ -59,7 +59,7 @@
     grid-template-columns:repeat(minmax(0,1fr),3);
     grid-template-rows: 1fr;
     grid-template-areas:
-        "id info-1 info-2";
+        "id info";
 
     overflow: visible;
     margin: var(--border-margins);
@@ -71,15 +71,11 @@
     grid-area: id;
 }
 
-#data-info-1{
-    grid-area: info-1;
+#data-info{
+    grid-area: info;
 
 }
 
-#data-info-2{
-    grid-area: info-2;
-
-}
 
 
 .view1{
@@ -268,7 +264,7 @@
 
 #data-id{
     position: relative;
-    text-align: center;
+    text-align: right;
     top:5%;
     padding-right:20px;
     width: auto;
@@ -278,7 +274,7 @@
     font-family: "Avenir Next";
 }
 
-#data-info-1, #data-info-2{
+#data-info{
     position: relative;
     text-align: left;
     margin:3px;
@@ -296,7 +292,7 @@
     font-weight:bold;
 }
 
-#data-info-1 p, #data-info-2 p{
+#data-info p{
     margin: 0;
     padding: 0;
     /* line-height: 20px; */
