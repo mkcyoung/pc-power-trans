@@ -521,7 +521,10 @@ class PowNet {
         
         }, true);
 
+        
+    }
 
+    handleZoom(){
 
         // HANDLING ZOOMING BASED ON SVG SIZE
 
@@ -539,7 +542,7 @@ class PowNet {
 
         // Get bounds of net group
         let gBox = d3.select('.net-group').node().getBBox();
-        console.log("gbox",gBox)
+        // console.log("gbox",gBox)
         let x0 = gBox.x;
         let x1 = gBox.x + gBox.width;
         let y0 = gBox.y;
@@ -547,7 +550,7 @@ class PowNet {
 
         // calculate new scale
         let k = Math.min(8, 0.9 / Math.max((gBox.width) / (newWidth), (gBox.height) / newHeight))
-        console.log("scale",k)
+        // console.log("scale",k)
         // Adding zoom
 
         const zoom = d3.zoom()
@@ -574,9 +577,6 @@ class PowNet {
             
                         
         }
-        
-
-        
     }
 
     removeNet(){

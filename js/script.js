@@ -285,6 +285,7 @@ Promise.all([
     powNetwork.createTooltip();
     powNetwork.updateNet();
     powNetwork.createLine();
+    powNetwork.handleZoom();
 
     // Adding reference to table
     table.transNet = transNetwork;
@@ -316,90 +317,14 @@ Promise.all([
         transNetwork.createNet()
         transNetwork.updateNet()
 
+        // time bar
+        transNetwork.drawTimeBar()
+
+
+        //powernetwork
         powNetwork.createNet()
         powNetwork.updateNet()
-
-        //Zoom .net-group so it's in a good spot and the user doesn't need to manually adjust every time
-        // I don't think I need to zoom here... just calculate and apply the correct transformation
-
-        // Get bounds of net group
-        let gBox = d3.select('.net-group').node().getBBox();
-        console.log("gbox",gBox)
-        let x0 = gBox.x;
-        let x1 = gBox.x + gBox.width;
-        let y0 = gBox.y;
-        let y1 = gBox.y + gBox.height;
-
-        // calculate new scale
-        let k = Math.min(8, 0.9 / Math.max((gBox.width) / (newWidth), (gBox.height) / newHeight))
-        console.log("scale",k)
-
-        //calculate x and y translation
-        
-        //For zooming feature
-        const zoom = d3.zoom()
-            .on("zoom", zoomed);
-
-        d3.select(".netsvg").transition().duration(750).call(
-            zoom.transform,
-            d3.zoomIdentity
-              .translate(newWidth / 2, newHeight / 2)
-              .scale(k)
-              .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
-        );
-
-        function zoomed() {
-            console.log("here:",d3.event.transform)
-            let transform = d3.event.transform;
-            d3.select('.net-group').attr("transform",transform.toString())
-                        
-        }
-
-        // // Adding zoom
-        // d3.select(".netsvg").call(d3.zoom()
-        //     // .extent([[0, 0], [this.width, this.height]])
-        //     // .scaleExtent([1, 8])
-        //     // .transform()
-        //     .on("zoom", zoomed));
-
-
-        // function zoomed() {
-            // let transform = d3.event.transform;
-            // I want to somehow place this box in the middle of the div with the correct scale and translation
-            // console.log(d3.zoomTransform(d3.select('.netsvg').node()).invert([1600,newHeight / 2]))
-            // d3.select('.net-group').attr("transform","translate("+ x + "," + y + ")" + "scale("+ k + ")")
-                 
-        // }
-
-        // d3.select('.netsvg').transition().duration(500).call(
-        //     zoom.transform,
-        //     d3.zoomIdentity,
-        //     // d3.zoomTransform(d3.select('.netsvg').node()).invert([1600,newHeight / 2])
-        //     d3.zoomTransform(d3.select('.netsvg').node()).invert([100,100])
-
-        // )
-
-        
-        
-        
-
-        // mapSVG.transition().duration(750).call(
-        //     zoom.transform,
-        //     d3.zoomIdentity,
-        //     d3.zoomTransform(mapSVG.node()).invert([that.width / 2, that.height / 2]),
-        //   );
-
-
-        // const [[x0, y0], [x1, y1]] = that.path_States.bounds(d);
-        // d3.event.stopPropagation();
-        // mapSVG.transition().duration(750).call(
-        // zoom.transform,
-        // d3.zoomIdentity
-        //     .translate(that.width / 2, that.height / 2)
-        //     .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / (that.width-600), (y1 - y0) / that.height)))
-        //     .translate((-(x0 + x1) / 2) - 50, -(y0 + y1) / 2),
-        // d3.mouse(mapSVG.node())
-        // );
+        powNetwork.handleZoom()
         
     }
 

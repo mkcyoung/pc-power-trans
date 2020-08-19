@@ -753,68 +753,7 @@ class TransNet {
             .style("left","1220px") //(d3.event.pageX+30)
             .style("top", "235px"); //(d3.event.pageY-80)
         
-        //Want to removes netlines
-        // d3.selectAll(".netlineclick").remove();
-        // d3.selectAll(".netline").remove();
-
-        // //Creating lines that connect node to power station
-        // let lineFunction = d3.line()
-        //     .x(function(d){
-        //         return d.x;
-        //     })
-        //     .y(function(d){
-        //         return d.y;
-        //     });
-        
-        // let line_data = null;
-        // let line_data2 = null;
-        
-        // switch(parseInt(d.StationID)){
-        //     case 1:
-        //        line_data = that.lineOTTC;
-        //        line_data2 = that.lineOTTC2;
-        //        break;
-        //     case 2:
-        //         line_data = that.lineKJTC;
-        //         line_data2 = that.lineKJTC2;
-        //         break;
-        //     case 3:
-        //         line_data = that.lineCTH;
-        //         line_data2 = that.lineCTH2;
-        //         break;
-        //     case 4:
-        //         line_data = that.lineJRPR;
-        //         line_data2 = that.lineJRPR2;
-        //         break;
-        //     case 5:
-        //         line_data = that.lineKPR;
-        //         line_data2 = that.lineKPR2;
-        //         break;
-        //     case 6:
-        //         line_data = that.lineEH;
-        //         line_data2 = that.lineEH2;
-        //         break;
-        //     case 7:
-        //         line_data = that.lineGS;
-        //         line_data2 = that.lineGS2;
-        //         break;
-                
-        // }
-
-    //     //Path to trans
-    //     let path = that.lineLayer.append("path")
-    //         .attr("class","netlineclick")
-    //         .attr("stroke","black")
-    //         .attr("stroke-width",0.5)
-    //         .attr("fill","none")
-    //         .attr("d",lineFunction(line_data));
-
-    //     let path2 = that.lineLayer.append("path")
-    //         .attr("class","netlineclick")
-    //         .attr("stroke","black")
-    //         .attr("stroke-width",0.5)
-    //         .attr("fill","none")
-    //         .attr("d",lineFunction(line_data2));
+       
     }
 
       /**
@@ -823,21 +762,34 @@ class TransNet {
     drawTimeBar() {
         let that = this;
 
+        //remove time bar if one exists
+        d3.select('.slider-wrap').remove();
+
+        // Get bounds of div
+        let gBox = d3.select('.viewsHead').node().getBoundingClientRect();
+        console.log("gbox",gBox)
+
+        let margin = 30;
+
         //Slider to change the activeTime of the data
         //May want to adjust these values later
-        let timeScale = d3.scaleLinear().domain([1, 287]).range([30, 730]);
+        let timeScale = d3.scaleLinear().domain([0, 287]).range([10, gBox.width-45]);
 
         let timeSlider = d3.select('#activeTime-bar')
             .append('div').classed('slider-wrap', true)
+            .attr("width",gBox.width-margin)
             .append('input').classed('slider', true)
+            .style("width",`${gBox.width-margin}px`)
             .attr('type', 'range')
-            .attr('min', 1)
+            .attr('min', 0)
             .attr('max', 287)
             .attr('value', this.activeTime);
 
         let sliderLabel = d3.select('.slider-wrap')
             .append('div').classed('slider-label', true)
-            .append('svg');
+            .attr("width",gBox.width-margin)
+            .append('svg')
+            .attr("width",gBox.width-margin);
 
         let sliderText = sliderLabel.append('text').text(this.activeTime);
 
