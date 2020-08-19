@@ -323,19 +323,20 @@ class TransNet {
             .style("align-items","center")
             .style("justify-content","center");
 
-         //make Station tooltip div
-         d3.select(".view1")
-         .append("div")
-         .attr("class", "s_tooltip")
-         .attr("id","s_tooltip_click")
-         .style("opacity", 0);
+        //  //make Station tooltip div
+        //  d3.select(".data-panel")
+        //     .append("div")
+        //     .attr("class", "s_tooltip")
+        //     .attr("id","s_tooltip_click")
+        //     .style("opacity", 0);
 
-        //make Station tooltip div
-        d3.select(".view1")
-            .append("div")
-            .attr("class", "s_tooltip")
-            .attr("id","s_tooltip")
-            .style("opacity", 0);
+
+        // //make Station tooltip div
+        // d3.select(".data-panel")
+        //     .append("div")
+        //     .attr("class", "s_tooltip")
+        //     .attr("id","s_tooltip")
+        //     .style("opacity", 0);
 
         //Draw time bar
         this.drawTimeBar();
@@ -373,12 +374,12 @@ class TransNet {
             //tooltip + linked styling when hovered over
             .on("mouseover", function (d) {
                 // Highlights tooltip
-                d3.select("#s_tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(200)
                     .style("opacity", 0.9);
-                d3.select("#s_tooltip").html(that.tooltipRenderS(d))
-                    .style("left","1220px") //(d3.event.pageX+30)
-                    .style("top", "235px"); //(d3.event.pageY-80)
+                d3.select("#data-id").html(that.tooltipRenderID(d))
+                d3.select("#data-info-1").html(that.tooltipRenderINFO_STATION(d))
+                d3.select("#data-info-2").html(that.tooltipRenderINFO_POWER(d))
                 // Checks first to see if its been clicked 
                 if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
                     d3.selectAll("."+d.StationNode.id)
@@ -391,7 +392,7 @@ class TransNet {
             })
             .on("mouseout", function (d) {
                 // De-highlights tooltip
-                d3.select("#s_tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(500)
                     .style("opacity", 0);
                 if (!d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
@@ -578,12 +579,12 @@ class TransNet {
             .attr("d",d => lineFunction(d.line))
             .on("mouseover",function(d){
                 // Brings up tooltip
-                d3.select("#s_tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(200)
                     .style("opacity", 0.9);
-                d3.select("#s_tooltip").html(that.tooltipRenderS(d))
-                    .style("left","1220px") //(d3.event.pageX+30)
-                    .style("top", "235px"); 
+                d3.select("#data-id").html(that.tooltipRenderID(d))
+                d3.select("#data-info-1").html(that.tooltipRenderINFO_STATION(d))
+                d3.select("#data-info-2").html(that.tooltipRenderINFO_POWER(d))
 
                 // Checks first to see if its been clicked 
                 if (!d3.select(this).classed("clicked-line")){
@@ -598,7 +599,7 @@ class TransNet {
             })
             .on("mouseout",function(d){
                 //De-highlighting of nodes and tooltip
-                d3.select("#s_tooltip").transition()
+                d3.selectAll(".info-panel").transition()
                     .duration(500)
                     .style("opacity", 0);
                     
@@ -750,8 +751,8 @@ class TransNet {
             .duration(200)
             .style("opacity", 1);
         d3.select("#s_tooltip_click").html(this.tooltipRenderS(d))
-            .style("left","1220px") //(d3.event.pageX+30)
-            .style("top", "235px"); //(d3.event.pageY-80)
+            // .style("left","1220px") //(d3.event.pageX+30)
+            // .style("top", "235px"); //(d3.event.pageY-80)
         
        
     }
@@ -1185,6 +1186,37 @@ class TransNet {
         text = text + "<p> Active Power : "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
         text = text + "<p> Active Load : "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
         text = text + "<p> Voltage : "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
+        return text;
+    }
+
+    tooltipRenderID(data,time){
+        time = this.activeTime;
+        // console.log(this.stationColor(data['StationNode'].id))
+        // this.stationColor
+        let that = this;
+        let text = null;
+        // console.log(data)
+        text = `<h3 style = color:${this.stationColor(data['StationNode'].id)}>` + data.StationName + " ("+ data.StationNode.id +")</h3>";
+        return text;
+    }
+
+    tooltipRenderINFO_STATION(data,time){
+        time = this.activeTime;
+        let that = this;
+        let text = '';
+        //Adds in relevant data
+        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p>";
+        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
+        return text;
+    }
+
+    tooltipRenderINFO_POWER(data,time){
+        time = this.activeTime;
+        let that = this;
+        let text = '';
+        //Adds in relevant data
+        text = text + "<p> <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;
     }
 

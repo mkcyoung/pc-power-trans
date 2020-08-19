@@ -3,30 +3,10 @@
     font-family: "Avenir Next";
     max-width: 3200px;
 
-    /* margin-right: auto; 
-    margin-left:  auto;  */
     display: grid;
-    /* grid-template-columns: repeat(2, 450px) 200px 750px; */
-    /* grid-template-columns: 450px 525px 500px 600px; */
-    /* grid-template-columns: 600px 600px 600px; */
     grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
-    /* grid-template-rows: 0.5fr 125px 200px 200px 200px 200px 400px; */
     grid-template-rows: repeat(minmax(0, 1fr),12);
     grid-template-areas: 
-            /* "title title title title "
-            "slider slider slider slider"
-            "power power power table1 "
-            "power power power table1 "
-            "power power power table1  "
-            "power power power table1 "
-            "info info info table1"; */
-            /* "title title title title "
-            "slider slider slider slider "
-            "info power power table1 "
-            "info power power table1 "
-            "info power power table1 "
-            "info power power table1 "
-            "info link-info link-info bus-info "; */
             "station-info title bus-info"
             "station-info slider bus-info"
             "station-info data-panel bus-info "
@@ -63,17 +43,44 @@
 
 }
 
-
-
 .masthead{
     position:relative;
-    overflow: scroll;
+    overflow: auto;
     grid-area: title;
-    font-size: 40px;
+    font-size: 38px;
     /* margin: 1px; */
     text-align: center;
     font-weight: normal;
 }
+
+.data-panel{
+    grid-area: data-panel;
+    display:grid;
+    grid-template-columns:repeat(minmax(0,1fr),3);
+    grid-template-rows: 1fr;
+    grid-template-areas:
+        "id info-1 info-2";
+
+    overflow: visible;
+    margin: var(--border-margins);
+    /* border: var(--border-width)solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
+}
+
+#data-id{
+    grid-area: id;
+}
+
+#data-info-1{
+    grid-area: info-1;
+
+}
+
+#data-info-2{
+    grid-area: info-2;
+
+}
+
 
 .view1{
     /* position:relative; */
@@ -100,23 +107,10 @@
     overflow: visible;
     grid-area: slider;
     margin:var(--border-margins);
-    border: var(--border-width)solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
+    /* border: var(--border-width)solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
 }
 
-/* .view3{
-    grid-area: info;
-} */
-
-.dataPanel{
-    overflow: scroll;
-    grid-area: data-panel;
-    height: 50px;
-    margin: var(--border-margins);
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
-
-}
 
 .station-charts{
     /* position:relative; */
@@ -272,31 +266,43 @@
     color: #81849a;
 }
 
-.s_tooltip{
-    position: absolute;
-    text-align: right;
-    width: 250px;
+#data-id{
+    position: relative;
+    text-align: center;
+    top:5%;
+    padding-right:20px;
+    width: auto;
     height: auto;
-    padding: 2px;
-    background: rgb(255, 255, 255);
-    stroke: gray;
+    background: rgba(255, 255, 255, 0);
+    pointer-events: none;
+    font-family: "Avenir Next";
+}
+
+#data-info-1, #data-info-2{
+    position: relative;
+    text-align: left;
+    margin:3px;
+    width: auto;
+    height: auto;
+    /* padding: 2px; */
     border-radius: 2px;
     pointer-events: none;
     font-family: "Avenir Next";
 }
 
-.s_tooltip h3{
-    margin: auto;
+#data-id h3{
+    /* padding: auto; */
     font-size: 40px;
-    font-weight:bolder;
-    color: #484b5a;
+    font-weight:bold;
 }
 
-.s_tooltip p{
-    margin: auto;
-    font-size: 20px;
-    font-weight: bolder;
-    color: #81849a;
+#data-info-1 p, #data-info-2 p{
+    margin: 0;
+    padding: 0;
+    /* line-height: 20px; */
+    font-size: 18px;
+    font-weight: normal;
+    color: #808080;
 }
 
 .net_headers{
@@ -444,7 +450,7 @@ tbody tr:hover{
 .slider {
     -webkit-appearance: none;
     /* width: 725px; */
-    height: 15px;
+    height: 10px;
     border-radius: 5px;
     background: #d3d3d3;
     outline: none;
@@ -459,10 +465,10 @@ tbody tr:hover{
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: rgb(97, 76, 175);
+    background: rgb(39, 101, 216);
     cursor: pointer;
 }
 
