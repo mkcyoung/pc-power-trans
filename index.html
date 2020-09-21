@@ -22,7 +22,7 @@
     <!-- <div class="masthead">Park City Power & Transportation Network</div> -->
     <div class="masthead">
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #7ab3a0;">
-            <a class="navbar-brand" href="#" style="font-size: 43px; font-weight: bolder;">
+            <a class="navbar-brand" href="#" style="font-size: 43px; font-weight: bold;">
                 <img src="/icons/BlockU_redweb.png" width="60" height="60" class="d-inline-block align-top" alt="" loading="lazy">
                 Park City Power & Transportation Network
             </a>
@@ -31,10 +31,18 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div class="navbar-nav ml-auto">
-                <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-                <a class="nav-link" href="#">Features</a>
-                <a class="nav-link" href="#">Pricing</a>
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      select view
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="#">power view</a>
+                      <a class="dropdown-item active" href="#">transit view</a>
+                      <a class="dropdown-item" href="#">power + transit view</a>
+                    </div>
+                </li>
+                <a class="nav-link" href="#">about</a>
+                <a class="nav-link" href="#">contact us</a>
               </div>
             </div>
           </nav>

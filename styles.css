@@ -39,7 +39,7 @@
     /* --canvas-color: #e3e3e3 */
     --canvas-color: white;
     --border-margins: 2px;
-    --border-width: 3px;
+    --border-width: 1px;
     --border-radius: 5px;
 
 }
@@ -48,7 +48,7 @@
     position:relative;
     overflow: auto;
     grid-area: title;
-    font-size: 35px;
+    font-size: 30px;
     /* margin: 1px; */
     text-align: center;
     font-weight: normal;
