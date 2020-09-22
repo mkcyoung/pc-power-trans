@@ -266,7 +266,7 @@ Promise.all([
     }
 
 
-    let time = 0;
+    let time = 50;
     // Pass data into table object
     let table = new Table(bebs,transNet,time,null,updateTime)
     table.createTable();
@@ -277,13 +277,13 @@ Promise.all([
     transNetwork.createNet();
     transNetwork.createSlider();
     transNetwork.updateNet();
-    transNetwork.createLine();
+    // transNetwork.createLine();
     
     /** Pass data into PowNet class */
     let powNetwork = new PowNet(powNet,time,transNetwork,bebs,table);
     powNetwork.createNet();
     powNetwork.updateNet();
-    powNetwork.createLine();
+    // powNetwork.createLine();
     powNetwork.handleZoom();
 
     // Adding reference to table
@@ -316,18 +316,7 @@ Promise.all([
 
     }
     else if (target == 'transit'){
-        // show just the relevant transit system charts
-        console.log("TRANSIT")
-        transNetwork.removeCharts()
-        transNetwork.createTransitCharts()
-        table.createBusLines()
-
-        // console.log(table.clickedBusses)
-        if (table.clickedBusses.length != 0){
-            table.updateLine()
-        }
-        //TODO - implement clicked stations for transnet
-        // transNetwork.updateLine()
+        display_transit();
 
 
     }
@@ -399,18 +388,7 @@ Promise.all([
         }
         else if (target == 'transit'){
             // show just the relevant transit system charts
-            console.log("TRANSIT")
-            transNetwork.removeCharts()
-            transNetwork.createTransitCharts()
-            table.createBusLines()
-
-            console.log(table.clickedBusses)
-            if (table.clickedBusses.length != 0){
-                table.updateLine()
-            }
-            //TODO - implement clicked stations for transnet
-            // transNetwork.updateLine()
-
+            display_transit();
 
         }
         else if (target == 'both'){
@@ -447,14 +425,7 @@ Promise.all([
 
         }
         else if (target == 'transit'){
-            // show just the relevant transit system charts
-            console.log("TRANSIT")
-            transNetwork.removeCharts()
-            transNetwork.createTransitCharts()
-            table.createBusLines()
-
-            //TODO - input active stuff if any is selected
-
+            display_transit();
 
         }
         else if (target == 'both'){
@@ -463,6 +434,28 @@ Promise.all([
         }
         
     });
+
+    function display_transit(){
+        // show just the relevant transit system charts
+        console.log("TRANSIT")
+        transNetwork.removeCharts()
+        // transNetwork.createTransitCharts()
+        // table.createBusLines()
+        let row1_div = ['.chart-1-col1','.chart-1-col2']
+        let row2_div = ['.chart-2-col1','.chart-2-col2']
+        let row3_div = ['.chart-3']
+        // pass in correct div levels
+        transNetwork.createTransitCharts(row1_div,row3_div)
+        // table.createBusLines(row2_div)
+
+        // console.log(table.clickedBusses)
+        if (table.clickedBusses.length != 0){
+            table.updateLine()
+        }
+        //TODO - implement clicked stations for transnet
+        // transNetwork.updateLine()
+
+    }
 
 
 });

@@ -39,15 +39,15 @@
             "slider slider  chart-1"
             "table1 data-panel chart-1"
             "table1 data-panel  chart-1"
-            "table1 data-panel chart-2"
+            "table1 data-panel chart-1"
             "table1 data-panel  chart-2"
+            "power power chart-2"
+            "power power chart-2"
             "power power chart-2"
             "power power chart-3"
             "power power chart-3"
             "power power chart-3"
-            "power power chart-4"
-            "power power chart-4"
-            "power power chart-4";
+            "power power chart-3";
     /* width: 100vw;
     height: 100vh; */
     width: 100vw;
@@ -139,9 +139,21 @@
     border-radius: var(--border-radius) var(--border-radius); */
 }
 
-/* CHARTS */
+/* CHARTS:
+Will use a nested logic to break up charts:
+chart-1 represents whole area
+chart-1 has a grid which splits into two halves
+chart-1-half then has another grid which splits it up again
 
+Each chart-variable has its own class and dynamically gets assigned 
+to new grid areas based on what view is selected */
 
+/* Chart 1:
+Transit View: acitve power / reactive power
+Power View: acive load / reactive load
+Both: active load / reactive load
+    active pflow / reactive pflow
+ */
 .chart-1{
     /* position:relative; */
     /* border: var(--border-width) solid var(--border-color);
@@ -150,8 +162,65 @@
     grid-area: chart-1;
     margin: var(--border-margins);
     padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:1fr;
+    grid-template-areas:
+        "chart-1-col1 chart-1-col2";
+
 }
 
+.chart-1-col1{
+    overflow: auto;
+    grid-area: chart-1-col1;
+    margin: var(--border-margins);
+    padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+        "chart-1-col1-row1" 
+        "chart-1-col1-row2";
+}
+
+.chart-1-col2{
+    overflow: auto;
+    grid-area: chart-1-col2;
+    margin: var(--border-margins);
+    padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+        "chart-1-col2-row1" 
+        "chart-1-col2-row2";
+}
+
+.chart-1-col1-row1{
+    display:none;
+    grid-area:chart-1-col1-row1
+}
+.chart-1-col1-row2{
+    display:none;
+    grid-area:chart-1-col1-row2
+}
+.chart-1-col2-row1{
+    display:none;
+    grid-area:chart-1-col1-row1
+}
+.chart-1-col2-row2{
+    display:none;
+    grid-area:chart-1-col1-row2
+}
+
+
+
+/* Chart 2:
+Transit View: BEB energy / BEB power
+Power View: Active pflow / reactive pflow
+Both: current / voltage
+    active power / reactive power
+ */
 .chart-2{
     /* position:relative; */
     /* border: var(--border-width) solid var(--border-color);
@@ -162,6 +231,12 @@
     padding: var(--chart-paddding);
 }
 
+/* Chart 3:
+Transit View: BEB count
+Power View: current / voltage
+Both: BEB energy / BEB power
+    BEB count
+ */
 .chart-3{
     /* position:relative; */
     /* border: var(--border-width) solid var(--border-color);
@@ -172,15 +247,12 @@
     padding: var(--chart-paddding);
 }
 
-.chart-4{
-    /* position:relative; */
-    /* border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius); */
+/* .chart-4{
     overflow: auto;
     grid-area: chart-4;
     margin: var(--border-margins);
     padding: var(--chart-paddding);
-}
+} */
 
 
 

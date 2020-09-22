@@ -34,6 +34,20 @@ class TransNet {
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
 
+        // Bus count chart margins - they will be different always 
+        //Margins - the bostock way - line chart
+        // Gets new sizes and sets new canvas dimensions
+        let chart3 = d3.select('.chart-3').node().getBoundingClientRect()
+        // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
+
+        //Margins - the bostock way - bus count line chart
+        this.busCountHeight = chart3.height-10;
+        this.busCountWidth = chart3.width-5;
+        this.busCountMargin = {top: 30, right: 10, bottom: 30, left: 60};
+        this.busCountMarginWidth = this.busCountWidth - this.busCountMargin.left - this.busCountMargin.right;
+        this.busCountMarginHeight = this.busCountHeight - this.busCountMargin.top-this.busCountMargin.bottom; 
+        
+
         this.clicked = null; //my click selection - used for updating tooltip later
         this.clickedStations = []; // using this for implementing multiple station click functionality 
 
@@ -142,10 +156,11 @@ class TransNet {
         // console.log(min_aload,max_aload)
         // Scales for line chart
         this.powLoadLineScale = d3.scaleLinear().domain([min_chsp,max_chsp]).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.timeScale = d3.scaleLinear().domain([1,288]) //.range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.busTimeScale = d3.scaleLinear().domain([1,288]).range([this.busCountMargin.left,this.busCountMargin.left+this.busCountMarginWidth]);
         this.aLoadLineScale = d3.scaleLinear().domain([0,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.busLineScale = d3.scaleLinear().domain([min_bus_count,max_bus_count]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.busLineScale = d3.scaleLinear().domain([min_bus_count,max_bus_count]).range([this.busCountMarginHeight+this.busCountMargin.top,this.busCountMargin.top]);
 
         //Setting custom max because the first node skews it - have this for color setting
         this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,300])
@@ -696,7 +711,7 @@ class TransNet {
             that.clicked = null;
             // that.table.clickedBusses = [];
             // that.powNet.clickedLinks = [];
-            
+
             // removes all clicked stations
             that.clickedStations = []
 
@@ -831,29 +846,47 @@ class TransNet {
     }
 
 
-    updateChartSize(){
+    updateChartSize(bounding_div,is_bus=false){
+        // Everything will have same dimensions besides the bus count - 
+        // So will make unique bus count variables 
+
+
         // Gets new sizes and sets new canvas dimensions
-        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        let chart = d3.select(bounding_div).node().getBoundingClientRect()
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
-        //Margins - the bostock way - line chart
-        this.lineHeight = chart1.height-10;
-        this.lineWidth = chart1.width-5;
-        this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
-        this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
+        let that = this
+        if (is_bus == true){
+            
+            //Margins - the bostock way - bus count line chart
+            that.busCountHeight = chart.height-10;
+            that.busCountWidth = chart.width-5;
+            that.busCountMarginWidth = that.busCountWidth - that.busCountMargin.left - that.busCountMargin.right;
+            that.busCountMarginHeight = that.busCountHeight - that.busCountMargin.top-that.busCountMargin.bottom; 
 
-        // Tackles scaling
-        // Scales for line chart - need to rescale because we changed sizes
-        this.powLoadLineScale = this.powLoadLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.timeScale = this.timeScale.range([this.marginL.left,this.marginL.left+this.widthL]);
-        this.aLoadLineScale = this.aLoadLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.voltLineScale = this.voltLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.busLineScale = this.busLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+            that.busLineScale = that.busLineScale.range([that.busCountMarginHeight+that.busCountMargin.top,that.busCountMargin.top]);
+            that.busTimeScale = that.busTimeScale.range([that.busCountMargin.left,that.busCountMargin.left+that.busCountMarginWidth]);
 
+        }
+        else{
+            //Margins - the bostock way - line chart
+            // console.log(chart.height,chart.width)
+            that.lineHeight = chart.height-10;
+            that.lineWidth = chart.width-5;
+            that.widthL = that.lineWidth - that.marginL.left - that.marginL.right;
+            that.heightL = that.lineHeight - that.marginL.top-that.marginL.bottom;
 
+            // Tackles scaling
+            // Scales for line chart - need to rescale because we changed sizes
+            that.powLoadLineScale = that.powLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
+            that.timeScale = that.timeScale.range([that.marginL.left,that.marginL.left+that.widthL]);
+            that.aLoadLineScale = that.aLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
+            that.voltLineScale = that.voltLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
+
+        }
     }
 
     // Function to handle transit view charts - just putting up axes and everything
-    createTransitCharts(){
+    createTransitCharts(Power_divs,BusCount_divs){
         // I want to have all lines show up, and then have the user able to select them in 
         // the same way they select the nodes and connections 
         // Strategy will be to render lines in light gray first, then have them colored on highlight 
@@ -862,55 +895,125 @@ class TransNet {
 
         // Line chart height and width - need to set this dynamically to bounding box
 
-        // dynamically adjusts width and height
-        this.updateChartSize()
+        // FIRST DO POWER, THEN DO BUS COUNT - THEY HAVE DIFFERENT SIZES
+        // dynamically adjusts width and height TODO: need this bounding to dynamically 
+        // change based on current view
+        this.updateChartSize(Power_divs[0])
         // console.log(this.lineHeight)
         // console.log(this.lineWidth)
         let line_height = this.lineHeight //this.lineHeight; //300
         let line_width = this.lineWidth //this.lineWidth; //700
 
-        let APSvg = d3.select(".chart-1").append("svg")
+        // let APSvg = d3.select(".chart-1").append("svg")
+        let APSvg = d3.select(Power_divs[0]).append("svg")
             .attr("class","APSvg")
             .attr("height",line_height)
             .attr("width",line_width);
 
-        let BusSvg = d3.select(".chart-2").append("svg")
-            .attr("class","BusSvg")
+        // Reactive power
+        let RPSvg = d3.select(Power_divs[1]).append("svg")
+            .attr("class","RPSvg")
             .attr("height",line_height)
             .attr("width",line_width);
-        
+
 
         //Create an active power chart group
         let APStatSvg = APSvg.append("g");
+        let RPStatSvg = RPSvg.append("g");
             // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
 
-        //Create a bus count chart group
-        let BusStatSvg = BusSvg.append("g");
 
-        // //Create label for group
-        // APStatSvg.append("text")
-        //     .attr("class","chart-text")
-        //     .attr("x",line_width-160)
-        //     .attr("y",60);
-
-        // BusStatSvg.append("text")
-        //     .attr("class","chart-text")
-        //     .attr("x",490)
-        //     .attr("y",360);
 
         //Create labels for axes
         // Active power
         APStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 120)
             .attr("y",20)
-            .text("active power (kW)");
+            .text("charging station active power (kW)");
         
         APStatSvg.append("text")
             .attr("class","axis-text")
             .attr("x",10)
             .attr("y",line_height-5)
             .text("time");
+
+        RPStatSvg.append("text")
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("y",20)
+            .text("charging station reactive power (kW)");
+        
+        RPStatSvg.append("text")
+            .attr("class","axis-text")
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
+
+
+        let yScaleAP = this.powLoadLineScale;
+        let yScaleRP = yScaleAP; // TODO change when get data
+        console.log(this.timeScale.range(),line_width)
+        let xScale = this.timeScale;
+
+        //Xaxis group
+        let xAxis = d3.axisBottom().ticks(6);
+        xAxis.scale(xScale);
+
+
+        let yAxisAP = d3.axisLeft().ticks(3);
+        yAxisAP.scale(yScaleAP);
+        let yAxisRP = d3.axisLeft().ticks(3);
+        yAxisAP.scale(yScaleRP);
+
+
+        //X-axis
+        APStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+
+        RPStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+
+
+        //Y-axis
+        APStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisAP);
+        RPStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisAP);
+
+
+        //Drawing path
+        APStatSvg.append("path")
+            .attr("class","line-AP line-path");
+
+        RPStatSvg.append("path")
+            .attr("class","line-RP line-path");
+
+
+
+
+        // NOW HANDLE THE BUS, MAKE SURE TO UPDATE CHART SIZE WITH APPROPRIATE DIV
+        this.updateChartSize(BusCount_divs[0],true)
+        line_height = this.busCountHeight //this.lineHeight; //300
+        line_width = this.busCountWidth 
+
+        // let BusSvg = d3.select(".chart-2").append("svg")
+        let BusSvg = d3.select(BusCount_divs[0]).append("svg")
+            .attr("class","BusSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+        
+
+        //Create a bus count chart group
+        let BusStatSvg = BusSvg.append("g");
 
         // Bus count
         BusStatSvg.append("text")
@@ -927,19 +1030,17 @@ class TransNet {
 
         
         // Scales for line chart
-        let yScaleAP = this.powLoadLineScale;
+        
         let yScaleBus = this.busLineScale;
 
-        let xScale = this.timeScale;
+        xScale = this.busTimeScale;
 
 
         //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
+        xAxis = d3.axisBottom().ticks(6);
         xAxis.scale(xScale);
 
         //Y axis group
-        let yAxisAP = d3.axisLeft().ticks(3);
-        yAxisAP.scale(yScaleAP);
         let yAxisBus = d3.axisLeft().ticks(3);
         yAxisBus.scale(yScaleBus);
 
@@ -960,26 +1061,18 @@ class TransNet {
         //     );
 
         //X-axis
-        APStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-            .call(xAxis);
 
         BusStatSvg.append("g")
             .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .attr("transform",`translate(${0},${this.busCountMarginHeight+this.busCountMargin.top})`)
             .call(xAxis);
         
 
         //Y-axis
-        APStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisAP);
         
         BusStatSvg.append("g")
             .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .attr("transform",`translate(${this.busCountMargin.left},${0})`)
             .call(yAxisBus);
 
         
@@ -993,8 +1086,6 @@ class TransNet {
         //     .y(d => this.powLoadLineScale(d.value));
 
         //Drawing path
-        APStatSvg.append("path")
-            .attr("class","line-AP line-path");
 
         BusStatSvg.append("path")
             .attr("class","line-Bus line-path");
@@ -1185,271 +1276,271 @@ class TransNet {
 
 
 
-    /** Creates all power line charts */
-    createLine(){
-        //console.log("data in line:",this.data.nodes[0])
+    // /** Creates all power line charts */
+    // createLine(){
+    //     //console.log("data in line:",this.data.nodes[0])
 
-        // I want to have all lines show up, and then have the user able to select them in 
-        // the same way they select the nodes and connections 
-        // Strategy will be to render lines in light gray first, then have them colored on highlight 
+    //     // I want to have all lines show up, and then have the user able to select them in 
+    //     // the same way they select the nodes and connections 
+    //     // Strategy will be to render lines in light gray first, then have them colored on highlight 
 
-        let that = this;
+    //     let that = this;
 
-        // Line chart height and width
-        let line_height = this.lineHeight; //300
-        let line_width = this.lineWidth; //700
+    //     // Line chart height and width
+    //     let line_height = this.lineHeight; //300
+    //     let line_width = this.lineWidth; //700
 
-        //Create line chart svgs for all the metrics
-        let ALSvg = d3.select(".node-charts").append("svg")
-            .attr("class","ALSvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
+    //     //Create line chart svgs for all the metrics
+    //     let ALSvg = d3.select(".node-charts").append("svg")
+    //         .attr("class","ALSvg")
+    //         .attr("height",line_height)
+    //         .attr("width",line_width);
 
-        let VoltSvg = d3.select(".node-charts").append("svg")
-            .attr("class","VoltSvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
+    //     let VoltSvg = d3.select(".node-charts").append("svg")
+    //         .attr("class","VoltSvg")
+    //         .attr("height",line_height)
+    //         .attr("width",line_width);
 
-        let APSvg = d3.select(".station-charts").append("svg")
-            .attr("class","APSvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
+    //     let APSvg = d3.select(".station-charts").append("svg")
+    //         .attr("class","APSvg")
+    //         .attr("height",line_height)
+    //         .attr("width",line_width);
 
-        let BusSvg = d3.select(".station-charts").append("svg")
-            .attr("class","BusSvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
+    //     let BusSvg = d3.select(".station-charts").append("svg")
+    //         .attr("class","BusSvg")
+    //         .attr("height",line_height)
+    //         .attr("width",line_width);
         
 
-        //Create an active power chart group
-        let APStatSvg = APSvg.append("g");
-            // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
+    //     //Create an active power chart group
+    //     let APStatSvg = APSvg.append("g");
+    //         // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
 
-        //Create an active load chart group
-        let ALStatSvg = ALSvg.append("g");
+    //     //Create an active load chart group
+    //     let ALStatSvg = ALSvg.append("g");
 
-        //Create an voltage chart group
-        let VStatSvg = VoltSvg.append("g");
+    //     //Create an voltage chart group
+    //     let VStatSvg = VoltSvg.append("g");
 
-        //Create a bus count chart group
-        let BusStatSvg = BusSvg.append("g");
+    //     //Create a bus count chart group
+    //     let BusStatSvg = BusSvg.append("g");
 
-        //Create label for group
-        APStatSvg.append("text")
-            .attr("class","chart-text")
-            .attr("x",line_width-160)
-            .attr("y",60);
+    //     //Create label for group
+    //     APStatSvg.append("text")
+    //         .attr("class","chart-text")
+    //         .attr("x",line_width-160)
+    //         .attr("y",60);
 
-        // ALStatSvg.append("text")
-        //     .attr("class","chart-text")
-        //     .attr("x",490)
-        //     .attr("y",360);
+    //     // ALStatSvg.append("text")
+    //     //     .attr("class","chart-text")
+    //     //     .attr("x",490)
+    //     //     .attr("y",360);
 
-        // VStatSvg.append("text")
-        //     .attr("class","chart-text")
-        //     .attr("x",490)
-        //     .attr("y",360);
+    //     // VStatSvg.append("text")
+    //     //     .attr("class","chart-text")
+    //     //     .attr("x",490)
+    //     //     .attr("y",360);
 
-        // BusStatSvg.append("text")
-        //     .attr("class","chart-text")
-        //     .attr("x",490)
-        //     .attr("y",360);
+    //     // BusStatSvg.append("text")
+    //     //     .attr("class","chart-text")
+    //     //     .attr("x",490)
+    //     //     .attr("y",360);
 
-        //Create labels for axes
-        // Active power
-        APStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("active power (kW)");
+    //     //Create labels for axes
+    //     // Active power
+    //     APStatSvg.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",70)
+    //         .attr("y",15)
+    //         .text("active power (kW)");
         
-        // APStatSvg.append("text")
-        //     .attr("class","axis-text")
-        //     .attr("x",570)
-        //     .attr("y",280)
-        //     .text("intervals");
+    //     // APStatSvg.append("text")
+    //     //     .attr("class","axis-text")
+    //     //     .attr("x",570)
+    //     //     .attr("y",280)
+    //     //     .text("intervals");
 
-        // Active load
-        ALStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("active load (kW)");
+    //     // Active load
+    //     ALStatSvg.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",70)
+    //         .attr("y",15)
+    //         .text("active load (kW)");
         
-        // ALStatSvg.append("text")
-        //     .attr("class","axis-text")
-        //     .attr("x",570)
-        //     .attr("y",280)
-        //     .text("intervals");
+    //     // ALStatSvg.append("text")
+    //     //     .attr("class","axis-text")
+    //     //     .attr("x",570)
+    //     //     .attr("y",280)
+    //     //     .text("intervals");
 
-        // Voltage
-        VStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("voltage (kV)");
+    //     // Voltage
+    //     VStatSvg.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",70)
+    //         .attr("y",15)
+    //         .text("voltage (kV)");
         
-        // VStatSvg.append("text")
-        //     .attr("class","axis-text")
-        //     .attr("x",570)
-        //     .attr("y",280)
-        //     .text("intervals");
+    //     // VStatSvg.append("text")
+    //     //     .attr("class","axis-text")
+    //     //     .attr("x",570)
+    //     //     .attr("y",280)
+    //     //     .text("intervals");
 
-        // Bus count
-        BusStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("BEB count");
+    //     // Bus count
+    //     BusStatSvg.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",70)
+    //         .attr("y",15)
+    //         .text("BEB count");
         
-        BusStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width-150)
-            .attr("y",line_height-10)
-            .text("intervals");
-
-        
-        // Scales for line chart
-        let yScaleAP = this.powLoadLineScale;
-        let yScaleAL = this.aLoadLineScale;
-        let yScaleV = this.voltLineScale;
-        let yScaleBus = this.busLineScale;
-
-        let xScale = this.timeScale;
-
-
-        //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
-        xAxis.scale(xScale);
-
-        //Y axis group
-        let yAxisAP = d3.axisLeft().ticks(3);
-        yAxisAP.scale(yScaleAP);
-        let yAxisAL = d3.axisLeft().ticks(3);
-        yAxisAL.scale(yScaleAL);
-        let yAxisV = d3.axisLeft().ticks(3);
-        yAxisV.scale(yScaleV);
-        let yAxisBus = d3.axisLeft().ticks(3);
-        yAxisBus.scale(yScaleBus);
-
-        //Gridlines
-        // gridlines in y axis function 
-        // function make_y_gridlines() {		
-        //     return d3.axisLeft(yScale)
-        //         .ticks(5)
-        // }
-
-        // // add the Y gridlines
-        // powStatSvg.append("g")			
-        //     .attr("class", "grid")
-        //     .attr("transform",`translate(${this.marginL.left},0)`)
-        //     .call(make_y_gridlines()
-        //         .tickSize(-(this.widthL))
-        //         .tickFormat("")
-        //     );
-
-        //X-axis
-        // APStatSvg.append("g")
-        //     .classed("axis",true)
-        //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-        //     .call(xAxis);
-
-        // ALStatSvg.append("g")
-        //     .classed("axis",true)
-        //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-        //     .call(xAxis);
-
-        // VStatSvg.append("g")
-        //     .classed("axis",true)
-        //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-        //     .call(xAxis);
-
-        BusStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-            .call(xAxis);
-        
-
-        //Y-axis
-        APStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisAP);
-
-        ALStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisAL);
-
-        VStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisV);
-        
-        BusStatSvg.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisBus);
+    //     BusStatSvg.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",line_width-150)
+    //         .attr("y",line_height-10)
+    //         .text("intervals");
 
         
-        //Add data to chart
+    //     // Scales for line chart
+    //     let yScaleAP = this.powLoadLineScale;
+    //     let yScaleAL = this.aLoadLineScale;
+    //     let yScaleV = this.voltLineScale;
+    //     let yScaleBus = this.busLineScale;
 
-        //Making line function
-        // let line = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.powLoadLineScale(d.value));
-
-        //Drawing path
-        APStatSvg.append("path")
-            .attr("class","line-AP line-path");
-
-        ALStatSvg.append("path")
-            .attr("class","line-AL line-path");
-
-        VStatSvg.append("path")
-            .attr("class","line-V line-path");
-
-        BusStatSvg.append("path")
-            .attr("class","line-Bus line-path");
+    //     let xScale = this.timeScale;
 
 
-        // Add all relevant data 
-        //Making line function
-        // let lineAP = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.powLoadLineScale(d.value));
+    //     //Xaxis group
+    //     let xAxis = d3.axisBottom().ticks(6);
+    //     xAxis.scale(xScale);
 
-            // .data(this.data.nodes)
-            // .enter().append("path")
-            // .attr("class","netline")
-            // .attr("id",(d,i) => `line-${d.StationNode.id}`)
-            // .attr("d",d => lineFunction(d.line))
+    //     //Y axis group
+    //     let yAxisAP = d3.axisLeft().ticks(3);
+    //     yAxisAP.scale(yScaleAP);
+    //     let yAxisAL = d3.axisLeft().ticks(3);
+    //     yAxisAL.scale(yScaleAL);
+    //     let yAxisV = d3.axisLeft().ticks(3);
+    //     yAxisV.scale(yScaleV);
+    //     let yAxisBus = d3.axisLeft().ticks(3);
+    //     yAxisBus.scale(yScaleBus);
 
-        // console.log("here",this.data.nodes.map(f=>f.chSP))
-        // APStatSvg.selectAll("path")
-        //     .data(this.data.nodes.map(f => f.chSP))
-        //     .enter().append("path")
-        //     .attr("class","line-AP")
-        //     .attr("id",(d,i) => `line-AP-${i}`)
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", '#dedede')//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 3)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", lineAP);
+    //     //Gridlines
+    //     // gridlines in y axis function 
+    //     // function make_y_gridlines() {		
+    //     //     return d3.axisLeft(yScale)
+    //     //         .ticks(5)
+    //     // }
+
+    //     // // add the Y gridlines
+    //     // powStatSvg.append("g")			
+    //     //     .attr("class", "grid")
+    //     //     .attr("transform",`translate(${this.marginL.left},0)`)
+    //     //     .call(make_y_gridlines()
+    //     //         .tickSize(-(this.widthL))
+    //     //         .tickFormat("")
+    //     //     );
+
+    //     //X-axis
+    //     // APStatSvg.append("g")
+    //     //     .classed("axis",true)
+    //     //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+    //     //     .call(xAxis);
+
+    //     // ALStatSvg.append("g")
+    //     //     .classed("axis",true)
+    //     //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+    //     //     .call(xAxis);
+
+    //     // VStatSvg.append("g")
+    //     //     .classed("axis",true)
+    //     //     .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+    //     //     .call(xAxis);
+
+    //     BusStatSvg.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+    //         .call(xAxis);
+        
+
+    //     //Y-axis
+    //     APStatSvg.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${this.marginL.left},${0})`)
+    //         .call(yAxisAP);
+
+    //     ALStatSvg.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${this.marginL.left},${0})`)
+    //         .call(yAxisAL);
+
+    //     VStatSvg.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${this.marginL.left},${0})`)
+    //         .call(yAxisV);
+        
+    //     BusStatSvg.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${this.marginL.left},${0})`)
+    //         .call(yAxisBus);
+
+        
+    //     //Add data to chart
+
+    //     //Making line function
+    //     // let line = d3.line()
+    //     //     // .curve(d3.curveStep)
+    //     //     .defined(d => !isNaN(d.value))
+    //     //     .x((d,i) => this.timeScale(i))
+    //     //     .y(d => this.powLoadLineScale(d.value));
+
+    //     //Drawing path
+    //     APStatSvg.append("path")
+    //         .attr("class","line-AP line-path");
+
+    //     ALStatSvg.append("path")
+    //         .attr("class","line-AL line-path");
+
+    //     VStatSvg.append("path")
+    //         .attr("class","line-V line-path");
+
+    //     BusStatSvg.append("path")
+    //         .attr("class","line-Bus line-path");
 
 
-    }
+    //     // Add all relevant data 
+    //     //Making line function
+    //     // let lineAP = d3.line()
+    //     //     // .curve(d3.curveStep)
+    //     //     .defined(d => !isNaN(d.value))
+    //     //     .x((d,i) => this.timeScale(i))
+    //     //     .y(d => this.powLoadLineScale(d.value));
+
+    //         // .data(this.data.nodes)
+    //         // .enter().append("path")
+    //         // .attr("class","netline")
+    //         // .attr("id",(d,i) => `line-${d.StationNode.id}`)
+    //         // .attr("d",d => lineFunction(d.line))
+
+    //     // console.log("here",this.data.nodes.map(f=>f.chSP))
+    //     // APStatSvg.selectAll("path")
+    //     //     .data(this.data.nodes.map(f => f.chSP))
+    //     //     .enter().append("path")
+    //     //     .attr("class","line-AP")
+    //     //     .attr("id",(d,i) => `line-AP-${i}`)
+    //     //     .style("visibility","visible")
+    //     //     .attr("fill", "none")
+    //     //     .attr("stroke", '#dedede')//d => that.stationColor(d.StationNode.id))
+    //     //     .attr("stroke-width", 3)
+    //     //     .attr("stroke-linejoin", "round")
+    //     //     .attr("stroke-linecap", "round")
+    //     //     .attr("d", lineAP);
+
+
+    // }
 
     updateLine(){
         let that = this;
         //console.log("that.clicked in update line",this.clicked)
-
+        console.log(this.timeScale.range(),this.widthL)
         //Making line function
         let lineAP = d3.line()
             // .curve(d3.curveStep)
@@ -1472,7 +1563,7 @@ class TransNet {
         let lineBus = d3.line()
             // .curve(d3.curveStep)
             .defined(d => !isNaN(d))
-            .x((d,i) => this.timeScale(i))
+            .x((d,i) => this.busTimeScale(i))
             .y(d => this.busLineScale(d));
 
         d3.select(".line-AP")
