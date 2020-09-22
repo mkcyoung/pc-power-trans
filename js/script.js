@@ -446,7 +446,7 @@ Promise.all([
         let row3_div = ['.chart-3']
         // pass in correct div levels
         transNetwork.createTransitCharts(row1_div,row3_div)
-        // table.createBusLines(row2_div)
+        table.createBusLines(row2_div)
 
         // console.log(table.clickedBusses)
         if (table.clickedBusses.length != 0){

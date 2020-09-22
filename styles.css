@@ -229,6 +229,54 @@ Both: current / voltage
     grid-area: chart-2;
     margin: var(--border-margins);
     padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:1fr;
+    grid-template-areas:
+        "chart-2-col1 chart-2-col2";
+}
+
+.chart-2-col1{
+    overflow: auto;
+    grid-area: chart-2-col1;
+    margin: var(--border-margins);
+    padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+        "chart-2-col1-row1" 
+        "chart-2-col1-row2";
+}
+
+.chart-2-col2{
+    overflow: auto;
+    grid-area: chart-2-col2;
+    margin: var(--border-margins);
+    padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+        "chart-2-col2-row1" 
+        "chart-2-col2-row2";
+}
+
+.chart-2-col1-row1{
+    display:none;
+    grid-area:chart-2-col1-row1
+}
+.chart-2-col1-row2{
+    display:none;
+    grid-area:chart-2-col1-row2
+}
+.chart-2-col2-row1{
+    display:none;
+    grid-area:chart-2-col1-row1
+}
+.chart-2-col2-row2{
+    display:none;
+    grid-area:chart-2-col1-row2
 }
 
 /* Chart 3:

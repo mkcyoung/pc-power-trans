@@ -839,10 +839,10 @@ class TransNet {
 
     removeCharts(){
         // Clears all charts from the chart views
-        d3.select(".chart-1").select("svg").remove()
-        d3.select(".chart-2").select("svg").remove()
-        d3.select(".chart-3").select("svg").remove()
-        d3.select(".chart-4").select("svg").remove()
+        d3.select(".chart-1").selectAll("svg").remove()
+        d3.select(".chart-2").selectAll("svg").remove()
+        d3.select(".chart-3").selectAll("svg").remove()
+        // d3.select(".chart-4").select("svg").remove()
     }
 
 

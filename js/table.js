@@ -642,13 +642,13 @@ class Table{
         
     }
 
-    updateChartSize(){
+    updateChartSize(bounding_div){
         // Gets new sizes and sets new canvas dimensions
-        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        let chart = d3.select(bounding_div).node().getBoundingClientRect()
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
         //Margins - the bostock way - line chart
-        this.lineHeight = chart1.height-10;
-        this.lineWidth = chart1.width-5;
+        this.lineHeight = chart.height-10;
+        this.lineWidth = chart.width-5;
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
 
@@ -663,23 +663,23 @@ class Table{
 
 
     // Creates bus line charts for transit view
-    createBusLines(){
+    createBusLines(Busses_Div){
         //console.log("data in line:",this.data.nodes[0])
 
         let that = this;
 
         // Line chart height and width - change this to be dynamic based on bounding box
-        this.updateChartSize();
+        this.updateChartSize(Busses_Div[0]);
         let line_height = this.lineHeight; //300
         let line_width = this.lineWidth; //700
 
         //Create line chart svg for active power
-        let energySvg = d3.select(".chart-3").append("svg")
+        let energySvg = d3.select(Busses_Div[0]).append("svg")
             .attr("class","energySvg")
             .attr("height",line_height)
             .attr("width",line_width);
 
-        let powerSvg = d3.select(".chart-4").append("svg")
+        let powerSvg = d3.select(Busses_Div[1]).append("svg")
             .attr("class","powerSvg")
             .attr("height",line_height)
             .attr("width",line_width);
