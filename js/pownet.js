@@ -574,6 +574,152 @@ class PowNet {
 
     }
 
+    // Create line charts for power system view
+    createPowerCharts(){
+         //console.log("data in line:",this.data.nodes[0])
+
+         let that = this;
+
+         // Line chart height and width
+         let line_height = this.lineHeight; //300
+         let line_width = this.lineWidth; //700
+ 
+         //Create line chart svg for active power
+         let currentSvg = d3.select(".chart-3").append("svg")
+             .attr("class","currentSvg")
+             .attr("height",line_height)
+             .attr("width",line_width);
+ 
+         let APFSvg = d3.select(".chart-4").append("svg")
+             .attr("class","APFSvg")
+             .attr("height",line_height)
+             .attr("width",line_width);
+         
+ 
+         //Create an energy chart group
+         let currentG = currentSvg.append("g");
+             // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
+ 
+         //Create a power chart group
+         let APFG = APFSvg.append("g");
+ 
+         //Create label for group
+         currentG.append("text")
+             .attr("class","chart-text")
+             .attr("x",line_width-160)
+             .attr("y",60);
+ 
+         //Create labels for axes
+         // energy
+         currentG.append("text")
+             .attr("class","axis-text")
+             .attr("x",70)
+             .attr("y",15)
+             .text("current (A)");
+         
+         currentG.append("text")
+             .attr("class","axis-text")
+             .attr("x",line_width-150)
+             .attr("y",line_height-10)
+             .text("intervals");
+ 
+         // power
+         APFG.append("text")
+             .attr("class","axis-text")
+             .attr("x",70)
+             .attr("y",15)
+             .text("active power flow (kW)");
+         
+         APFG.append("text")
+             .attr("class","axis-text")
+             .attr("x",line_width-150)
+             .attr("y",line_height-10)
+             .text("intervals");
+ 
+         
+         // Scales for line chart
+         let yScaleCurrent = this.currentLineScale;
+         let yScaleAPF = this.APFLineScale;
+ 
+         let xScale = this.timeScale;
+ 
+ 
+         //Xaxis group
+         let xAxis = d3.axisBottom().ticks(6);
+         xAxis.scale(xScale);
+ 
+         //Y axis group
+         let yAxisCurrent = d3.axisLeft().ticks(3);
+         yAxisCurrent.scale(yScaleCurrent);
+         let yAxisAPF = d3.axisLeft().ticks(3);
+         yAxisAPF.scale(yScaleAPF);
+ 
+         //Gridlines
+         // gridlines in y axis function 
+         // function make_y_gridlines() {		
+         //     return d3.axisLeft(yScale)
+         //         .ticks(5)
+         // }
+ 
+         // // add the Y gridlines
+         // powStatSvg.append("g")			
+         //     .attr("class", "grid")
+         //     .attr("transform",`translate(${this.marginL.left},0)`)
+         //     .call(make_y_gridlines()
+         //         .tickSize(-(this.widthL))
+         //         .tickFormat("")
+         //     );
+ 
+         //X-axis
+         currentG.append("g")
+             .classed("axis",true)
+             .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+             .call(xAxis);
+ 
+         APFG.append("g")
+             .classed("axis",true)
+             .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+             .call(xAxis);
+         
+ 
+         //Y-axis
+         currentG.append("g")
+             .classed("axis",true)
+             .attr("transform",`translate(${this.marginL.left},${0})`)
+             .call(yAxisCurrent);
+ 
+         APFG.append("g")
+             .classed("axis",true)
+             .attr("transform",`translate(${this.marginL.left},${0})`)
+             .call(yAxisAPF);
+ 
+         
+         //Add data to chart
+ 
+         //Making line function
+         // let line = d3.line()
+         //     // .curve(d3.curveStep)
+         //     .defined(d => !isNaN(d.value))
+         //     .x((d,i) => this.timeScale(i))
+         //     .y(d => this.powLoadLineScale(d.value));
+ 
+         //Drawing path
+         currentG.append("path")
+             .attr("class","line-Current-faint line-path");
+ 
+         currentG.append("path")
+             .attr("class","line-Current line-path");
+ 
+         APFG.append("path")
+             .attr("class","line-APF-faint line-path");
+ 
+         APFG.append("path")
+             .attr("class","line-APF line-path");
+
+
+
+    }
+
     /** Creates all bus line charts */
     createLine(){
         //console.log("data in line:",this.data.nodes[0])

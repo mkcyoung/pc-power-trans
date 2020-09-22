@@ -54,6 +54,7 @@
     --border-margins: 2px;
     --border-width: 1px;
     --border-radius: 5px;
+    --chart-paddding: 0px;
 
 }
 
@@ -61,7 +62,7 @@
     position:relative;
     overflow: auto;
     grid-area: title;
-    font-size: 30px;
+    font-size: 25px;
     /* margin: 1px; */
     text-align: center;
     font-weight: normal;
@@ -132,6 +133,7 @@
     overflow: auto;
     grid-area: chart-1;
     margin: var(--border-margins);
+    padding: var(--chart-paddding);
 }
 
 .chart-2{
@@ -141,6 +143,7 @@
     overflow: auto;
     grid-area: chart-2;
     margin: var(--border-margins);
+    padding: var(--chart-paddding);
 }
 
 .chart-3{
@@ -150,6 +153,7 @@
     overflow: auto;
     grid-area: chart-3;
     margin: var(--border-margins);
+    padding: var(--chart-paddding);
 }
 
 .chart-4{
@@ -159,6 +163,7 @@
     overflow: auto;
     grid-area: chart-4;
     margin: var(--border-margins);
+    padding: var(--chart-paddding);
 }
 
 

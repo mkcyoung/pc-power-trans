@@ -345,14 +345,19 @@ Promise.all([
         if (target == 'power'){
             // show just the relevant power station charts
             console.log("POWER")
-            
+            transNetwork.removeCharts()
+            transNetwork.createPowerCharts()
+            powNetwork.createPowerCharts()
+
 
 
         }
         else if (target == 'transit'){
             // show just the relevant transit system charts
             console.log("TRANSIT")
-
+            transNetwork.removeCharts()
+            transNetwork.createTransitCharts()
+            table.createBusLines()
 
 
         }
