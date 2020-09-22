@@ -171,8 +171,9 @@ class PowNet {
         this.aLoadLineScale = d3.scaleLinear().domain([0,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
-        this.currentScale = d3.scaleLinear().range([5,20]).domain([min_current,max_current]);
-        this.apfscale = d3.scaleSequential(d3.interpolateBlues).domain([min_apf,max_apf]);
+        this.currentScale = d3.scaleLinear().range([5,25]).domain([min_current,max_current]);
+        let active_power_flow_color = d3.interpolate("#C0DBF6", "#0E447B")
+        this.apfscale = d3.scaleSequential(active_power_flow_color).domain([min_apf,max_apf]);
         //Make an ordinal color scale for stations
         let pow_stations = ["n2","n13","n9","n33","n25","n31","n8"];
         this.stationColor = d3.scaleOrdinal(d3.schemeTableau10).domain(pow_stations);

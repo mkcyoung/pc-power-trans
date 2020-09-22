@@ -35,6 +35,9 @@ class TransNet {
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
 
         this.clicked = null; //my click selection - used for updating tooltip later
+        this.clickedStations = []; // using this for implementing multiple station click functionality 
+
+
     }
 
     createNet(){
@@ -150,7 +153,8 @@ class TransNet {
         let pow_stations = ["n2","n13","n9","n33","n25","n31","n8"];
         this.stationColor = d3.scaleOrdinal(d3.schemeTableau10).domain(pow_stations);
         //Power links
-        this.apfScale = d3.scaleSequential(d3.interpolateBlues).domain([min_apf,max_apf]);
+        let active_power_flow_color = d3.interpolate("#C0DBF6", "#0E447B")
+        this.apfScale = d3.scaleSequential(active_power_flow_color).domain([min_apf,max_apf]);
 
         //Select view1 and append an svg to it
         let powSVG = d3.select(".view1").append("svg")
@@ -401,6 +405,8 @@ class TransNet {
             .on("click", function(d){
                 // sees if object has already been clicked
                 if (d3.select(`#line-${d.StationNode.id}`).classed("clicked-line")){
+                    // remove from clicked stations
+                    that.clickedStations = that.clickedStations.filter( f => f != d);
                     // console.log("been clicked")
                     //Remove tooltip
                     d3.select("#s_tooltip_click")
@@ -420,6 +426,8 @@ class TransNet {
                     d3.selectAll(".chart-text").style("visibility","hidden");
                 }
                 else{
+                    // push clicked stations to list
+                    that.clickedStations.push(d)
                     // console.log("hasn't been clicked")
                     // Adds clicked class and active line class
                     d3.select(`#line-${d.StationNode.id}`).classed("clicked-line",true);
@@ -607,6 +615,8 @@ class TransNet {
             .on("click",function(d){
                 // sees if object has already been clicked
                 if (d3.select(this).classed("clicked-line")){
+                    // remove from clicked stations
+                    that.clickedStations = that.clickedStations.filter( f => f != d);
                     // console.log("been clicked")
                     //Remove tooltip
                     d3.select("#s_tooltip_click")
@@ -625,6 +635,9 @@ class TransNet {
                     d3.selectAll(".chart-text").style("visibility","hidden");
                 }
                 else{
+                    // push to clicked stations
+                    that.clickedStations.push(d)
+                    console.log(that.clickedStations)
                     // console.log("hasn't been clicked")
                     // Adds clicked class
                     d3.select(this).classed("clicked-line",true);
@@ -683,7 +696,9 @@ class TransNet {
             that.clicked = null;
             // that.table.clickedBusses = [];
             // that.powNet.clickedLinks = [];
-
+            
+            // removes all clicked stations
+            that.clickedStations = []
 
             //Clear path from line chart
             d3.selectAll(".line-path").style("visibility","hidden");

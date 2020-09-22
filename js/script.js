@@ -266,7 +266,7 @@ Promise.all([
     }
 
 
-    let time = 50;
+    let time = 0;
     // Pass data into table object
     let table = new Table(bebs,transNet,time,null,updateTime)
     table.createTable();
@@ -288,6 +288,53 @@ Promise.all([
 
     // Adding reference to table
     table.transNet = transNetwork;
+
+
+    // Find active view and create those charts on screen load
+    let target = $('#viewDrop').find('.active')[0].id;
+    if (target == 'power'){
+        // show just the relevant power station charts
+        console.log("POWER")
+        transNetwork.removeCharts()
+        transNetwork.createPowerCharts()
+        powNetwork.createPowerCharts()
+
+        //check if chart has something in it, if so, update on resize
+        // console.log(powNetwork.clickedLinks)
+        // console.log(powNetwork.clickedNodes)
+        // TODO - implement clicked stations for transNet
+        // console.log(transNetwork.clicked != 0)
+        if (powNetwork.clickedLinks.length != 0){
+            powNetwork.updateLine()
+        }
+        if (powNetwork.clickedNodes.length != 0){
+            powNetwork.updateLineNode()
+        }
+        // if (transNetwork.clicked != 0){
+        //     transNetwork.updateLine()
+        // }
+
+    }
+    else if (target == 'transit'){
+        // show just the relevant transit system charts
+        console.log("TRANSIT")
+        transNetwork.removeCharts()
+        transNetwork.createTransitCharts()
+        table.createBusLines()
+
+        // console.log(table.clickedBusses)
+        if (table.clickedBusses.length != 0){
+            table.updateLine()
+        }
+        //TODO - implement clicked stations for transnet
+        // transNetwork.updateLine()
+
+
+    }
+    else if (target == 'both'){
+        // implement showing all charts
+        console.log("BOTH")
+    }
 
 
     // Handling resizing stuff
@@ -394,6 +441,8 @@ Promise.all([
             transNetwork.createPowerCharts()
             powNetwork.createPowerCharts()
 
+            //TODO - input active stuff if any is selected
+
 
 
         }
@@ -403,6 +452,8 @@ Promise.all([
             transNetwork.removeCharts()
             transNetwork.createTransitCharts()
             table.createBusLines()
+
+            //TODO - input active stuff if any is selected
 
 
         }

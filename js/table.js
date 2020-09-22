@@ -1161,7 +1161,7 @@ class Table{
         faintEnergyLines
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", energyColor.copy({opacity: 0.3}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
+            .attr("stroke", energyColor.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
             .attr("stroke-width", 2)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
@@ -1187,7 +1187,7 @@ class Table{
         faintPowerLines
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", powerColor.copy({opacity: 0.3}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
+            .attr("stroke", powerColor.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
             .attr("stroke-width", 2)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
@@ -1197,8 +1197,8 @@ class Table{
 
         // this code initiates the hover functionality, use only if have 1 or more line
         if (that.clickedBusses.length > 0){
-            d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor)
-            d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor)
+            d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
+            d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
         }
         else{
             d3.select('.energySvg')
@@ -1289,7 +1289,7 @@ class Table{
 
     }
 
-    hover(svg,path,yScale,scope,data,source,color){
+    hover(svg,path,yScale,scope,data,source,color,dark_path){
         let time = Array.from(Array(288).keys())
         console.log("in hover",path)
         let that = scope;
@@ -1328,8 +1328,9 @@ class Table{
             // raise brings current to the top
             // path.attr("stroke",d => console.log("D",d))
             // path.attr("stroke", d => d === s ? "rgb(163, 6, 12,0.5)" : "rgb(163, 6, 12,0.1)").filter(d => d === s).raise();
+            dark_path.attr("stroke", d => d === s ? color.copy({opacity:1}) : color.copy({opacity:0.1})).filter(d => d === s).raise()
             path.attr("stroke", d => d === s ? color.copy({opacity:0.7}) : color.copy({opacity:0.1})).filter(d => d === s).raise();
-            path.attr("stroke-width", d => d === s ? 4 : 2).filter(d => d === s).raise();
+            // path.attr("stroke-width", d => d === s ? 4 : 2).filter(d => d === s).raise();
 
             dot.raise();
             // path.filter(d => d === s).raise();
@@ -1350,12 +1351,14 @@ class Table{
         
         function left() {
             // console.log("LEFT")
+            // Re color lines
+            dark_path.attr("stroke", color)
+            path.attr("stroke", color.copy({opacity:0.1}));
+
             // Need to rehighlight the latest clicked and populate with current time
             d3.select('.energy-info-text').html('');
 
-
-
-            path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
+            // path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
             dot.attr("display", "none");
         }
 

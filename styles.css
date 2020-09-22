@@ -5,7 +5,9 @@
     max-width: 3200px;
 
     display: grid;
-    grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
+    /* grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
+    grid-template-rows: repeat(13,minmax(0, 1fr)); */
+    grid-template-columns: 1fr minmax(0,1.2fr);
     grid-template-rows: repeat(13,minmax(0, 1fr));
     grid-template-areas: 
             /* "title title title"
@@ -20,7 +22,7 @@
             "link-info power table1 "
             "bus-info power table1 "
             "bus-info power table1 "; */
-            "title title title"
+            /* "title title title"
             "chart-1 slider data-panel"
             "chart-1 power data-panel"
             "chart-1 power table1"
@@ -32,7 +34,20 @@
             "chart-3 power table1 "
             "chart-4 power table1 "
             "chart-4 power table1 "
-            "chart-4 power table1 ";
+            "chart-4 power table1 "; */
+            "title title"
+            "slider chart-1"
+            "data-panel chart-1"
+            "power chart-1"
+            "power chart-2"
+            "power chart-2"
+            "power chart-2"
+            "power chart-3"
+            "power chart-3"
+            "table1 chart-3"
+            "table1 chart-4"
+            "table1 chart-4"
+            "table1 chart-4";
     /* width: 100vw;
     height: 100vh; */
     width: 100vw;
@@ -452,12 +467,13 @@ thead th{
     cursor: s-resize;
     font-size: 20px;
     font-weight: normal;
-    color: #484b5a;
+    color: #ffffff;
     /*padding-left: 4px;*/
     /*padding-right: 4px;*/
     min-width: 150px;
     text-align: center;
-    background: rgba(23, 162, 184, 0.15);
+    /* rgba(23, 162, 184, 0.15); */
+    background:  #7ab3a0; 
 
 }
 
@@ -484,7 +500,7 @@ tbody td{
 
 }
 tbody tr:hover{
-    background-color: rgba(23, 162, 184, 0.15);
+    background-color: #7ab3a05e;
 }
 
 .view2 rect {
@@ -582,7 +598,7 @@ tbody tr:hover{
 /* Axis styling */
 .axis path{
     fill: none;
-    stroke: rgb(179, 179, 179);
+    stroke: rgb(0, 0, 0);
     shape-rendering: crispEdges;
 }
 
@@ -592,8 +608,8 @@ tbody tr:hover{
 
 .axis text{
     font-family: "Avenir Next";
-    font-size: 18px;
-    font-weight: lighter;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 .grid line{
@@ -614,18 +630,18 @@ tbody tr:hover{
     font-size: 60px;
     font-weight: bolder;
     stroke: none;
-    fill: rgba(211, 211, 211, 0.678);
+    fill: rgba(0, 0, 0, 0.678);
 }
 
 .axis-title{
-    font-size: 28px;
+    font-size: 20px;
     font-weight:normal;
-    fill: rgba(121, 121, 121, 0.747);
+    fill: rgba(0, 0, 0, 0.747);
 }
 
 .axis-text{
-    font-size: 20px;
-    font-weight: lighter;
-    fill: rgba(102, 102, 102, 0.76);
+    font-size: 14px;
+    font-weight: normal;
+    fill: rgba(0, 0, 0, 0.76);
 }
 
