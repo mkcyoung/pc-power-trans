@@ -327,5 +327,42 @@ Promise.all([
         
     }
 
+    // // Handle view reorganization:
+    $('#viewDrop a').on('click', function(e){
+        let target = $(e.target).attr('id')
+
+        // makes the most recently selected target the 'active' option and removes
+        // active class from previously active option
+        let start_active = $('#viewDrop').find('active');
+        let kids = $('#viewDrop').find('a')
+        kids.removeClass( "active" );
+        $(`#${target}`).addClass("active")
+
+        // Finds which dataset is active 
+        // let active_data = $('#datasetDrop').find('.active')[0].id;
+
+        // Populate views based on target
+        if (target == 'power'){
+            // show just the relevant power station charts
+            console.log("POWER")
+            
+
+
+        }
+        else if (target == 'transit'){
+            // show just the relevant transit system charts
+            console.log("TRANSIT")
+
+
+
+        }
+        else if (target == 'both'){
+            // implement showing all charts
+            console.log("BOTH")
+        }
+        
+    });
+
 
 });
+

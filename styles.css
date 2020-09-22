@@ -6,9 +6,9 @@
 
     display: grid;
     grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
-    grid-template-rows: repeat(12,minmax(0, 1fr));
+    grid-template-rows: repeat(13,minmax(0, 1fr));
     grid-template-areas: 
-            "title title title"
+            /* "title title title"
             "station-info slider data-panel"
             "station-info power data-panel"
             "station-info power table1"
@@ -19,7 +19,20 @@
             "link-info power table1 "
             "link-info power table1 "
             "bus-info power table1 "
-            "bus-info power table1 ";
+            "bus-info power table1 "; */
+            "title title title"
+            "chart-1 slider data-panel"
+            "chart-1 power data-panel"
+            "chart-1 power table1"
+            "chart-2 power table1"
+            "chart-2 power table1"
+            "chart-2 power table1"
+            "chart-3 power table1 "
+            "chart-3 power table1 "
+            "chart-3 power table1 "
+            "chart-4 power table1 "
+            "chart-4 power table1 "
+            "chart-4 power table1 ";
     /* width: 100vw;
     height: 100vh; */
     width: 100vw;
@@ -108,6 +121,47 @@
     /* border: var(--border-width)solid var(--border-color);
     border-radius: var(--border-radius) var(--border-radius); */
 }
+
+/* CHARTS */
+
+
+.chart-1{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: auto;
+    grid-area: chart-1;
+    margin: var(--border-margins);
+}
+
+.chart-2{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: auto;
+    grid-area: chart-2;
+    margin: var(--border-margins);
+}
+
+.chart-3{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: auto;
+    grid-area: chart-3;
+    margin: var(--border-margins);
+}
+
+.chart-4{
+    /* position:relative; */
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius);
+    overflow: auto;
+    grid-area: chart-4;
+    margin: var(--border-margins);
+}
+
+
 
 
 .station-charts{
