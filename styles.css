@@ -7,7 +7,7 @@
     display: grid;
     /* grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
     grid-template-rows: repeat(13,minmax(0, 1fr)); */
-    grid-template-columns: 1fr minmax(0,1.2fr);
+    grid-template-columns: 0.8fr 0.2fr minmax(0,1.2fr);
     grid-template-rows: repeat(13,minmax(0, 1fr));
     grid-template-areas: 
             /* "title title title"
@@ -35,19 +35,19 @@
             "chart-4 power table1 "
             "chart-4 power table1 "
             "chart-4 power table1 "; */
-            "title title"
-            "slider chart-1"
-            "data-panel chart-1"
-            "power chart-1"
-            "power chart-2"
-            "power chart-2"
-            "power chart-2"
-            "power chart-3"
-            "power chart-3"
-            "table1 chart-3"
-            "table1 chart-4"
-            "table1 chart-4"
-            "table1 chart-4";
+            "title title title"
+            "slider slider  chart-1"
+            "table1 data-panel chart-1"
+            "table1 data-panel  chart-1"
+            "table1 data-panel chart-2"
+            "table1 data-panel  chart-2"
+            "power power chart-2"
+            "power power chart-3"
+            "power power chart-3"
+            "power power chart-3"
+            "power power chart-4"
+            "power power chart-4"
+            "power power chart-4";
     /* width: 100vw;
     height: 100vh; */
     width: 100vw;
@@ -86,10 +86,11 @@
 .data-panel{
     grid-area: data-panel;
     display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    grid-template-rows: 1fr;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
     grid-template-areas:
-        "id info";
+        "id"
+        "info";
 
     overflow: visible;
     margin: var(--border-margins);
