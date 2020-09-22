@@ -128,8 +128,8 @@
 
 .chart-1{
     /* position:relative; */
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
+    /* border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
     overflow: auto;
     grid-area: chart-1;
     margin: var(--border-margins);
@@ -138,8 +138,8 @@
 
 .chart-2{
     /* position:relative; */
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
+    /* border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
     overflow: auto;
     grid-area: chart-2;
     margin: var(--border-margins);
@@ -148,8 +148,8 @@
 
 .chart-3{
     /* position:relative; */
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
+    /* border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
     overflow: auto;
     grid-area: chart-3;
     margin: var(--border-margins);
@@ -158,8 +158,8 @@
 
 .chart-4{
     /* position:relative; */
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
+    /* border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
     overflow: auto;
     grid-area: chart-4;
     margin: var(--border-margins);
@@ -582,12 +582,12 @@ tbody tr:hover{
 /* Axis styling */
 .axis path{
     fill: none;
-    stroke: none;
+    stroke: rgb(179, 179, 179);
     shape-rendering: crispEdges;
 }
 
 .axis line{
-    stroke-width: 0.75px;
+    stroke-width: 0.35px;
 }
 
 .axis text{
@@ -617,9 +617,15 @@ tbody tr:hover{
     fill: rgba(211, 211, 211, 0.678);
 }
 
+.axis-title{
+    font-size: 28px;
+    font-weight:normal;
+    fill: rgba(121, 121, 121, 0.747);
+}
+
 .axis-text{
     font-size: 20px;
-    font-weight: bold;
-    fill: rgba(0, 0, 0, 0.678);
+    font-weight: lighter;
+    fill: rgba(102, 102, 102, 0.76);
 }
 

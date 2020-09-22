@@ -28,8 +28,8 @@ class TransNet {
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
 
         //Margins - the bostock way - line chart
-        this.lineHeight = chart1.width;
-        this.lineWidth = chart1.height;
+        this.lineHeight = chart1.height-10;
+        this.lineWidth = chart1.width-5;
         this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
@@ -140,7 +140,7 @@ class TransNet {
         // Scales for line chart
         this.powLoadLineScale = d3.scaleLinear().domain([min_chsp,max_chsp]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
-        this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = d3.scaleLinear().domain([0,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.busLineScale = d3.scaleLinear().domain([min_bus_count,max_bus_count]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
@@ -850,8 +850,8 @@ class TransNet {
 
         // dynamically adjusts width and height
         this.updateChartSize()
-        console.log(this.lineHeight)
-        console.log(this.lineWidth)
+        // console.log(this.lineHeight)
+        // console.log(this.lineWidth)
         let line_height = this.lineHeight //this.lineHeight; //300
         let line_width = this.lineWidth //this.lineWidth; //700
 
@@ -887,27 +887,27 @@ class TransNet {
         //Create labels for axes
         // Active power
         APStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",10)
-            .attr("y",15)
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("y",20)
             .text("active power (kW)");
         
         APStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",5)
+            .attr("x",10)
             .attr("y",line_height-5)
             .text("time");
 
         // Bus count
         BusStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",10)
-            .attr("y",15)
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 50)
+            .attr("y",20)
             .text("BEB count");
         
         BusStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",5)
+            .attr("x",10)
             .attr("y",line_height-5)
             .text("time");
 
@@ -929,15 +929,15 @@ class TransNet {
         let yAxisBus = d3.axisLeft().ticks(3);
         yAxisBus.scale(yScaleBus);
 
-        //Gridlines
-        // gridlines in y axis function 
+        // //Gridlines
+        // // gridlines in y axis function 
         // function make_y_gridlines() {		
-        //     return d3.axisLeft(yScale)
+        //     return d3.axisLeft(yScaleAP)
         //         .ticks(5)
         // }
 
         // // add the Y gridlines
-        // powStatSvg.append("g")			
+        // APStatSvg.append("g")			
         //     .attr("class", "grid")
         //     .attr("transform",`translate(${this.marginL.left},0)`)
         //     .call(make_y_gridlines()
@@ -1025,6 +1025,7 @@ class TransNet {
 
         let that = this;
 
+        this.updateChartSize()
         // Line chart height and width - change to be dynamic
         let line_height = this.lineHeight; //300
         let line_width = this.lineWidth; //700
@@ -1064,29 +1065,29 @@ class TransNet {
 
         // Active load
         ALStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("y",20)
             .text("active load (kW)");
         
         ALStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
-            .text("intervals");
+            .attr("x",10)
+            .attr("y",line_height - 5)
+            .text("time");
 
         // Voltage
         VStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 70)
+            .attr("y",20)
             .text("voltage (kV)");
         
         VStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",570)
-            .attr("y",280)
-            .text("intervals");
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
 
         
         // Scales for line chart

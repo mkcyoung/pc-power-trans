@@ -34,9 +34,14 @@ class PowNet {
         // this.height = 900 - this.margin.top-this.margin.bottom;
 
         //Margins - the bostock way - line chart
-        this.lineHeight = 270;
-        this.lineWidth = 500;
-        this.marginL = {top: 20, right: 60, bottom: 60, left: 60};
+        // Gets new sizes and sets new canvas dimensions
+        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
+
+        //Margins - the bostock way - line chart
+        this.lineHeight = chart1.height -10;
+        this.lineWidth = chart1.width - 5;
+        this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
 
@@ -163,7 +168,7 @@ class PowNet {
 
         // scale for node line charts
         // this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.aLoadLineScale = d3.scaleLinear().domain([39.24485337,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = d3.scaleLinear().domain([0,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
         this.currentScale = d3.scaleLinear().range([5,20]).domain([min_current,max_current]);
@@ -574,12 +579,40 @@ class PowNet {
 
     }
 
+
+    updateChartSize(){
+
+        // Gets new sizes and sets new canvas dimensions
+        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
+
+        //Margins - the bostock way - line chart
+        this.lineHeight = chart1.height - 10;
+        this.lineWidth = chart1.width - 5;
+        this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
+        this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
+        this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
+
+        // scale for link line charts
+        this.timeScale = this.timeScale.range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.currentLineScale = this.currentLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.APFLineScale = this.APFLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+
+        // scale for node line charts
+        // this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = this.aLoadLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.voltLineScale = this.voltLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+
+
+    }
+
     // Create line charts for power system view
     createPowerCharts(){
          //console.log("data in line:",this.data.nodes[0])
 
          let that = this;
 
+         this.updateChartSize()
          // Line chart height and width
          let line_height = this.lineHeight; //300
          let line_width = this.lineWidth; //700
@@ -604,37 +637,37 @@ class PowNet {
          let APFG = APFSvg.append("g");
  
          //Create label for group
-         currentG.append("text")
-             .attr("class","chart-text")
-             .attr("x",line_width-160)
-             .attr("y",60);
+        //  currentG.append("text")
+        //      .attr("class","chart-text")
+        //      .attr("x",line_width-160)
+        //      .attr("y",60);
  
          //Create labels for axes
          // energy
          currentG.append("text")
-             .attr("class","axis-text")
-             .attr("x",70)
-             .attr("y",15)
+             .attr("class","axis-title")
+             .attr("x",line_width - line_width*0.5 - 90)
+             .attr("y",20)
              .text("current (A)");
          
          currentG.append("text")
              .attr("class","axis-text")
-             .attr("x",line_width-150)
-             .attr("y",line_height-10)
-             .text("intervals");
+             .attr("x",10)
+             .attr("y",line_height-5)
+             .text("time");
  
          // power
          APFG.append("text")
-             .attr("class","axis-text")
-             .attr("x",70)
-             .attr("y",15)
+             .attr("class","axis-title")
+             .attr("x",line_width - line_width*0.5 - 120)
+             .attr("y",20)
              .text("active power flow (kW)");
          
          APFG.append("text")
              .attr("class","axis-text")
-             .attr("x",line_width-150)
-             .attr("y",line_height-10)
-             .text("intervals");
+             .attr("x",10)
+             .attr("y",line_height-5)
+             .text("time");
  
          
          // Scales for line chart

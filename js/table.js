@@ -21,9 +21,15 @@ class Table{
         this.height = 30 - this.margin.top-this.margin.bottom;
 
         //Margins - the bostock way - line chart
-        this.lineHeight = 270;
-        this.lineWidth = 500;
-        this.marginL = {top: 20, right: 60, bottom: 60, left: 60};
+        //Margins - the bostock way - line chart
+        // Gets new sizes and sets new canvas dimensions
+        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
+
+        //Margins - the bostock way - line chart
+        this.lineHeight = chart1.height -10;
+        this.lineWidth = chart1.width - 5;
+        this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
 
@@ -636,6 +642,26 @@ class Table{
         
     }
 
+    updateChartSize(){
+        // Gets new sizes and sets new canvas dimensions
+        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
+        //Margins - the bostock way - line chart
+        this.lineHeight = chart1.height-10;
+        this.lineWidth = chart1.width-5;
+        this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
+        this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
+
+        // Scales for line chart
+        this.timeScale = this.timeScale.range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.energyLineScale = this.energyLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.powerLineScale = this.powerLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
+    }
+
+
+
+
+
     // Creates bus line charts for transit view
     createBusLines(){
         //console.log("data in line:",this.data.nodes[0])
@@ -643,6 +669,7 @@ class Table{
         let that = this;
 
         // Line chart height and width - change this to be dynamic based on bounding box
+        this.updateChartSize();
         let line_height = this.lineHeight; //300
         let line_width = this.lineWidth; //700
 
@@ -666,24 +693,24 @@ class Table{
         let powerG = powerSvg.append("g");
 
         //Create label for group
-        energyG.append("text")
-            .attr("class","chart-text")
-            .attr("x",line_width-160)
-            .attr("y",60);
+        // energyG.append("text")
+        //     .attr("class","chart-text")
+        //     .attr("x",line_width-160)
+        //     .attr("y",60);
 
         //Create labels for axes
         // energy
         energyG.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("energy (kWh)");
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("y",20)
+            .text("BEB energy (kWh)");
         
         energyG.append("text")
             .attr("class","axis-text")
-            .attr("x",line_width-150)
-            .attr("y",line_height-10)
-            .text("intervals");
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
 
         energyG.append('text')
             .attr("class","energy-info-text")
@@ -697,16 +724,16 @@ class Table{
 
         // power
         powerG.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("power(kWh)");
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("y",20)
+            .text("BEB power(kWh)");
         
         powerG.append("text")
             .attr("class","axis-text")
-            .attr("x",line_width-150)
-            .attr("y",line_height-10)
-            .text("intervals");
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
 
         powerG.append('text')
             .attr("class","power-info-text")
