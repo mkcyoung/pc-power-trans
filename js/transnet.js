@@ -756,7 +756,7 @@ class TransNet {
 
         // Get bounds of div
         let gBox = d3.select('.viewsHead').node().getBoundingClientRect();
-        console.log("gbox",gBox)
+        // console.log("gbox",gBox)
 
         let margin = 30;
 
@@ -820,7 +820,6 @@ class TransNet {
         // Gets new sizes and sets new canvas dimensions
         let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
-        console.log(chart1)
         //Margins - the bostock way - line chart
         this.lineHeight = chart1.height-10;
         this.lineWidth = chart1.width-5;
