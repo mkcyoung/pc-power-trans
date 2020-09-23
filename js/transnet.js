@@ -1007,7 +1007,7 @@ class TransNet {
         let yAxisAP = d3.axisLeft().ticks(3);
         yAxisAP.scale(yScaleAP);
         let yAxisRP = d3.axisLeft().ticks(3);
-        yAxisAP.scale(yScaleRP);
+        yAxisRP.scale(yScaleRP);
 
 
         //X-axis
@@ -1030,21 +1030,27 @@ class TransNet {
         RPStatSvg.append("g")
             .classed("axis",true)
             .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisAP);
+            .call(yAxisRP);
 
 
         //Drawing path
-        APStatSvg.append("path")
-            .attr("class","line-AP line-path");
+        // APStatSvg.append("path")
+        //     .attr("class","line-AP line-path");
 
-        APStatSvg.append("path")
-            .attr("class","line-AP-faint line-path");
+        // APStatSvg.append("path")
+        //     .attr("class","line-AP-faint line-path");
 
-        RPStatSvg.append("path")
-            .attr("class","line-RP line-path");
+        APStatSvg.append("g").attr("class",'line-AP')
+        APStatSvg.append("g").attr("class",'line-AP-faint')
 
-        RPStatSvg.append("path")
-            .attr("class","line-RP-faint line-path");
+        // RPStatSvg.append("path")
+        //     .attr("class","line-RP line-path");
+
+        // RPStatSvg.append("path")
+        //     .attr("class","line-RP-faint line-path");
+
+        RPStatSvg.append("g").attr("class",'line-RP')
+        RPStatSvg.append("g").attr("class",'line-RP-faint')
 
 
 
@@ -1127,11 +1133,14 @@ class TransNet {
 
         //Drawing path
 
-        BusStatSvg.append("path")
-            .attr("class","line-Bus line-path");
+        // BusStatSvg.append("path")
+        //     .attr("class","line-Bus line-path");
 
-        BusStatSvg.append("path")
-            .attr("class","line-Bus-faint line-path");
+        // BusStatSvg.append("path")
+        //     .attr("class","line-Bus-faint line-path");
+
+        BusStatSvg.append("g").attr("class",'line-Bus')
+        BusStatSvg.append("g").attr("class",'line-Bus-faint')
 
 
     }
@@ -1312,23 +1321,32 @@ class TransNet {
 
         //Drawing path
 
-        ALStatSvg.append("path")
-            .attr("class","line-AL line-path");
+        // ALStatSvg.append("path")
+        //     .attr("class","line-AL line-path");
 
-        ALStatSvg.append("path")
-            .attr("class","line-AL-faint line-path");
+        // ALStatSvg.append("path")
+        //     .attr("class","line-AL-faint line-path");
 
-        RLStatSvg.append("path")
-            .attr("class","line-RL line-path");
+        ALStatSvg.append("g").attr("class",'line-AL')
+        ALStatSvg.append("g").attr("class",'line-AL-faint')
 
-        RLStatSvg.append("path")
-            .attr("class","line-RL-faint line-path");
+        // RLStatSvg.append("path")
+        //     .attr("class","line-RL line-path");
 
-        VStatSvg.append("path")
-            .attr("class","line-V line-path");
+        // RLStatSvg.append("path")
+        //     .attr("class","line-RL-faint line-path");
+
+        RLStatSvg.append("g").attr("class",'line-RL')
+        RLStatSvg.append("g").attr("class",'line-RL-faint')
+
+        // VStatSvg.append("path")
+        //     .attr("class","line-V line-path");
         
-        VStatSvg.append("path")
-            .attr("class","line-V-faint line-path");
+        // VStatSvg.append("path")
+        //     .attr("class","line-V-faint line-path");
+
+        VStatSvg.append("g").attr("class",'line-Volt')
+        VStatSvg.append("g").attr("class",'line-Volt-faint')
 
 
 
@@ -1604,6 +1622,13 @@ class TransNet {
         //console.log("that.clicked in update line",this.clicked)
         // console.log(this.timeScale.range(),this.widthL)
         //Making line function
+
+        let faint_opacity = 0.1
+
+        let station_data = that.clickedStations;
+        console.log("Station data in updateLine: ",station_data)
+
+
         let lineAP = d3.line()
             // .curve(d3.curveStep)
             .defined(d => !isNaN(d.value))
@@ -1616,84 +1641,127 @@ class TransNet {
             .x((d,i) => this.timeScale(i))
             .y(d => this.powRLoadLineScale(d.value));
 
-        // let lineAL = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.aLoadLineScale(d.value));
-
-        // let lineV = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.voltLineScale(d.value));
-
         let lineBus = d3.line()
             // .curve(d3.curveStep)
             .defined(d => !isNaN(d))
             .x((d,i) => this.busTimeScale(i))
             .y(d => this.busLineScale(d));
 
+
+        // I think this is just creating new lines
+        let apLines = d3.select('.line-AP').selectAll("path")
+            .data(station_data)
+        let faintapLines = d3.select('.line-AP-faint').selectAll("path")
+            .data(station_data)
+
+        let rpLines = d3.select('.line-RP').selectAll("path")
+            .data(station_data)
+        let faintrpLines = d3.select('.line-RP-faint').selectAll("path")
+            .data(station_data)
+
+
+        let busLines = d3.select('.line-Bus').selectAll("path")
+            .data(station_data)
+        let faintbusLines = d3.select('.line-Bus-faint').selectAll("path")
+            .data(station_data)
+
+        //enter / update / exit the traditional way
+
+        // Remove stuff from exit array
+        apLines.exit().remove();
+        faintapLines.exit().remove();
+
+        rpLines.exit().remove();
+        faintrpLines.exit().remove();
+
+        busLines.exit().remove();
+        faintbusLines.exit().remove();
+
+        
+        // Reactive color is created by taking "opposite" of this active power color
         let active_power_color = d3.hsl(that.stationColor(that.clicked.StationNode.id))
-        d3.select(".line-AP")
-            .datum(this.data.nodes[that.clicked.index].chSP.slice(0,this.activeTime))
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", active_power_color)//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 4)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", lineAP);
 
-        d3.select(".line-AP-faint")
-            .datum(this.data.nodes[that.clicked.index].chSP)
+        apLines = apLines.enter().append('path')
+            .merge(apLines);
+        apLines
+            // .datum(this.data.nodes[that.clicked.index].chSP.slice(0,this.activeTime))
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", active_power_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => that.stationColor(d.StationNode.id))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAP);
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineAP(d.chSP.slice(0,this.activeTime))); //console.log(d.chSP.slice(0,this.activeTime)))
 
-        d3.select(".line-RP")
-            .datum(this.data.nodes[that.clicked.index].chSRP.slice(0,this.activeTime))
+        faintapLines = faintapLines.enter().append('path')
+            .merge(faintapLines);
+        faintapLines
+            // .datum(this.data.nodes[that.clicked.index].chSP)
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", active_power_color)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:faint_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAP);
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineAP(d.chSP));
+        
+        rpLines = rpLines.enter().append('path')
+            .merge(rpLines);
+        rpLines
+            .style("visibility","visible")
+            .attr("class","line-path")
+            .attr("fill", "none")
+            .attr("stroke", d => that.stationColor(d.StationNode.id))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineRP(d.chSRP.slice(0,this.activeTime)));
 
-        d3.select(".line-RP-faint")
-            .datum(this.data.nodes[that.clicked.index].chSRP)
+        faintrpLines = faintrpLines.enter().append('path')
+            .merge(faintrpLines);
+        faintrpLines
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", active_power_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:faint_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAP);
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineRP(d.chSRP));
 
-        d3.select(".line-Bus")
-            .datum(this.data.nodes[that.clicked.index].BusData.slice(0,this.activeTime).map(f=>f.total))
+        busLines = busLines.enter().append('path')
+            .merge(busLines);
+        busLines
+            // .datum(this.data.nodes[that.clicked.index].BusData.slice(0,this.activeTime).map(f=>f.total))
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", active_power_color)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineBus);
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineBus(d.BusData.slice(0,this.activeTime).map(f=>f.total)));
 
-        d3.select(".line-Bus-faint")
-            .datum(this.data.nodes[that.clicked.index].BusData.map(f=>f.total))
+        faintbusLines = faintbusLines.enter().append('path')
+            .merge(faintbusLines);
+        faintbusLines
+            // .datum(this.data.nodes[that.clicked.index].BusData.map(f=>f.total))
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", active_power_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:faint_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineBus);
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineBus(d.BusData.map(f=>f.total)));
 
 
         // //Line chart label

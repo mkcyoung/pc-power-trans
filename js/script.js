@@ -412,6 +412,7 @@ Promise.all([
         // show just the relevant transit system charts
         console.log("TRANSIT")
         transNetwork.removeCharts()
+        unmake_both_Chart3() // restores previous layout if coming from both layout
         // transNetwork.createTransitCharts()
         // table.createBusLines()
         let row2_div = ['.chart-1-col1','.chart-1-col2']
@@ -447,6 +448,7 @@ Promise.all([
         // show just the relevant power station charts
         console.log("POWER")
         transNetwork.removeCharts()
+        unmake_both_Chart3() // restores previous layout if coming from both layout
         // transNetwork.createPowerCharts()
         // powNetwork.createPowerCharts()
         // Make chart-3-col1 and 2 grids again
@@ -494,10 +496,7 @@ Promise.all([
         d3.select('.chart-1-col2').selectAll('div').style("display", "block")
         d3.select('.chart-2-col1').selectAll('div').style("display", "block")
         d3.select('.chart-2-col2').selectAll('div').style("display", "block")
-        d3.select('.chart-3-col1').selectAll('div').style("display", "block")
-        d3.select('.chart-3-col2').selectAll('div').style("display", "block")
-
-
+        
         // Block layout
         // Chart 1 
         // Transit View: acitve power / reactive power
@@ -519,6 +518,10 @@ Promise.all([
                     BEB count
         */
 
+        // Remakes grid area of chart 3 to work with this 'both' configuration
+        unmake_both_Chart3()
+        make_both_Chart3()
+
         // HANDLE POWER CHARTS
         let row1_div = ['.chart-1-col1-row1','.chart-1-col2-row1'] // active load, reactive load
         let row3_div = ['.chart-1-col1-row2','.chart-1-col2-row2'] // active pflow, reactive pflow
@@ -530,9 +533,11 @@ Promise.all([
 
 
         // HANDLE TRANSIT CHARTS
-        let row2_div_trans = ['.chart-2-col1-row2','.chart-2-col2-row2'] // active power reactive power
-        let row1_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // bus energy and power
-        let row3_div_trans = ['.chart-3-col1-row2'] // bus count
+        let row2_div_trans = ['.chart-2-col1-row2','.chart-2-col2-row2'] // bus energy and power
+        // let row1_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // active power reactive power
+        let row1_div_trans = ['.chart-3-top-col1','.chart-3-top-col2'] // active power reactive power
+        // let row3_div_trans = ['.chart-3-col1-row2'] // bus count
+        let row3_div_trans = ['.chart-3-bottom-row'] // bus count
 
         // pass in correct div levels
         transNetwork.createTransitCharts(row1_div_trans,row3_div_trans) 
@@ -543,6 +548,58 @@ Promise.all([
         // TODO: Think I will need to do something different with 
         // grids so bus count goes across both columns ....
 
+
+
+    }
+
+    function make_both_Chart3(){
+
+        // Chart-3 old grid
+        // grid-template-columns:repeat(2,minmax(0,1fr));
+        // grid-template-rows:1fr;
+        // grid-template-areas:"chart-3-col1 chart-3-col2";
+
+        // Chart 3 new grid
+        // grid-template-columns:repeat(2,minmax(0,1fr));
+        // grid-template-rows: repeat(2,minmax(0,1fr));
+        // grid-template-areas:"chart-3-col1-row1 chart-3-col2-row2" "chart-3-bottom-row chart-3-bottom-row";
+
+        // Altering the grid of chart 3 
+        d3.select('.chart-3').selectAll('div').style("display", "none")
+        d3.select('.chart-3').selectAll('div').style("display", "none")
+
+        // Shift grid of chart 3
+        d3.select(".chart-3").style('grid-template-rows','repeat(2,minmax(0,1fr))')
+        d3.select(".chart-3").style('grid-template-areas',' "chart-3-top-col1 chart-3-top-col2" "chart-3-bottom-row chart-3-bottom-row" ')
+        // Create bottom row div and set old bottom row divs to display:none
+        d3.select(".chart-3").append('div').attr("class","chart-3-top-col1").style("grid-area","chart-3-top-col1")
+        d3.select(".chart-3").append('div').attr("class","chart-3-top-col2").style("grid-area","chart-3-top-col2")
+        d3.select(".chart-3").append('div').attr("class","chart-3-bottom-row").style("grid-area","chart-3-bottom-row")
+
+    }
+
+
+    function unmake_both_Chart3(){
+        // Chart-3 old grid
+        // grid-template-columns:repeat(2,minmax(0,1fr));
+        // grid-template-rows:1fr;
+        // grid-template-areas:"chart-3-col1 chart-3-col2";
+
+        // Chart 3 new grid
+        // grid-template-columns:repeat(2,minmax(0,1fr));
+        // grid-template-rows: repeat(2,minmax(0,1fr));
+        // grid-template-areas:"chart-3-col1-row1 chart-3-col2-row2" "chart-3-bottom-row chart-3-bottom-row";
+
+        d3.select('.chart-3').selectAll('div').style("display", "block")
+        d3.select('.chart-3').selectAll('div').style("display", "block")
+
+        // Shift grid of chart 3 to original configuration
+        d3.select(".chart-3").style('grid-template-rows','1fr')
+        d3.select(".chart-3").style('grid-template-areas',' "chart-3-col1 chart-3-col2"')
+        // Remove previously created divs 
+        d3.select(".chart-3-top-col1").remove()
+        d3.select(".chart-3-top-col2").remove()
+        d3.select(".chart-3-bottom-row").remove()
 
 
     }
