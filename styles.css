@@ -434,11 +434,11 @@ Both: BEB energy / BEB power
     stroke-width: 1px;
 }
 .station_node:hover{
-    stroke-width: 5px;
+    stroke-width: 7px;
     filter: saturate(300%);
 }
 .node:hover{
-    stroke-width: 5px;
+    stroke-width: 7px;
     filter: saturate(300%);
 }
 .links{
@@ -450,7 +450,7 @@ Both: BEB energy / BEB power
     stroke-width: 1px;
 }
 .link:hover{
-    stroke: rgb(251, 255, 14);
+    stroke: rgb(255, 130, 14);
     /* stroke-width: 18px; */
 }
 .labels{
@@ -463,8 +463,17 @@ Both: BEB energy / BEB power
 }
 
 .CHSP{
-    stroke-width: 4.5px;
+    /* stroke: #7ab3a0; */
+    stroke-width: 7px;
     /* filter: saturate(1); */
+}
+
+.active-node{
+    stroke-width: 7px;
+}
+
+.active-link{
+    stroke: rgb(255, 130, 14);
 }
 /* .charge{ */
     /* fill: rgb(0, 153, 255) */

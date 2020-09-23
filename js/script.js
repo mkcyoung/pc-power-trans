@@ -311,6 +311,9 @@ Promise.all([
     // Adding reference to table
     table.transNet = transNetwork;
 
+    //Adding powernet to transnet
+    transNetwork.powNet = powNetwork;
+
 
     // Find active view and create those charts on screen load
     let target = $('#viewDrop').find('.active')[0].id;
@@ -378,6 +381,24 @@ Promise.all([
             display_both();
         }
     }
+
+    // Clears all charts 
+    $('#clear-button').on('click', function(e){
+        console.log("here")
+
+        // clear all clicked selections - these functions also handle styling related to each selection
+        transNetwork.clearTransSelections()
+        powNetwork.clearPowerLinkSelections()
+        powNetwork.clearPowerNodeSelections()
+        table.clearBusSelections()
+
+        // Clear all charts of lines
+        d3.selectAll(".line-path").remove()
+
+
+
+        
+    });
 
     // // Handle view reorganization:
     $('#viewDrop a').on('click', function(e){

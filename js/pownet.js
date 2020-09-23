@@ -293,8 +293,13 @@ class PowNet {
                     // remove from clicked stations
                     that.clickedLinks = that.clickedLinks.filter( f => f != d);
                     that.updateLine();
+                    //removes styling
+                    d3.select(this).classed('active-link',false)
                 }
                 else{
+                    // adds styling
+                    d3.select(this).classed('active-link',true)
+                    //pushes to list
                     that.clickedLinks.push(d);
                     that.updateLine();
                 }
@@ -330,10 +335,10 @@ class PowNet {
                 if(d3.select(this).classed("charge")){
                     // Checks first to see if its been clicked 
                     if (!d3.select(`#line-${d.id}`).classed("clicked-line")){
-                        d3.selectAll("."+d.id)
-                            .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
-                            .classed("CHSP",true);
-                        //highlights line
+                        // d3.selectAll("."+d.id)
+                        //     .attr("fill", d => { return (d.id != undefined) ? that.stationColor(d.id) : that.stationColor(d.StationNode.id)})
+                        //     .classed("CHSP",true);
+                        // //highlights line
                         d3.select(`#line-${d.id}`).classed("active-line-hover",true);
                     }
                 }
@@ -347,11 +352,11 @@ class PowNet {
 
                 if(d3.select(this).classed("charge")){
                     if (!d3.select(`#line-${d.id}`).classed("clicked-line")){
-                        d3.selectAll("."+d.id)
-                            .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
-                            .classed("CHSP",false);
-                        d3.selectAll(".station_node")
-                            .attr("fill", d => that.stationColor(d.StationNode.id));
+                        // d3.selectAll("."+d.id)
+                        //     .attr("fill", d => { return (d.id != undefined) ? that.aLoadScale(d.aLoad[that.activeTime].value) : that.powLoadScale(d.chSP[that.activeTime].value)})
+                        //     .classed("CHSP",false);
+                        // d3.selectAll(".station_node")
+                        //     .attr("fill", d => that.stationColor(d.StationNode.id));
 
                         //de-highlights line
                         d3.select(`#line-${d.id}`).classed("active-line-hover",false);
@@ -362,9 +367,11 @@ class PowNet {
 
                 // Check if I've already clicked that node
                 if (that.clickedNodes.includes(d)){
+                    d3.select(this).classed("active-node",false)
                     that.clickedNodes = that.clickedNodes.filter( f => f != d);
                 }
                 else{
+                    d3.select(this).classed("active-node",true)
                     that.clickedNodes.push(d);
                 }
                 that.updateLineNode();
@@ -630,6 +637,19 @@ class PowNet {
                         
         }
     }
+
+    clearPowerNodeSelections(){
+        this.clickedNodes = []
+        // TODO: remove any styling that I add to clicked nodes here
+        d3.selectAll('.active-node').classed('active-node',false)
+    }
+
+    clearPowerLinkSelections(){
+        this.clickedLinks = []
+        // TODO: remove any styling that I add to clicked links here
+        d3.selectAll('.active-link').classed('active-link',false)
+    }
+
 
     removeNet(){
         /** Clears existing Net**/

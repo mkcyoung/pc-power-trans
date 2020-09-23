@@ -321,18 +321,21 @@ class Table{
                 d3.select("#data-id").html(that.tooltipRenderID(d))
                 d3.select("#data-info").html(that.tooltipRenderINFO(d))
                 // I want to highlight entire charging station
-                d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]])
-                    .classed("CHSP",true);
+                // d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]])
+                //     .classed("CHSP",true);
                 
                 
                 // handles highlighting when bus is at a station
                 if (that.station_mapping[current_station] != undefined){
                     // Checks first to see if its been clicked, then do relevant highlighting
                     if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
-                        d3.selectAll("."+that.station_mapping[current_station])
+                        // d3.selectAll("."+that.station_mapping[current_station])
+                        //     .attr("fill", d => that.stationColor(current_station));
+                        // //highlights line
+                        // d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",true);
+                        d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
+                            .classed("CHSP",true)
                             .attr("fill", d => that.stationColor(current_station));
-                        //highlights line
-                        d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",true);
                     }
                 }
                 // handles highlihgting while on the road
@@ -444,19 +447,19 @@ class Table{
                 d3.selectAll(".info-panel").transition()
                     .duration(500)
                     .style("opacity", 0);
-                d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]]) 
-                    .classed("CHSP",false);
+                // d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]]) 
+                //     .classed("CHSP",false);
 
                 // Dehighlight everything
                 if(that.station_mapping[current_station] != undefined){
                     if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
-                        d3.selectAll("."+that.station_mapping[current_station])
+
+                        d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
                         // Lesson here...this works because d refers to the data that's BOUND TO THE CIRCLE ELEMENT.. don't need the 
                         // data in this class to access it... insane I didn't grasp that sooner...this makes things way easier moving forward.
-                            .attr("fill", d => { return (d.id != undefined) ? that.transNet.aLoadScale(d.aLoad[that.activeTime].value) : that.transNet.powLoadScale(d.chSP[that.activeTime].value)});
+                            .classed("CHSP",false)
+                            .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value));
 
-                        //de-highlights line
-                        d3.select(`#line-${that.station_mapping[d.Location[that.activeTime]]}`).classed("active-line-hover",false);
                     }
                 }
 
@@ -551,7 +554,7 @@ class Table{
                     // console.log('HERE',d3.selectAll('.busID').filter( f => f.id == d.id))
                     // let clickedBussesIDs = that.clickedBusses.map(m => m.id)
                     // d3.selectAll('.busID').filter( f => clickedBussesIDs.includes(f.id)).style("background-color","rgba(23, 162, 184, 0.15)")
-                    d3.selectAll('tr').filter( f => that.clickedBusses.includes(f)).style("background-color","rgba(23, 162, 184, 0.15)")
+                    d3.selectAll('tr').filter( f => that.clickedBusses.includes(f)).style("background-color","#7ab3a05e")
                     // d3.selectAll('tr').filter( f => !(that.clickedBusses.includes(f))).style("background-color","null")
                     //Update line chart with bus data...need to eventually allow this to throw multiple lines on
                     that.updateLine();
@@ -641,6 +644,17 @@ class Table{
         }
         
     }
+
+
+    clearBusSelections(){
+        // remove all busses from clicked list
+        this.clickedBusses = []
+        // Remove styling from table
+        d3.selectAll('tr').style("background-color",null)
+    }
+
+
+
 
     updateChartSize(bounding_div){
         // Gets new sizes and sets new canvas dimensions
