@@ -45,6 +45,8 @@ class PowNet {
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
 
+        this.chart_line_opacity = 0.1 // sets opacity of line charts
+
     }
 
     /** Builds network based on data passed into object */
@@ -286,8 +288,17 @@ class PowNet {
                     .style("opacity", 0)
             })
             .on("click", function (d) {
-                that.clickedLinks.push(d);
-                that.updateLine();
+                // checks to see if I've already clicked the link
+                if (that.clickedLinks.includes(d)){
+                    // remove from clicked stations
+                    that.clickedLinks = that.clickedLinks.filter( f => f != d);
+                    that.updateLine();
+                }
+                else{
+                    that.clickedLinks.push(d);
+                    that.updateLine();
+                }
+                
 
             });;
 
@@ -349,8 +360,13 @@ class PowNet {
             })
             .on("click", function (d){
 
-
-                that.clickedNodes.push(d);
+                // Check if I've already clicked that node
+                if (that.clickedNodes.includes(d)){
+                    that.clickedNodes = that.clickedNodes.filter( f => f != d);
+                }
+                else{
+                    that.clickedNodes.push(d);
+                }
                 that.updateLineNode();
 
                 // if(d3.select(this).classed("charge")){
@@ -806,178 +822,78 @@ class PowNet {
         //     .y(d => this.powLoadLineScale(d.value));
 
         //Drawing path
-        currentG.append("path")
-            .attr("class","line-Current-faint line-path");
+        // Make a group for line paths
+        d3.select('.currentSvg').append('g').attr("class","line-Current")
+        d3.select('.currentSvg').append('g').attr("class","line-Current-faint")
 
-        currentG.append("path")
-            .attr("class","line-Current line-path");
+        d3.select('.APFSvg').append('g').attr("class","line-APF")
+        d3.select('.APFSvg').append('g').attr("class","line-APF-faint")
 
-        APFG.append("path")
-            .attr("class","line-APF-faint line-path");
+        d3.select('.RPFSvg').append('g').attr("class","line-RPF")
+        d3.select('.RPFSvg').append('g').attr("class","line-RPF-faint")
 
-        APFG.append("path")
-            .attr("class","line-APF line-path");
 
-        RPFG.append("path")
-            .attr("class","line-RPF-faint line-path");
+        // making dot for highlighting line
+        let dot = d3.select('.line-Current').append("g")
+            .attr("class","current-dot dot")
+            .attr("display","none");
 
-        RPFG.append("path")
-            .attr("class","line-RPF line-path");
+        dot.append("circle")
+            .attr("r",2.5);
 
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+        
+        // making dot for highlighting line
+        dot = d3.select('.line-APF').append("g")
+            .attr("class","aPF-dot dot")
+            .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+        
+        // making dot for highlighting line
+        dot = d3.select('.line-RPF').append("g")
+            .attr("class","rPF-dot dot")
+            .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
 
 
     }
-
-    // /** Creates all bus line charts */
-    // createLine(){
-    //     //console.log("data in line:",this.data.nodes[0])
-
-    //     let that = this;
-
-    //     // Line chart height and width
-    //     let line_height = this.lineHeight; //300
-    //     let line_width = this.lineWidth; //700
-
-    //     //Create line chart svg for active power
-    //     let currentSvg = d3.select(".link-charts").append("svg")
-    //         .attr("class","currentSvg")
-    //         .attr("height",line_height)
-    //         .attr("width",line_width);
-
-    //     let APFSvg = d3.select(".link-charts").append("svg")
-    //         .attr("class","APFSvg")
-    //         .attr("height",line_height)
-    //         .attr("width",line_width);
-        
-
-    //     //Create an energy chart group
-    //     let currentG = currentSvg.append("g");
-    //         // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
-
-    //     //Create a power chart group
-    //     let APFG = APFSvg.append("g");
-
-    //     //Create label for group
-    //     currentG.append("text")
-    //         .attr("class","chart-text")
-    //         .attr("x",line_width-160)
-    //         .attr("y",60);
-
-    //     //Create labels for axes
-    //     // energy
-    //     currentG.append("text")
-    //         .attr("class","axis-text")
-    //         .attr("x",70)
-    //         .attr("y",15)
-    //         .text("current (A)");
-        
-    //     currentG.append("text")
-    //         .attr("class","axis-text")
-    //         .attr("x",line_width-150)
-    //         .attr("y",line_height-10)
-    //         .text("intervals");
-
-    //     // power
-    //     APFG.append("text")
-    //         .attr("class","axis-text")
-    //         .attr("x",70)
-    //         .attr("y",15)
-    //         .text("active power flow (kW)");
-        
-    //     APFG.append("text")
-    //         .attr("class","axis-text")
-    //         .attr("x",line_width-150)
-    //         .attr("y",line_height-10)
-    //         .text("intervals");
-
-        
-    //     // Scales for line chart
-    //     let yScaleCurrent = this.currentLineScale;
-    //     let yScaleAPF = this.APFLineScale;
-
-    //     let xScale = this.timeScale;
-
-
-    //     //Xaxis group
-    //     let xAxis = d3.axisBottom().ticks(6);
-    //     xAxis.scale(xScale);
-
-    //     //Y axis group
-    //     let yAxisCurrent = d3.axisLeft().ticks(3);
-    //     yAxisCurrent.scale(yScaleCurrent);
-    //     let yAxisAPF = d3.axisLeft().ticks(3);
-    //     yAxisAPF.scale(yScaleAPF);
-
-    //     //Gridlines
-    //     // gridlines in y axis function 
-    //     // function make_y_gridlines() {		
-    //     //     return d3.axisLeft(yScale)
-    //     //         .ticks(5)
-    //     // }
-
-    //     // // add the Y gridlines
-    //     // powStatSvg.append("g")			
-    //     //     .attr("class", "grid")
-    //     //     .attr("transform",`translate(${this.marginL.left},0)`)
-    //     //     .call(make_y_gridlines()
-    //     //         .tickSize(-(this.widthL))
-    //     //         .tickFormat("")
-    //     //     );
-
-    //     //X-axis
-    //     currentG.append("g")
-    //         .classed("axis",true)
-    //         .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-    //         .call(xAxis);
-
-    //     APFG.append("g")
-    //         .classed("axis",true)
-    //         .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-    //         .call(xAxis);
-        
-
-    //     //Y-axis
-    //     currentG.append("g")
-    //         .classed("axis",true)
-    //         .attr("transform",`translate(${this.marginL.left},${0})`)
-    //         .call(yAxisCurrent);
-
-    //     APFG.append("g")
-    //         .classed("axis",true)
-    //         .attr("transform",`translate(${this.marginL.left},${0})`)
-    //         .call(yAxisAPF);
-
-        
-    //     //Add data to chart
-
-    //     //Making line function
-    //     // let line = d3.line()
-    //     //     // .curve(d3.curveStep)
-    //     //     .defined(d => !isNaN(d.value))
-    //     //     .x((d,i) => this.timeScale(i))
-    //     //     .y(d => this.powLoadLineScale(d.value));
-
-    //     //Drawing path
-    //     currentG.append("path")
-    //         .attr("class","line-Current-faint line-path");
-
-    //     currentG.append("path")
-    //         .attr("class","line-Current line-path");
-
-    //     APFG.append("path")
-    //         .attr("class","line-APF-faint line-path");
-
-    //     APFG.append("path")
-    //         .attr("class","line-APF line-path");
-
-    // }
 
 
     // Updates the line chart with clicked data 
     updateLine(){
 
         let that = this;
-        let link_data = that.clickedLinks.slice(-1)[0] // TODO IMPLEMENTING MULTIPLE LINKS
+        let link_data = that.clickedLinks;
+        // console.log(link_data)
 
         //Making line functions
         let lineCurrent = d3.line()
@@ -998,79 +914,132 @@ class PowNet {
             .x((d,i) => this.timeScale(i))
             .y(d => this.RPFLineScale(d.value));
 
-        
+        // I think this is just creating new lines
+        let currentLines = d3.select('.line-Current').selectAll("path")
+            .data(link_data)
+        let faintcurrentLines = d3.select('.line-Current-faint').selectAll("path")
+            .data(link_data)
+
+        let pfLines = d3.select('.line-APF').selectAll("path")
+            .data(link_data)
+        let faintpfLines = d3.select('.line-APF-faint').selectAll("path")
+            .data(link_data)
+
+        let rpfLines = d3.select('.line-RPF').selectAll("path")
+            .data(link_data)
+        let faintrpfLines = d3.select('.line-RPF-faint').selectAll("path")
+            .data(link_data)
+
+        //enter / update / exit the traditional way
+
+        // Remove stuff from exit array
+        currentLines.exit().remove();
+        faintcurrentLines.exit().remove();
+
+        pfLines.exit().remove();
+        faintpfLines.exit().remove();
+
+        rpfLines.exit().remove();
+        faintrpfLines.exit().remove();
 
         let current_color = d3.hsl("#ff524c")
-        d3.select(".line-Current")
-            .datum(link_data.current.slice(0,this.activeTime))
+
+        currentLines = currentLines.enter().append('path')
+            .merge(currentLines);
+        currentLines
+            // .datum(link_data.current.slice(0,this.activeTime))
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
             .attr("stroke", current_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineCurrent);
+            .attr("d", d => lineCurrent(d.current.slice(0,that.activeTime)));
 
-        d3.select(".line-Current-faint")
-            .datum(link_data.current)
+        faintcurrentLines = faintcurrentLines.enter().append('path')
+            .merge(faintcurrentLines);
+        faintcurrentLines
+            // .datum(link_data.current)
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", current_color.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("class","line-path")
+            .attr("stroke", current_color.copy({opacity: that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 3)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineCurrent);
+            .attr("d", d => lineCurrent(d.current));
 
         let power_flow_color = d3.hsl("#3a7bbf")
-        d3.select(".line-APF")
-            .datum(link_data.aPF.slice(0,this.activeTime))
+
+        pfLines = pfLines.enter().append('path')
+            .merge(pfLines);
+        pfLines
+            // .datum(link_data.aPF.slice(0,this.activeTime))
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
             .attr("stroke", power_flow_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAPF);
+            .attr("d", d => lineAPF(d.aPF.slice(0,that.activeTime)));
 
-        d3.select(".line-APF-faint")
-            .datum(link_data.aPF)
+        faintpfLines = faintpfLines.enter().append('path')
+            .merge(faintpfLines);
+        faintpfLines
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", power_flow_color.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", power_flow_color.copy({opacity: that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 3)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAPF);
+            .attr("d", d => lineAPF(d.aPF));
 
         power_flow_color.h += 180;
-        d3.select(".line-RPF")
-            .datum(link_data.rPF.slice(0,this.activeTime))
+
+
+        rpfLines = rpfLines.enter().append('path')
+            .merge(rpfLines);
+        rpfLines
+            // .datum(link_data.rPF.slice(0,this.activeTime))
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
             .attr("stroke", power_flow_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineRPF);
+            .attr("d", d => lineRPF(d.rPF.slice(0,that.activeTime)));
 
-        d3.select(".line-RPF-faint")
-            .datum(link_data.rPF)
+        faintrpfLines = faintrpfLines.enter().append('path')
+            .merge(faintrpfLines);
+        faintrpfLines
             .style("visibility","visible")
+            .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", power_flow_color.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", power_flow_color.copy({opacity: that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 3)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineRPF);
+            .attr("d", d => lineRPF(d.rPF));
 
 
+        // handling hovering 
+        // d3.select('.ALSvg').call(this.hover,faintalLines,alLines,this.aLoadLineScale,this.timeScale,this,node_data,"aLoad",d3.hsl("#8426cc"))
+        // d3.select('.RLSvg').call(this.hover,faintrlLines,rlLines,this.rLoadLineScale,this.timeScale,this,node_data,"rLoad",active_load_color)
+        // d3.select('.VoltSvg').call(this.hover,faintvoltLines,voltLines,this.voltLineScale,this.timeScale,this,node_data,"volt",voltage_color)
+        d3.select('.currentSvg').call(this.hover,faintcurrentLines,currentLines,this.currentLineScale,this.timeScale,this,link_data,"current",current_color)
+        d3.select('.APFSvg').call(this.hover,faintpfLines,pfLines,this.APFLineScale,this.timeScale,this,link_data,"aPF",d3.hsl("#3a7bbf"))
+        d3.select('.RPFSvg').call(this.hover,faintrpfLines,rpfLines,this.RPFLineScale,this.timeScale,this,link_data,"rPF",power_flow_color)
 
     }
 
 
     updateLineNode(){
         let that = this;
-        let node_data = that.clickedNodes.slice(-1)[0] // TODO IMPLEMENTING MULTIPLE NODES
+        let node_data = that.clickedNodes
 
         //Making line functions
         let lineAL = d3.line()
@@ -1091,77 +1060,306 @@ class PowNet {
             .x((d,i) => this.timeScale(i))
             .y(d => this.voltLineScale(d.value));
 
+
+        // I think this is just creating new lines
+        let alLines = d3.select('.line-AL').selectAll("path")
+            .data(node_data)
+        let faintalLines = d3.select('.line-AL-faint').selectAll("path")
+            .data(node_data)
+
+        let rlLines = d3.select('.line-RL').selectAll("path")
+            .data(node_data)
+        let faintrlLines = d3.select('.line-RL-faint').selectAll("path")
+            .data(node_data)
+
+        let voltLines = d3.select('.line-Volt').selectAll("path")
+            .data(node_data)
+        let faintvoltLines = d3.select('.line-Volt-faint').selectAll("path")
+            .data(node_data)
+
+        //enter / update / exit the traditional way
+
+        // Remove stuff from exit array
+        alLines.exit().remove();
+        faintalLines.exit().remove();
+
+        rlLines.exit().remove();
+        faintrlLines.exit().remove();
+
+        voltLines.exit().remove();
+        faintvoltLines.exit().remove();
         
         let active_load_color = d3.hsl("#8426cc")
-        d3.select(".line-AL")
-            .datum(node_data.aLoad.slice(0,this.activeTime))
+
+        alLines = alLines.enter().append('path')
+            .merge(alLines);
+        alLines
+            // .datum(node_data.aLoad.slice(0,this.activeTime))
             .style("visibility","visible")
             .attr("fill", "none")
+            .attr("class","line-path")
             .attr("stroke", active_load_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAL);
+            .attr("d", d => lineAL(d.aLoad.slice(0,that.activeTime)));
 
-        d3.select(".line-AL-faint")
-            .datum(node_data.aLoad)
+        faintalLines = faintalLines.enter().append('path')
+            .merge(faintalLines);
+        faintalLines
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", active_load_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("class","line-path")
+            .attr("stroke", active_load_color.copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineAL);
+            .attr("d", d=> lineAL(d.aLoad));
 
         active_load_color.h += 180
-        d3.select(".line-RL")
-            .datum(node_data.rLoad.slice(0,this.activeTime))
+        active_load_color.l = 0.3
+
+
+        rlLines = rlLines.enter().append('path')
+            .merge(rlLines);
+        rlLines
             .style("visibility","visible")
             .attr("fill", "none")
+            .attr("class","line-path")
             .attr("stroke", active_load_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineRL);
+            .attr("d", d => lineRL(d.rLoad.slice(0,that.activeTime)));
 
-        d3.select(".line-RL-faint")
-            .datum(node_data.rLoad)
+        faintrlLines = faintrlLines.enter().append('path')
+            .merge(faintrlLines);
+        faintrlLines
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", active_load_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("class","line-path")
+            .attr("stroke", active_load_color.copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineRL);
+            .attr("d", d => lineRL(d.rLoad));
 
         let voltage_color = d3.hsl("#ff524c")
         voltage_color.h += 180
         voltage_color.l = 0.3
-        d3.select(".line-V")
-            .datum(node_data.volt.slice(0,this.activeTime))
+
+
+        voltLines = voltLines.enter().append('path')
+            .merge(voltLines);
+        voltLines
             .style("visibility","visible")
             .attr("fill", "none")
+            .attr("class","line-path")
             .attr("stroke", voltage_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineVolt);
+            .attr("d", d => lineVolt(d.volt.slice(0,that.activeTime)));
 
-        d3.select(".line-V-faint")
-            .datum(node_data.volt)
+        faintvoltLines = faintvoltLines.enter().append('path')
+            .merge(faintvoltLines);
+        faintvoltLines
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", voltage_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("class","line-path")
+            .attr("stroke", voltage_color.copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
-            .attr("d", lineVolt);
+            .attr("d", d => lineVolt(d.volt));
 
 
-
+        // handling hovering 
+        d3.select('.ALSvg').call(this.hover,faintalLines,alLines,this.aLoadLineScale,this.timeScale,this,node_data,"aLoad",d3.hsl("#8426cc"))
+        d3.select('.RLSvg').call(this.hover,faintrlLines,rlLines,this.rLoadLineScale,this.timeScale,this,node_data,"rLoad",active_load_color)
+        d3.select('.VoltSvg').call(this.hover,faintvoltLines,voltLines,this.voltLineScale,this.timeScale,this,node_data,"volt",voltage_color)
 
 
     }
+
+    hover(svg,path,dark_path,yScale,xScale,scope,data,source,color){
+        let time = Array.from(Array(288).keys())
+        // console.log("in hover",path)
+        let that = scope;
+
+        svg.on("mousemove",moved)
+        svg.on("mouseenter",entered)
+        svg.on("mouseleave",left)
+        svg.on("click",clicked)
+        // svg.on("doublecick",dblclicked)
+
+        let dot = d3.select(`.${source}-dot`);
+
+        // console.log("PATH",path)
+
+        function moved() {
+            // console.log("MOVED")
+            d3.event.preventDefault();
+            const mouse = d3.mouse(this);
+            // Scale for x axis
+            const xm = xScale.invert(mouse[0]);
+            // console.log(xm)
+            // const xm = x.invert(mouse[0]);
+            // Scale for y axis
+            const ym = yScale.invert(mouse[1]);
+            // console.log(ym)
+            // const ym = y.invert(mouse[1]);
+            const i1 = d3.bisectLeft(time, xm, 1);
+            const i0 = i1 - 1;
+            // console.log(i1,i0)
+            const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
+            // console.log(i)
+            // console.log("x",xm,"y",ym,"time",i)
+            let s = null
+            if (source == "BusData"){
+                s = d3.least(data, d => Math.abs(d[source][i].total - ym));
+            }
+            else{
+                s = d3.least(data, d => Math.abs(d[source][i].value - ym));
+            }
+            // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
+            // console.log("S",s)
+            // raise brings current to the top
+            // path.attr("stroke",d => console.log("D",d))
+            // path.attr("stroke", d => d === s ? "rgb(163, 6, 12,0.5)" : "rgb(163, 6, 12,0.1)").filter(d => d === s).raise();
+            dark_path.attr("stroke", d =>  d === s ? color : color.copy({opacity:that.chart_line_opacity})).filter(d => d === s).raise()
+            path.attr("stroke", d => d === s ? color.copy({opacity:0.5}) : color.copy({opacity:that.chart_line_opacity})).filter(d => d === s).raise();
+            // path.attr("stroke-width", d => d === s ? 4 : 2).filter(d => d === s).raise();
+
+            dot.raise();
+            // path.filter(d => d === s).raise();
+            dot.attr("transform", `translate(${xScale(time[i])},${yScale(s[source][i].value)})`);
+            
+            // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
+            // current aPF rPF
+            let links = ['current','aPF','rPF']
+            if (links.includes(source)){
+                dot.select("text").text(s.source.id + ':' + s.target.id);
+            }
+            else{
+                dot.select("text").text(s.id);
+            }
+            
+            // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
+        }
+        
+        function entered() {
+            // console.log("ENTERED")
+            path.style("mix-blend-mode", null).attr("stroke", "#ddd");
+            dot.attr("display", null);
+
+        }
+        
+        function left() {
+            // console.log("LEFT")
+            // Re color lines
+            dark_path.attr("stroke", color)
+            path.attr("stroke", color.copy({opacity:that.chart_line_opacity}));
+
+            // Need to rehighlight the latest clicked and populate with current time
+            d3.select('.energy-info-text').html('');
+
+            // path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
+            dot.attr("display", "none");
+        }
+
+        function clicked() {
+            // console.log("CLICKED")
+            d3.event.preventDefault();
+            const mouse = d3.mouse(this);
+            // Scale for x axis
+            const xm = xScale.invert(mouse[0]);
+            // console.log(xm)
+            // const xm = x.invert(mouse[0]);
+            // Scale for y axis
+            const ym = yScale.invert(mouse[1]);
+            // console.log(ym)
+            // const ym = y.invert(mouse[1]);
+            const i1 = d3.bisectLeft(time, xm, 1);
+            const i0 = i1 - 1;
+            // console.log(i1,i0)
+            const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
+            // console.log(i)
+            console.log("x",xm,"y",ym,"time",i)
+            const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
+            // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
+            console.log("S",s)
+
+            // Updates current time by clicking on chart
+            that.transNet.updateTime(i);
+            d3.select(".slider-wrap").remove();
+            that.transNet.drawTimeBar();
+
+            // Clear everything
+            //Remove tooltip
+            d3.select("#s_tooltip_click")
+                .style("opacity", 0);
+            
+            //Remove net lines
+            // d3.selectAll(".netlineclick").remove();
+
+            // stops animation
+            d3.selectAll(".clicked-line").interrupt()
+
+            // removes classes
+            d3.selectAll(".clicked-line")
+                .classed("clicked-line",false)
+                .classed("active-line",false)
+                .classed("active-line-hover",false);
+
+            // that.transNet.clicked = null;
+
+            //Clear path from line chart
+            // d3.selectAll(".line-path").style("visibility","hidden");
+            // d3.selectAll(".chart-text").style("visibility","hidden");
+
+            // Clears all station selections and selects station the bus is currently at
+            // let station_id = that.station_mapping[s.Location[i]]
+            // let transNodes = that.data.nodes;
+            // if (station_id != undefined){
+            //     // Adds clicked class and active line class
+            //     d3.select(`#line-${station_id}`).classed("clicked-line",true);
+            //     d3.select(`#line-${station_id}`).classed("active-line",true);
+            //     //starts animation indefinitely
+            //     animate.call(d3.select(`#line-${station_id}`).node())
+            //     // Looping through data to select correct one
+            //     let myNode = transNodes.filter(f => f.StationNode.id == station_id)[0]
+            //     that.transNet.Clicked(myNode,false)
+            // }
+
+            function animate() {
+                d3.select(this)
+                    .transition()
+                    .duration(500)
+                    .ease(d3.easeLinear)
+                    .styleTween("stroke-dashoffset", function() {
+                        return d3.interpolate(0, 14);
+                        })
+                    .on("end", animate);
+            }
+
+            function stop() {
+                d3.select(this)
+                    .interrupt();
+            }
+
+        }
+
+        // function dblclicked(){
+
+        //     console.log("DOUBLE CLICKED")
+        //     d3.event.preventDefault();
+
+
+        // }
+
+    }
+
 
 
 

@@ -567,7 +567,7 @@ Both: BEB energy / BEB power
 .netline{
     fill: none;
     stroke: rgb(66, 66, 66);
-    opacity: 0.08;
+    opacity: 0.15;
     stroke-width: 7;
 }
 
@@ -814,3 +814,8 @@ tbody tr:hover{
     fill: rgba(0, 0, 0, 0.76);
 }
 
+
+/* Dot on charts */
+.dot text{
+    text-anchor: left;
+}

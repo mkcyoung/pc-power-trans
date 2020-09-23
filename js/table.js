@@ -532,8 +532,8 @@ class Table{
                     that.transNet.clicked = null;
 
                     //Clear path from line chart
-                    d3.selectAll(".line-path").style("visibility","hidden");
-                    d3.selectAll(".chart-text").style("visibility","hidden");
+                    // d3.selectAll(".line-path").style("visibility","hidden");
+                    // d3.selectAll(".chart-text").style("visibility","hidden");
 
                 }   
                 // If it hasn't been clicked 
@@ -584,8 +584,8 @@ class Table{
                     that.transNet.clicked = null;
 
                     //Clear path from line chart
-                    d3.selectAll(".line-path").style("visibility","hidden");
-                    d3.selectAll(".chart-text").style("visibility","hidden");
+                    // d3.selectAll(".line-path").style("visibility","hidden");
+                    // d3.selectAll(".chart-text").style("visibility","hidden");
 
                     // Checks to make sure it's a bus at a station
                     if (station_id != undefined){
@@ -1052,7 +1052,7 @@ class Table{
         
         // making dot for highlighting line
         let dot = d3.select('.energyLines').append("g")
-            .attr("class","energy-dot")
+            .attr("class","energy-dot dot")
             .attr("display","none");
 
         dot.append("circle")
@@ -1068,7 +1068,7 @@ class Table{
             .attr("y", -10);
 
         let dotP = d3.select('.powerLines').append("g")
-            .attr("class","power-dot")
+            .attr("class","power-dot dot")
             .attr("display","none");
 
         dotP.append("circle")
@@ -1149,8 +1149,9 @@ class Table{
         energyLines
             .style("visibility","visible")
             .attr("fill", "none")
+            .attr("class", "line-path")
             .attr("stroke", energyColor)//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
@@ -1160,9 +1161,10 @@ class Table{
             .merge(faintEnergyLines);
         faintEnergyLines
             .style("visibility","visible")
+            .attr("class", "line-path")
             .attr("fill", "none")
             .attr("stroke", energyColor.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 3)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
@@ -1174,9 +1176,10 @@ class Table{
             .merge(powerLines);
         powerLines
             .style("visibility","visible")
+            .attr("class", "line-path")
             .attr("fill", "none")
             .attr("stroke", powerColor)//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
@@ -1186,9 +1189,10 @@ class Table{
             .merge(faintPowerLines);
         faintPowerLines
             .style("visibility","visible")
+            .attr("class", "line-path")
             .attr("fill", "none")
             .attr("stroke", powerColor.copy({opacity: 0.1}))//d => that.stationColor(d.StationNode.id)) rgba(163, 6, 12,0.1)
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 3)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
@@ -1196,25 +1200,28 @@ class Table{
         
 
         // this code initiates the hover functionality, use only if have 1 or more line
-        if (that.clickedBusses.length > 0){
-            d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
-            d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
-        }
-        else{
-            d3.select('.energySvg')
-                .on("mousemove",null)
-                .on("mouseenter",null)
-                .on("mouseleave",null)
-                .on("click",null);
-            d3.select('.energy-info-text').html('');
+        d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
+        d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
+        
+        // if (that.clickedBusses.length > 0){
+        //     d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
+        //     d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
+        // }
+        // else{
+        //     d3.select('.energySvg')
+        //         .on("mousemove",null)
+        //         .on("mouseenter",null)
+        //         .on("mouseleave",null)
+        //         .on("click",null);
+        //     d3.select('.energy-info-text').html('');
 
-            d3.select('.powerSvg')
-                .on("mousemove",null)
-                .on("mouseenter",null)
-                .on("mouseleave",null)
-                .on("click",null);
-            d3.select('.power-info-text').html('');
-        }
+        //     d3.select('.powerSvg')
+        //         .on("mousemove",null)
+        //         .on("mouseenter",null)
+        //         .on("mouseleave",null)
+        //         .on("click",null);
+        //     d3.select('.power-info-text').html('');
+        // }
 
         
         //using join
@@ -1310,11 +1317,8 @@ class Table{
             const mouse = d3.mouse(this);
             // Scale for x axis
             const xm = that.timeScale.invert(mouse[0]);
-            // console.log(xm)
-            // const xm = x.invert(mouse[0]);
             // Scale for y axis
             const ym = yScale.invert(mouse[1]);
-            // console.log(ym)
             // const ym = y.invert(mouse[1]);
             const i1 = d3.bisectLeft(time, xm, 1);
             const i0 = i1 - 1;
@@ -1336,8 +1340,8 @@ class Table{
             // path.filter(d => d === s).raise();
             dot.attr("transform", `translate(${that.timeScale(time[i])},${yScale(s[source][i].value)})`);
             // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
-            dot.select("text").text(i);
-            d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
+            dot.select("text").text(s.id);
+            // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
         }
         
         function entered() {
@@ -1356,7 +1360,7 @@ class Table{
             path.attr("stroke", color.copy({opacity:0.1}));
 
             // Need to rehighlight the latest clicked and populate with current time
-            d3.select('.energy-info-text').html('');
+            // d3.select('.energy-info-text').html('');
 
             // path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
             dot.attr("display", "none");
@@ -1409,8 +1413,8 @@ class Table{
             that.transNet.clicked = null;
 
             //Clear path from line chart
-            d3.selectAll(".line-path").style("visibility","hidden");
-            d3.selectAll(".chart-text").style("visibility","hidden");
+            // d3.selectAll(".line-path").style("visibility","hidden");
+            // d3.selectAll(".chart-text").style("visibility","hidden");
 
             // Clears all station selections and selects station the bus is currently at
             let station_id = that.station_mapping[s.Location[i]]

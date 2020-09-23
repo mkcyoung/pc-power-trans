@@ -51,6 +51,8 @@ class TransNet {
         this.clicked = null; //my click selection - used for updating tooltip later
         this.clickedStations = []; // using this for implementing multiple station click functionality 
 
+        this.chart_line_opacity = 0.1 //sets the opacity of the faint lines in the charts
+
 
     }
 
@@ -1390,6 +1392,58 @@ class TransNet {
         VStatSvg.append("g").attr("class",'line-Volt')
         VStatSvg.append("g").attr("class",'line-Volt-faint')
 
+        // Making dots
+        // making dot for highlighting line
+        let dot = d3.select('.line-AL').append("g")
+        .attr("class","aLoad-dot dot")
+        .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+
+        // making dot for highlighting line
+        dot = d3.select('.line-RL').append("g")
+        .attr("class","rLoad-dot dot")
+        .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+
+        // making dot for highlighting line
+        dot = d3.select('.line-Volt').append("g")
+        .attr("class","volt-dot dot")
+        .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+
 
 
 
@@ -1401,8 +1455,6 @@ class TransNet {
         //console.log("that.clicked in update line",this.clicked)
         // console.log(this.timeScale.range(),this.widthL)
         //Making line function
-
-        let faint_opacity = 0.1
 
         let station_data = that.clickedStations;
         // console.log("Station data in updateLine: ",station_data)
@@ -1438,7 +1490,6 @@ class TransNet {
         let faintrpLines = d3.select('.line-RP-faint').selectAll("path")
             .data(station_data)
 
-
         let busLines = d3.select('.line-Bus').selectAll("path")
             .data(station_data)
         let faintbusLines = d3.select('.line-Bus-faint').selectAll("path")
@@ -1455,10 +1506,6 @@ class TransNet {
 
         busLines.exit().remove();
         faintbusLines.exit().remove();
-
-        
-        // Reactive color is created by taking "opposite" of this active power color
-        let active_power_color = d3.hsl(that.stationColor(that.clicked.StationNode.id))
 
         apLines = apLines.enter().append('path')
             .merge(apLines);
@@ -1481,7 +1528,7 @@ class TransNet {
             .style("visibility","visible")
             .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:faint_opacity}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
@@ -1507,7 +1554,7 @@ class TransNet {
             .style("visibility","visible")
             .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:faint_opacity}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
@@ -1535,7 +1582,7 @@ class TransNet {
             .style("visibility","visible")
             .attr("class","line-path")
             .attr("fill", "none")
-            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:faint_opacity}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
@@ -1588,7 +1635,7 @@ class TransNet {
             const i0 = i1 - 1;
             // console.log(i1,i0)
             const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
-            // console.log(i)
+            console.log(i)
             // console.log("x",xm,"y",ym,"time",i)
             let s = null
             if (source == "BusData"){
@@ -1615,7 +1662,8 @@ class TransNet {
                 dot.attr("transform", `translate(${xScale(time[i])},${yScale(s[source][i].value)})`);
             }
             // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
-            // dot.select("text").text(i);
+            // dot.select("text").text(s.StationName + " - " + parseFloat(s[source][i].value).toFixed(2));
+            dot.select("text").text(s.StationName)
             // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
         }
         
