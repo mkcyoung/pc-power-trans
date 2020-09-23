@@ -293,6 +293,54 @@ Both: BEB energy / BEB power
     grid-area: chart-3;
     margin: var(--border-margins);
     padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:1fr;
+    grid-template-areas:
+        "chart-3-col1 chart-3-col2";
+}
+
+.chart-3-col1{
+    overflow: auto;
+    grid-area: chart-3-col1;
+    margin: var(--border-margins);
+    padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+        "chart-3-col1-row1" 
+        "chart-3-col1-row2";
+}
+
+.chart-3-col2{
+    overflow: auto;
+    grid-area: chart-3-col2;
+    margin: var(--border-margins);
+    padding: var(--chart-paddding);
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+        "chart-3-col2-row1" 
+        "chart-3-col2-row2";
+}
+
+.chart-3-col1-row1{
+    display:none;
+    grid-area:chart-3-col1-row1
+}
+.chart-3-col1-row2{
+    display:none;
+    grid-area:chart-3-col1-row2
+}
+.chart-3-col2-row1{
+    display:none;
+    grid-area:chart-3-col1-row1
+}
+.chart-3-col2-row2{
+    display:none;
+    grid-area:chart-3-col1-row2
 }
 
 /* .chart-4{
@@ -674,7 +722,7 @@ tbody tr:hover{
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: rgb(39, 101, 216);
+    background: #7ab3a0;
     cursor: pointer;
 }
 

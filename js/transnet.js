@@ -1123,25 +1123,32 @@ class TransNet {
     }
 
     // Function to handle creating power view charts 
-    createPowerCharts(){
+    createPowerCharts(Load_divs, Voltage_div){
        // I want to have all lines show up, and then have the user able to select them in 
         // the same way they select the nodes and connections 
         // Strategy will be to render lines in light gray first, then have them colored on highlight 
 
         let that = this;
 
-        this.updateChartSize()
+        // console.log("POWER TIME BEFORE",this.timeScale.range())
+        this.updateChartSize(Load_divs[0])
+        // console.log("POWER TIME AFTER",this.timeScale.range())
         // Line chart height and width - change to be dynamic
         let line_height = this.lineHeight; //300
         let line_width = this.lineWidth; //700
 
         //Create line chart svgs for all the metrics
-        let ALSvg = d3.select(".chart-1").append("svg")
+        let ALSvg = d3.select(Load_divs[0]).append("svg")
             .attr("class","ALSvg")
             .attr("height",line_height)
             .attr("width",line_width);
 
-        let VoltSvg = d3.select(".chart-2").append("svg")
+        let RLSvg = d3.select(Load_divs[1]).append("svg")
+            .attr("class","RLSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+
+        let VoltSvg = d3.select(Voltage_div[1]).append("svg")
             .attr("class","VoltSvg")
             .attr("height",line_height)
             .attr("width",line_width);
@@ -1149,6 +1156,9 @@ class TransNet {
 
         //Create an active load chart group
         let ALStatSvg = ALSvg.append("g");
+
+        //Create an reactive load chart group
+        let RLStatSvg = RLSvg.append("g");
 
         //Create an voltage chart group
         let VStatSvg = VoltSvg.append("g");
@@ -1181,6 +1191,19 @@ class TransNet {
             .attr("y",line_height - 5)
             .text("time");
 
+        // REactive load
+        RLStatSvg.append("text")
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("y",20)
+            .text("reactive load (kW)");
+        
+        RLStatSvg.append("text")
+            .attr("class","axis-text")
+            .attr("x",10)
+            .attr("y",line_height - 5)
+            .text("time");
+
         // Voltage
         VStatSvg.append("text")
             .attr("class","axis-title")
@@ -1197,6 +1220,7 @@ class TransNet {
         
         // Scales for line chart
         let yScaleAL = this.aLoadLineScale;
+        let yScaleRL = this.aLoadLineScale; //TODO set to reactive load when I get data
         let yScaleV = this.voltLineScale;
 
         let xScale = this.timeScale;
@@ -1209,6 +1233,8 @@ class TransNet {
         //Y axis group
         let yAxisAL = d3.axisLeft().ticks(3);
         yAxisAL.scale(yScaleAL);
+        let yAxisRL = d3.axisLeft().ticks(3);
+        yAxisRL.scale(yScaleRL);
         let yAxisV = d3.axisLeft().ticks(3);
         yAxisV.scale(yScaleV);
         //Gridlines
@@ -1233,6 +1259,11 @@ class TransNet {
             .classed("axis",true)
             .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
             .call(xAxis);
+        
+        RLStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
 
         VStatSvg.append("g")
             .classed("axis",true)
@@ -1245,6 +1276,11 @@ class TransNet {
             .classed("axis",true)
             .attr("transform",`translate(${this.marginL.left},${0})`)
             .call(yAxisAL);
+        
+        RLStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisRL);
 
         VStatSvg.append("g")
             .classed("axis",true)
@@ -1264,6 +1300,9 @@ class TransNet {
 
         ALStatSvg.append("path")
             .attr("class","line-AL line-path");
+
+        RLStatSvg.append("path")
+            .attr("class","line-RL line-path");
 
         VStatSvg.append("path")
             .attr("class","line-V line-path");

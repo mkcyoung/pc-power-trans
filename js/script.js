@@ -364,26 +364,7 @@ Promise.all([
         // charts
         let target = $('#viewDrop').find('.active')[0].id;
         if (target == 'power'){
-            // show just the relevant power station charts
-            console.log("POWER")
-            transNetwork.removeCharts()
-            transNetwork.createPowerCharts()
-            powNetwork.createPowerCharts()
-
-            //check if chart has something in it, if so, update on resize
-            // console.log(powNetwork.clickedLinks)
-            // console.log(powNetwork.clickedNodes)
-            // TODO - implement clicked stations for transNet
-            // console.log(transNetwork.clicked != 0)
-            if (powNetwork.clickedLinks.length != 0){
-                powNetwork.updateLine()
-            }
-            if (powNetwork.clickedNodes.length != 0){
-                powNetwork.updateLineNode()
-            }
-            // if (transNetwork.clicked != 0){
-            //     transNetwork.updateLine()
-            // }
+            display_power();
 
         }
         else if (target == 'transit'){
@@ -413,15 +394,7 @@ Promise.all([
 
         // Populate views based on target
         if (target == 'power'){
-            // show just the relevant power station charts
-            console.log("POWER")
-            transNetwork.removeCharts()
-            transNetwork.createPowerCharts()
-            powNetwork.createPowerCharts()
-
-            //TODO - input active stuff if any is selected
-
-
+            display_power();
 
         }
         else if (target == 'transit'){
@@ -444,6 +417,12 @@ Promise.all([
         let row1_div = ['.chart-1-col1','.chart-1-col2']
         let row2_div = ['.chart-2-col1','.chart-2-col2']
         let row3_div = ['.chart-3']
+        // Because the whole of chart 3 is being visualzied,
+        // set display of .chart-3-col1 and .chart-3-col2 to none
+        // might need to use this trick when I split up charts even further
+        d3.select('.chart-3-col1').style("display", "none")
+        d3.select('.chart-3-col2').style("display", "none")
+
         // pass in correct div levels
         transNetwork.createTransitCharts(row1_div,row3_div)
         table.createBusLines(row2_div)
@@ -455,6 +434,37 @@ Promise.all([
         //TODO - implement clicked stations for transnet
         // transNetwork.updateLine()
 
+    }
+
+    function display_power(){
+        // show just the relevant power station charts
+        console.log("POWER")
+        transNetwork.removeCharts()
+        // transNetwork.createPowerCharts()
+        // powNetwork.createPowerCharts()
+        // Make chart-3-col1 and 2 grids again
+        d3.select('.chart-3-col1').style("display", "grid")
+        d3.select('.chart-3-col2').style("display", "grid")
+        let row1_div = ['.chart-1-col1','.chart-1-col2'] // active load, reactive load
+        let row2_div = ['.chart-2-col1','.chart-2-col2'] // active pflow, reactive pflow
+        let row3_div = ['.chart-3-col1','.chart-3-col2'] // current, voltage 
+
+        // pass in correct divs
+        transNetwork.createPowerCharts(row1_div,row3_div) // active load (and reactive load) and voltage 
+        powNetwork.createPowerCharts(row2_div,row3_div) // active pflow (and reactive pflow) and current
+
+        // TODO - implement clicked stations for transNet
+        // console.log(transNetwork.clicked != 0)
+        if (powNetwork.clickedLinks.length != 0){
+            powNetwork.updateLine()
+        }
+        if (powNetwork.clickedNodes.length != 0){
+            powNetwork.updateLineNode()
+        }
+        // if (transNetwork.clicked != 0){
+        //     transNetwork.updateLine()
+        // }
+        
     }
 
 

@@ -581,15 +581,15 @@ class PowNet {
     }
 
 
-    updateChartSize(){
+    updateChartSize(bounding_div){
 
         // Gets new sizes and sets new canvas dimensions
-        let chart1 = d3.select('.chart-1').node().getBoundingClientRect()
+        let chart = d3.select(bounding_div).node().getBoundingClientRect()
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
 
         //Margins - the bostock way - line chart
-        this.lineHeight = chart1.height - 10;
-        this.lineWidth = chart1.width - 5;
+        this.lineHeight = chart.height - 10;
+        this.lineWidth = chart.width - 5;
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
 
@@ -607,147 +607,179 @@ class PowNet {
     }
 
     // Create line charts for power system view
-    createPowerCharts(){
+    createPowerCharts(powerFlow_divs,current_div){
          //console.log("data in line:",this.data.nodes[0])
 
-         let that = this;
+        let that = this;
 
-         this.updateChartSize()
-         // Line chart height and width
-         let line_height = this.lineHeight; //300
-         let line_width = this.lineWidth; //700
- 
-         //Create line chart svg for active power
-         let currentSvg = d3.select(".chart-3").append("svg")
-             .attr("class","currentSvg")
-             .attr("height",line_height)
-             .attr("width",line_width);
- 
-         let APFSvg = d3.select(".chart-4").append("svg")
-             .attr("class","APFSvg")
-             .attr("height",line_height)
-             .attr("width",line_width);
+        this.updateChartSize(powerFlow_divs[0])
+        // Line chart height and width
+        let line_height = this.lineHeight; //300
+        let line_width = this.lineWidth; //700
+
+        //Create line chart svg for active power
+        let currentSvg = d3.select(current_div[0]).append("svg")
+            .attr("class","currentSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+
+        let APFSvg = d3.select(powerFlow_divs[0]).append("svg")
+            .attr("class","APFSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+    
+        let RPFSvg = d3.select(powerFlow_divs[1]).append("svg")
+            .attr("class","RPFSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
          
  
-         //Create an energy chart group
-         let currentG = currentSvg.append("g");
-             // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
- 
-         //Create a power chart group
-         let APFG = APFSvg.append("g");
- 
-         //Create label for group
-        //  currentG.append("text")
-        //      .attr("class","chart-text")
-        //      .attr("x",line_width-160)
-        //      .attr("y",60);
- 
-         //Create labels for axes
-         // energy
-         currentG.append("text")
-             .attr("class","axis-title")
-             .attr("x",line_width - line_width*0.5 - 90)
-             .attr("y",20)
-             .text("current (A)");
-         
-         currentG.append("text")
-             .attr("class","axis-text")
-             .attr("x",10)
-             .attr("y",line_height-5)
-             .text("time");
- 
-         // power
-         APFG.append("text")
-             .attr("class","axis-title")
-             .attr("x",line_width - line_width*0.5 - 120)
-             .attr("y",23)
-             .text("active power flow (kW)");
-         
-         APFG.append("text")
-             .attr("class","axis-text")
-             .attr("x",10)
-             .attr("y",line_height-5)
-             .text("time");
- 
-         
-         // Scales for line chart
-         let yScaleCurrent = this.currentLineScale;
-         let yScaleAPF = this.APFLineScale;
- 
-         let xScale = this.timeScale;
- 
- 
-         //Xaxis group
-         let xAxis = d3.axisBottom().ticks(6);
-         xAxis.scale(xScale);
- 
-         //Y axis group
-         let yAxisCurrent = d3.axisLeft().ticks(3);
-         yAxisCurrent.scale(yScaleCurrent);
-         let yAxisAPF = d3.axisLeft().ticks(3);
-         yAxisAPF.scale(yScaleAPF);
- 
-         //Gridlines
-         // gridlines in y axis function 
-         // function make_y_gridlines() {		
-         //     return d3.axisLeft(yScale)
-         //         .ticks(5)
-         // }
- 
-         // // add the Y gridlines
-         // powStatSvg.append("g")			
-         //     .attr("class", "grid")
-         //     .attr("transform",`translate(${this.marginL.left},0)`)
-         //     .call(make_y_gridlines()
-         //         .tickSize(-(this.widthL))
-         //         .tickFormat("")
-         //     );
- 
-         //X-axis
-         currentG.append("g")
-             .classed("axis",true)
-             .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-             .call(xAxis);
- 
-         APFG.append("g")
-             .classed("axis",true)
-             .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-             .call(xAxis);
-         
- 
-         //Y-axis
-         currentG.append("g")
-             .classed("axis",true)
-             .attr("transform",`translate(${this.marginL.left},${0})`)
-             .call(yAxisCurrent);
- 
-         APFG.append("g")
-             .classed("axis",true)
-             .attr("transform",`translate(${this.marginL.left},${0})`)
-             .call(yAxisAPF);
- 
-         
-         //Add data to chart
- 
-         //Making line function
-         // let line = d3.line()
-         //     // .curve(d3.curveStep)
-         //     .defined(d => !isNaN(d.value))
-         //     .x((d,i) => this.timeScale(i))
-         //     .y(d => this.powLoadLineScale(d.value));
- 
-         //Drawing path
-         currentG.append("path")
-             .attr("class","line-Current-faint line-path");
- 
-         currentG.append("path")
-             .attr("class","line-Current line-path");
- 
-         APFG.append("path")
-             .attr("class","line-APF-faint line-path");
- 
-         APFG.append("path")
-             .attr("class","line-APF line-path");
+        //Create a current chart group
+        let currentG = currentSvg.append("g");
+            // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
+
+        //Create a power chart group
+        let APFG = APFSvg.append("g");
+
+        let RPFG = RPFSvg.append("g");
+
+        //Create labels for axes
+        // energy
+        currentG.append("text")
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("y",20)
+            .text("current (A)");
+        
+        currentG.append("text")
+            .attr("class","axis-text")
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
+
+        // power
+        APFG.append("text")
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("y",23)
+            .text("active power flow (kW)");
+        
+        APFG.append("text")
+            .attr("class","axis-text")
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
+
+        RPFG.append("text")
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("y",23)
+            .text("reactive power flow (kW)");
+        
+        RPFG.append("text")
+            .attr("class","axis-text")
+            .attr("x",10)
+            .attr("y",line_height-5)
+            .text("time");
+
+        
+        // Scales for line chart
+        let yScaleCurrent = this.currentLineScale;
+        let yScaleAPF = this.APFLineScale;
+        let yScaleRPF = this.APFLineScale; //TODO: change when I get reactive power data
+
+        let xScale = this.timeScale;
+
+
+        //Xaxis group
+        let xAxis = d3.axisBottom().ticks(6);
+        xAxis.scale(xScale);
+
+        //Y axis group
+        let yAxisCurrent = d3.axisLeft().ticks(3);
+        yAxisCurrent.scale(yScaleCurrent);
+        let yAxisAPF = d3.axisLeft().ticks(3);
+        yAxisAPF.scale(yScaleAPF);
+        let yAxisRPF = d3.axisLeft().ticks(3);
+        yAxisRPF.scale(yScaleRPF);
+
+        //Gridlines
+        // gridlines in y axis function 
+        // function make_y_gridlines() {		
+        //     return d3.axisLeft(yScale)
+        //         .ticks(5)
+        // }
+
+        // // add the Y gridlines
+        // powStatSvg.append("g")			
+        //     .attr("class", "grid")
+        //     .attr("transform",`translate(${this.marginL.left},0)`)
+        //     .call(make_y_gridlines()
+        //         .tickSize(-(this.widthL))
+        //         .tickFormat("")
+        //     );
+
+        //X-axis
+        currentG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+
+        APFG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+
+        RPFG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+        
+
+        //Y-axis
+        currentG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisCurrent);
+
+        APFG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisAPF);
+
+        RPFG.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisRPF);
+
+        
+        //Add data to chart
+
+        //Making line function
+        // let line = d3.line()
+        //     // .curve(d3.curveStep)
+        //     .defined(d => !isNaN(d.value))
+        //     .x((d,i) => this.timeScale(i))
+        //     .y(d => this.powLoadLineScale(d.value));
+
+        //Drawing path
+        currentG.append("path")
+            .attr("class","line-Current-faint line-path");
+
+        currentG.append("path")
+            .attr("class","line-Current line-path");
+
+        APFG.append("path")
+            .attr("class","line-APF-faint line-path");
+
+        APFG.append("path")
+            .attr("class","line-APF line-path");
+
+        RPFG.append("path")
+            .attr("class","line-RPF-faint line-path");
+
+        RPFG.append("path")
+            .attr("class","line-RPF line-path");
 
 
 
