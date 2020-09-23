@@ -95,6 +95,24 @@ class TransNet {
             }))}
         }));
 
+        //Finding max/min of CHS reactive power
+        let max_chrp = d3.max(this.data.nodes.map((d) => {
+            //console.log(d)
+            if(d.chSRP!=null){
+            return d3.max(d.chSRP.map(f => {
+                //console.log(f[1])
+                return parseFloat(f.value)
+            }))}
+        }));
+        let min_chrp = d3.min(this.data.nodes.map((d) => {
+            // console.log(d)
+            if(d.chSRP!=null){
+            return d3.min(d.chSRP.map(f => {
+                //console.log(f[1])
+                return parseFloat(f.value)
+            }))}
+        }));
+
         //Finding max/min of aLoad
         let max_aload = d3.max(this.pow_data.nodes.map((d) => {
             // console.log(d)
@@ -175,6 +193,8 @@ class TransNet {
         // console.log(min_aload,max_aload)
         // Scales for line chart
         this.powLoadLineScale = d3.scaleLinear().domain([min_chsp,max_chsp]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.powRLoadLineScale = d3.scaleLinear().domain([min_chrp,max_chrp]).range([this.heightL+this.marginL.top,this.marginL.top]);
+
         this.timeScale = d3.scaleLinear().domain([1,288]) //.range([this.marginL.left,this.marginL.left+this.widthL]);
         this.busTimeScale = d3.scaleLinear().domain([1,288]).range([this.busCountMargin.left,this.busCountMargin.left+this.busCountMarginWidth]);
         // this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
@@ -899,6 +919,7 @@ class TransNet {
             // Tackles scaling
             // Scales for line chart - need to rescale because we changed sizes
             that.powLoadLineScale = that.powLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
+            that.powRLoadLineScale = that.powRLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.timeScale = that.timeScale.range([that.marginL.left,that.marginL.left+that.widthL]);
             that.aLoadLineScale = that.aLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.rLoadLineScale = that.rLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
@@ -974,7 +995,7 @@ class TransNet {
 
 
         let yScaleAP = this.powLoadLineScale;
-        let yScaleRP = yScaleAP; // TODO change when get data
+        let yScaleRP = this.powRLoadLineScale; 
         console.log(this.timeScale.range(),line_width)
         let xScale = this.timeScale;
 
@@ -1016,8 +1037,14 @@ class TransNet {
         APStatSvg.append("path")
             .attr("class","line-AP line-path");
 
+        APStatSvg.append("path")
+            .attr("class","line-AP-faint line-path");
+
         RPStatSvg.append("path")
             .attr("class","line-RP line-path");
+
+        RPStatSvg.append("path")
+            .attr("class","line-RP-faint line-path");
 
 
 
@@ -1097,49 +1124,14 @@ class TransNet {
             .attr("transform",`translate(${this.busCountMargin.left},${0})`)
             .call(yAxisBus);
 
-        
-        //Add data to chart
-
-        //Making line function
-        // let line = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.powLoadLineScale(d.value));
 
         //Drawing path
 
         BusStatSvg.append("path")
             .attr("class","line-Bus line-path");
 
-
-        // Add all relevant data 
-        //Making line function
-        // let lineAP = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.powLoadLineScale(d.value));
-
-            // .data(this.data.nodes)
-            // .enter().append("path")
-            // .attr("class","netline")
-            // .attr("id",(d,i) => `line-${d.StationNode.id}`)
-            // .attr("d",d => lineFunction(d.line))
-
-        // console.log("here",this.data.nodes.map(f=>f.chSP))
-        // APStatSvg.selectAll("path")
-        //     .data(this.data.nodes.map(f => f.chSP))
-        //     .enter().append("path")
-        //     .attr("class","line-AP")
-        //     .attr("id",(d,i) => `line-AP-${i}`)
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", '#dedede')//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 3)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", lineAP);
+        BusStatSvg.append("path")
+            .attr("class","line-Bus-faint line-path");
 
 
     }
@@ -1610,13 +1602,19 @@ class TransNet {
     updateLine(){
         let that = this;
         //console.log("that.clicked in update line",this.clicked)
-        console.log(this.timeScale.range(),this.widthL)
+        // console.log(this.timeScale.range(),this.widthL)
         //Making line function
         let lineAP = d3.line()
             // .curve(d3.curveStep)
             .defined(d => !isNaN(d.value))
             .x((d,i) => this.timeScale(i))
             .y(d => this.powLoadLineScale(d.value));
+
+        let lineRP = d3.line()
+            // .curve(d3.curveStep)
+            .defined(d => !isNaN(d.value))
+            .x((d,i) => this.timeScale(i))
+            .y(d => this.powRLoadLineScale(d.value));
 
         // let lineAL = d3.line()
         //     // .curve(d3.curveStep)
@@ -1636,50 +1634,72 @@ class TransNet {
             .x((d,i) => this.busTimeScale(i))
             .y(d => this.busLineScale(d));
 
+        let active_power_color = d3.hsl(that.stationColor(that.clicked.StationNode.id))
         d3.select(".line-AP")
             .datum(this.data.nodes[that.clicked.index].chSP.slice(0,this.activeTime))
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", active_power_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("d", lineAP);
 
-        // d3.select(".line-AL")
-        //     .datum(this.data.nodes[that.clicked.index].aLoad.slice(0,this.activeTime))
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 4)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", lineAL);
+        d3.select(".line-AP-faint")
+            .datum(this.data.nodes[that.clicked.index].chSP)
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", active_power_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineAP);
 
-        // d3.select(".line-V")
-        //     .datum(this.data.nodes[that.clicked.index].volt.slice(0,this.activeTime))
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 4)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", lineV);
+        d3.select(".line-RP")
+            .datum(this.data.nodes[that.clicked.index].chSRP.slice(0,this.activeTime))
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", active_power_color)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineAP);
+
+        d3.select(".line-RP-faint")
+            .datum(this.data.nodes[that.clicked.index].chSRP)
+            .style("visibility","visible")
+            .attr("fill", "none")
+            .attr("stroke", active_power_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineAP);
 
         d3.select(".line-Bus")
             .datum(this.data.nodes[that.clicked.index].BusData.slice(0,this.activeTime).map(f=>f.total))
             .style("visibility","visible")
             .attr("fill", "none")
-            .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
+            .attr("stroke", active_power_color)//d => that.stationColor(d.StationNode.id))
             .attr("stroke-width", 4)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("d", lineBus);
 
-        //Line chart label
-        d3.select(".chart-text")
+        d3.select(".line-Bus-faint")
+            .datum(this.data.nodes[that.clicked.index].BusData.map(f=>f.total))
             .style("visibility","visible")
-            .text(`${that.clicked.StationName}`);
+            .attr("fill", "none")
+            .attr("stroke", active_power_color.copy({opacity:0.1}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", lineBus);
+
+
+        // //Line chart label
+        // d3.select(".chart-text")
+        //     .style("visibility","visible")
+        //     .text(`${that.clicked.StationName}`);
 
         
     }
