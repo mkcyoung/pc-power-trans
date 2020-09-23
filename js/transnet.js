@@ -96,21 +96,40 @@ class TransNet {
         }));
 
         //Finding max/min of aLoad
-        let max_aload = d3.max(this.data.nodes.map((d) => {
-            //console.log(d)
+        let max_aload = d3.max(this.pow_data.nodes.map((d) => {
+            // console.log(d)
             return d3.max(d.aLoad.map(f => {
                 // console.log(f.value)
                 return parseFloat(f.value)
             }))
         }));
         // console.log(max_aload)
-        let min_aload = d3.min(this.data.nodes.map((d) => {
+        let min_aload = d3.min(this.pow_data.nodes.map((d) => {
             //console.log(d)
             return d3.min(d.aLoad.map(f => {
                 //console.log(f[1])
                 return parseFloat(f.value)
             }))
         }));
+        // console.log(min_aload,max_aload)
+
+        //Finding max/min of reactive load
+        let max_rload = d3.max(this.pow_data.nodes.map((d) => {
+            //console.log(d)
+            return d3.max(d.rLoad.map(f => {
+                // console.log(f.value)
+                return parseFloat(f.value)
+            }))
+        }));
+        // console.log(max_aload)
+        let min_rload = d3.min(this.pow_data.nodes.map((d) => {
+            //console.log(d)
+            return d3.min(d.rLoad.map(f => {
+                //console.log(f[1])
+                return parseFloat(f.value)
+            }))
+        }));
+
 
         //Finding max/min of active power flow
         let max_apf = d3.max(this.pow_data.links.map((d) => {
@@ -158,12 +177,14 @@ class TransNet {
         this.powLoadLineScale = d3.scaleLinear().domain([min_chsp,max_chsp]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.timeScale = d3.scaleLinear().domain([1,288]) //.range([this.marginL.left,this.marginL.left+this.widthL]);
         this.busTimeScale = d3.scaleLinear().domain([1,288]).range([this.busCountMargin.left,this.busCountMargin.left+this.busCountMarginWidth]);
-        this.aLoadLineScale = d3.scaleLinear().domain([0,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        // this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = d3.scaleLog().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.rLoadLineScale = d3.scaleLog().domain([min_rload,max_rload]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.busLineScale = d3.scaleLinear().domain([min_bus_count,max_bus_count]).range([this.busCountMarginHeight+this.busCountMargin.top,this.busCountMargin.top]);
 
         //Setting custom max because the first node skews it - have this for color setting
-        this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,300])
+        this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,max_aload])
         //Make an ordinal color scale for stations
         let pow_stations = ["n2","n13","n9","n33","n25","n31","n8"];
         this.stationColor = d3.scaleOrdinal(d3.schemeTableau10).domain(pow_stations);
@@ -880,6 +901,7 @@ class TransNet {
             that.powLoadLineScale = that.powLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.timeScale = that.timeScale.range([that.marginL.left,that.marginL.left+that.widthL]);
             that.aLoadLineScale = that.aLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
+            that.rLoadLineScale = that.rLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.voltLineScale = that.voltLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
 
         }
@@ -1220,7 +1242,7 @@ class TransNet {
         
         // Scales for line chart
         let yScaleAL = this.aLoadLineScale;
-        let yScaleRL = this.aLoadLineScale; //TODO set to reactive load when I get data
+        let yScaleRL = this.rLoadLineScale; //TODO set to reactive load when I get data
         let yScaleV = this.voltLineScale;
 
         let xScale = this.timeScale;
@@ -1301,11 +1323,20 @@ class TransNet {
         ALStatSvg.append("path")
             .attr("class","line-AL line-path");
 
+        ALStatSvg.append("path")
+            .attr("class","line-AL-faint line-path");
+
         RLStatSvg.append("path")
             .attr("class","line-RL line-path");
 
+        RLStatSvg.append("path")
+            .attr("class","line-RL-faint line-path");
+
         VStatSvg.append("path")
             .attr("class","line-V line-path");
+        
+        VStatSvg.append("path")
+            .attr("class","line-V-faint line-path");
 
 
 
@@ -1587,17 +1618,17 @@ class TransNet {
             .x((d,i) => this.timeScale(i))
             .y(d => this.powLoadLineScale(d.value));
 
-        let lineAL = d3.line()
-            // .curve(d3.curveStep)
-            .defined(d => !isNaN(d.value))
-            .x((d,i) => this.timeScale(i))
-            .y(d => this.aLoadLineScale(d.value));
+        // let lineAL = d3.line()
+        //     // .curve(d3.curveStep)
+        //     .defined(d => !isNaN(d.value))
+        //     .x((d,i) => this.timeScale(i))
+        //     .y(d => this.aLoadLineScale(d.value));
 
-        let lineV = d3.line()
-            // .curve(d3.curveStep)
-            .defined(d => !isNaN(d.value))
-            .x((d,i) => this.timeScale(i))
-            .y(d => this.voltLineScale(d.value));
+        // let lineV = d3.line()
+        //     // .curve(d3.curveStep)
+        //     .defined(d => !isNaN(d.value))
+        //     .x((d,i) => this.timeScale(i))
+        //     .y(d => this.voltLineScale(d.value));
 
         let lineBus = d3.line()
             // .curve(d3.curveStep)
@@ -1615,25 +1646,25 @@ class TransNet {
             .attr("stroke-linecap", "round")
             .attr("d", lineAP);
 
-        d3.select(".line-AL")
-            .datum(this.data.nodes[that.clicked.index].aLoad.slice(0,this.activeTime))
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 4)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", lineAL);
+        // d3.select(".line-AL")
+        //     .datum(this.data.nodes[that.clicked.index].aLoad.slice(0,this.activeTime))
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 4)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineAL);
 
-        d3.select(".line-V")
-            .datum(this.data.nodes[that.clicked.index].volt.slice(0,this.activeTime))
-            .style("visibility","visible")
-            .attr("fill", "none")
-            .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
-            .attr("stroke-width", 4)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", lineV);
+        // d3.select(".line-V")
+        //     .datum(this.data.nodes[that.clicked.index].volt.slice(0,this.activeTime))
+        //     .style("visibility","visible")
+        //     .attr("fill", "none")
+        //     .attr("stroke", `${that.stationColor(that.clicked.StationNode.id)}`)//d => that.stationColor(d.StationNode.id))
+        //     .attr("stroke-width", 4)
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("d", lineV);
 
         d3.select(".line-Bus")
             .datum(this.data.nodes[that.clicked.index].BusData.slice(0,this.activeTime).map(f=>f.total))
