@@ -7,7 +7,7 @@
     display: grid;
     /* grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
     grid-template-rows: repeat(13,minmax(0, 1fr)); */
-    grid-template-columns: 0.8fr 0.2fr minmax(0,1.2fr);
+    grid-template-columns: 0.8fr 0.2fr minmax(0,1fr);
     grid-template-rows: repeat(13,minmax(0, 1fr));
     grid-template-areas: 
             /* "title title title"
@@ -206,11 +206,11 @@ Both: active load / reactive load
 }
 .chart-1-col2-row1{
     display:none;
-    grid-area:chart-1-col1-row1
+    grid-area:chart-1-col2-row1
 }
 .chart-1-col2-row2{
     display:none;
-    grid-area:chart-1-col1-row2
+    grid-area:chart-1-col2-row2
 }
 
 
@@ -272,11 +272,11 @@ Both: current / voltage
 }
 .chart-2-col2-row1{
     display:none;
-    grid-area:chart-2-col1-row1
+    grid-area:chart-2-col2-row1
 }
 .chart-2-col2-row2{
     display:none;
-    grid-area:chart-2-col1-row2
+    grid-area:chart-2-col2-row2
 }
 
 /* Chart 3:
@@ -336,11 +336,11 @@ Both: BEB energy / BEB power
 }
 .chart-3-col2-row1{
     display:none;
-    grid-area:chart-3-col1-row1
+    grid-area:chart-3-col2-row1
 }
 .chart-3-col2-row2{
     display:none;
-    grid-area:chart-3-col1-row2
+    grid-area:chart-3-col2-row2
 }
 
 /* .chart-4{

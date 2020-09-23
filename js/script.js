@@ -293,26 +293,7 @@ Promise.all([
     // Find active view and create those charts on screen load
     let target = $('#viewDrop').find('.active')[0].id;
     if (target == 'power'){
-        // show just the relevant power station charts
-        console.log("POWER")
-        transNetwork.removeCharts()
-        transNetwork.createPowerCharts()
-        powNetwork.createPowerCharts()
-
-        //check if chart has something in it, if so, update on resize
-        // console.log(powNetwork.clickedLinks)
-        // console.log(powNetwork.clickedNodes)
-        // TODO - implement clicked stations for transNet
-        // console.log(transNetwork.clicked != 0)
-        if (powNetwork.clickedLinks.length != 0){
-            powNetwork.updateLine()
-        }
-        if (powNetwork.clickedNodes.length != 0){
-            powNetwork.updateLineNode()
-        }
-        // if (transNetwork.clicked != 0){
-        //     transNetwork.updateLine()
-        // }
+        display_power();
 
     }
     else if (target == 'transit'){
@@ -321,8 +302,7 @@ Promise.all([
 
     }
     else if (target == 'both'){
-        // implement showing all charts
-        console.log("BOTH")
+        display_both();
     }
 
 
@@ -373,8 +353,7 @@ Promise.all([
 
         }
         else if (target == 'both'){
-            // implement showing all charts
-            console.log("BOTH")
+            display_both();
         }
     }
 
@@ -402,8 +381,7 @@ Promise.all([
 
         }
         else if (target == 'both'){
-            // implement showing all charts
-            console.log("BOTH")
+            display_both();
         }
         
     });
@@ -422,6 +400,13 @@ Promise.all([
         // might need to use this trick when I split up charts even further
         d3.select('.chart-3-col1').style("display", "none")
         d3.select('.chart-3-col2').style("display", "none")
+        // Make all other blocks a none display
+        d3.select('.chart-1-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-1-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col2').selectAll('div').style("display", "none")
 
         // pass in correct div levels
         transNetwork.createTransitCharts(row1_div,row3_div)
@@ -445,6 +430,15 @@ Promise.all([
         // Make chart-3-col1 and 2 grids again
         d3.select('.chart-3-col1').style("display", "grid")
         d3.select('.chart-3-col2').style("display", "grid")
+        // Make all other blocks a none display
+        d3.select('.chart-1-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-1-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col2').selectAll('div').style("display", "none")
+
+
         let row1_div = ['.chart-1-col1','.chart-1-col2'] // active load, reactive load
         let row2_div = ['.chart-2-col1','.chart-2-col2'] // active pflow, reactive pflow
         let row3_div = ['.chart-3-col1','.chart-3-col2'] // current, voltage 
@@ -465,6 +459,69 @@ Promise.all([
         //     transNetwork.updateLine()
         // }
         
+    }
+
+    function display_both(){
+        console.log("BOTH")
+        transNetwork.removeCharts()
+        // Make chart-3-col1 and 2 grids again
+        d3.select('.chart-3-col1').style("display", "grid")
+        d3.select('.chart-3-col2').style("display", "grid")
+        // Make all other blocks a block display 
+        d3.select('.chart-1-col1').selectAll('div').style("display", "block")
+        d3.select('.chart-1-col2').selectAll('div').style("display", "block")
+        d3.select('.chart-2-col1').selectAll('div').style("display", "block")
+        d3.select('.chart-2-col2').selectAll('div').style("display", "block")
+        d3.select('.chart-3-col1').selectAll('div').style("display", "block")
+        d3.select('.chart-3-col2').selectAll('div').style("display", "block")
+
+
+        // Block layout
+        // Chart 1 
+        // Transit View: acitve power / reactive power
+        // Power View: acive load / reactive load
+        // Both: active load / reactive load
+        //     active pflow / reactive pflow
+
+        /* Chart 2:
+        Transit View: BEB energy / BEB power
+        Power View: Active pflow / reactive pflow
+        Both: current / voltage
+            active power / reactive power
+        */
+       /* Chart 3:
+        Transit View: BEB count
+        Power View: current / voltage
+        Both: BEB energy / BEB power
+                    BEB count
+        */
+
+        // HANDLE POWER CHARTS
+        let row1_div = ['.chart-1-col1-row1','.chart-1-col2-row1'] // active load, reactive load
+        let row2_div = ['.chart-1-col1-row2','.chart-1-col2-row2'] // active pflow, reactive pflow
+        let row3_div = ['.chart-2-col1-row1','.chart-2-col2-row1'] // current, voltage 
+
+        // pass in correct divs
+        transNetwork.createPowerCharts(row1_div,row3_div) // active load (and reactive load) and voltage (3rd row - 2nd column) 
+        powNetwork.createPowerCharts(row2_div,row3_div) // active pflow (and reactive pflow) and current
+
+
+        // HANDLE TRANSIT CHARTS
+        let row1_div_trans = ['.chart-2-col1-row2','.chart-2-col2-row2'] // active power reactive power
+        let row2_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // bus energy and power
+        let row3_div_trans = ['.chart-3-col1-row2'] // bus count
+
+        // pass in correct div levels
+        transNetwork.createTransitCharts(row1_div_trans,row3_div_trans) 
+        table.createBusLines(row2_div_trans)
+
+
+
+        // TODO: Think I will need to do something different with 
+        // grids so bus count goes across both columns ....
+
+
+
     }
 
 
