@@ -26,7 +26,11 @@ Promise.all([
     d3.csv("data/TransitSystem_csvs/BEBpower.csv"),
     d3.csv("data/TransitSystem_csvs/busStationTime.csv"),
     d3.csv("data/TransitSystem_csvs/speed.csv"),
-    d3.csv("data/TransitSystem_csvs/trans_links.csv")
+    d3.csv("data/TransitSystem_csvs/trans_links.csv"),
+    //New "reactive" data
+    d3.csv("data/PowerSystem_csvs/reactivePowerFlow.csv"),
+    d3.csv("data/PowerSystem_csvs/reactiveLoad.csv"),
+    d3.csv("data/PowerSystem_csvs/chargingStationReactivePower.csv")
 
 ]).then(function(files){
 
@@ -41,12 +45,20 @@ Promise.all([
         powNet.nodes.push({
             "id": d[""],
             "aLoad": d3.entries(d).slice(1), //.map(f => parseFloat(f[1]), //gets rid of "t1, t2, etc."
+            "rLoad": null,
             "volt": null,
             "chSP": null,
             "x": null,
             "y": null,
             "index": i
         });          
+    });
+
+    //Adding reactive load to power net object nodes
+    files[12].forEach( (d, i) => {
+        if (powNet.nodes[i].id == d[""]){
+            powNet.nodes[i].rLoad = d3.entries(d).slice(1);
+        }
     });
 
     //Adding voltage to power net object nodes
@@ -73,7 +85,8 @@ Promise.all([
             "target": Object.assign({},powNet.nodes.filter(f => f.id ==d.To))[0],
             "current": d3.entries(d).slice(2),
             "mLC": null,
-            "aPF": null
+            "aPF": null,
+            "rPF": null
         })          
     });
 
@@ -92,6 +105,13 @@ Promise.all([
         }
     });
     //console.log("Power Net: ",powNet);
+
+    // Now adding in reactive power flow
+    files[11].forEach( (d, i) => {
+        if ((d.From == powNet.links[i].source.id) && (d.To == powNet.links[i].target.id)){
+            powNet.links[i].rPF = d3.entries(d).slice(2)
+        }
+    });
 
     /** TRANSIT SYSTEM DATA 
      * Make nodes and links out of bus stations 
@@ -219,11 +239,13 @@ Promise.all([
              //"BusDataRaw": files[8].filter(f => f.StationName == name_stations[i]),
              "BusData": bus_Data(name_stations[i]),
              "chSP": d3.entries(files[2][i]).slice(1),
+             "chSRP": d3.entries(files[13][i]).slice(1),
              "aLoad": powNet.nodes.filter(f=>f['id']==pow_stations[i])[0].aLoad, //.map(f => parseFloat(f[1]), //gets rid of "t1, t2, etc."
              "volt": powNet.nodes.filter(f=>f['id']==pow_stations[i])[0].volt
 
          })
      });
+
 
      //Create links, only attaching source data
      files[10].forEach( (d, i) => {
