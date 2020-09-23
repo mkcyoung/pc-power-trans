@@ -414,8 +414,8 @@ Promise.all([
         transNetwork.removeCharts()
         // transNetwork.createTransitCharts()
         // table.createBusLines()
-        let row1_div = ['.chart-1-col1','.chart-1-col2']
-        let row2_div = ['.chart-2-col1','.chart-2-col2']
+        let row2_div = ['.chart-1-col1','.chart-1-col2']
+        let row1_div = ['.chart-2-col1','.chart-2-col2']
         let row3_div = ['.chart-3']
         // Because the whole of chart 3 is being visualzied,
         // set display of .chart-3-col1 and .chart-3-col2 to none
@@ -462,8 +462,8 @@ Promise.all([
 
 
         let row1_div = ['.chart-1-col1','.chart-1-col2'] // active load, reactive load
-        let row2_div = ['.chart-2-col1','.chart-2-col2'] // active pflow, reactive pflow
-        let row3_div = ['.chart-3-col1','.chart-3-col2'] // current, voltage 
+        let row3_div = ['.chart-2-col1','.chart-2-col2'] // active pflow, reactive pflow
+        let row2_div = ['.chart-3-col1','.chart-3-col2'] // current, voltage 
 
         // pass in correct divs
         transNetwork.createPowerCharts(row1_div,row3_div) // active load (and reactive load) and voltage 
@@ -503,25 +503,26 @@ Promise.all([
         // Transit View: acitve power / reactive power
         // Power View: acive load / reactive load
         // Both: active load / reactive load
-        //     active pflow / reactive pflow
+        //         current / voltage
+        //     
 
         /* Chart 2:
         Transit View: BEB energy / BEB power
         Power View: Active pflow / reactive pflow
-        Both: current / voltage
-            active power / reactive power
+        Both: active pflow / reactive pflow
+            BEB energy / BEB power
         */
        /* Chart 3:
         Transit View: BEB count
         Power View: current / voltage
-        Both: BEB energy / BEB power
+        Both: active power / reactive power
                     BEB count
         */
 
         // HANDLE POWER CHARTS
         let row1_div = ['.chart-1-col1-row1','.chart-1-col2-row1'] // active load, reactive load
-        let row2_div = ['.chart-1-col1-row2','.chart-1-col2-row2'] // active pflow, reactive pflow
-        let row3_div = ['.chart-2-col1-row1','.chart-2-col2-row1'] // current, voltage 
+        let row3_div = ['.chart-1-col1-row2','.chart-1-col2-row2'] // active pflow, reactive pflow
+        let row2_div = ['.chart-2-col1-row1','.chart-2-col2-row1'] // current, voltage 
 
         // pass in correct divs
         transNetwork.createPowerCharts(row1_div,row3_div) // active load (and reactive load) and voltage (3rd row - 2nd column) 
@@ -529,8 +530,8 @@ Promise.all([
 
 
         // HANDLE TRANSIT CHARTS
-        let row1_div_trans = ['.chart-2-col1-row2','.chart-2-col2-row2'] // active power reactive power
-        let row2_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // bus energy and power
+        let row2_div_trans = ['.chart-2-col1-row2','.chart-2-col2-row2'] // active power reactive power
+        let row1_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // bus energy and power
         let row3_div_trans = ['.chart-3-col1-row2'] // bus count
 
         // pass in correct div levels
