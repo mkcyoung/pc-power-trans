@@ -1,7 +1,7 @@
 /* Site Layout CSS */
 .container{
     padding: 0px;
-    font-family: "Avenir Next";
+    font-family: 'Montserrat',sans-serif;
     max-width: 3200px;
 
     display: grid;
@@ -507,7 +507,7 @@ Both: BEB energy / BEB power
     stroke: gray;
     border-radius: 2px;
     pointer-events: none;
-    font-family: "Avenir Next";
+    /* font-family: "Avenir Next"; */
 }
 
 
@@ -640,7 +640,7 @@ Both: BEB energy / BEB power
 
 table {
     /*border-collapse: collapse;*/
-    font-family: "Avenir Next";
+    /* font-family: "Avenir Next"; */
     table-layout: fixed;
     width: 100%;
 }
@@ -803,7 +803,7 @@ tbody tr:hover{
 }
 
 .axis text{
-    font-family: "Avenir Next";
+    /* font-family: "Avenir Next"; */
     font-size: 14px;
     font-weight: normal;
 }
