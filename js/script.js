@@ -368,18 +368,7 @@ Promise.all([
 
         // charts
         let target = $('#viewDrop').find('.active')[0].id;
-        if (target == 'power'){
-            display_power();
-
-        }
-        else if (target == 'transit'){
-            // show just the relevant transit system charts
-            display_transit();
-
-        }
-        else if (target == 'both'){
-            display_both();
-        }
+        populate_charts(target)
     }
 
     // Clears all charts 
@@ -392,11 +381,21 @@ Promise.all([
         powNetwork.clearPowerNodeSelections()
         table.clearBusSelections()
 
-        // Clear all charts of lines
-        d3.selectAll(".line-path").remove()
+        // create charts again
+        // charts
+        let target = $('#viewDrop').find('.active')[0].id;
+        if (target == 'power'){
+            display_power();
 
+        }
+        else if (target == 'transit'){
+            // show just the relevant transit system charts
+            display_transit();
 
-
+        }
+        else if (target == 'both'){
+            display_both();
+        }
         
     });
 
@@ -414,18 +413,7 @@ Promise.all([
         // Finds which dataset is active 
         // let active_data = $('#datasetDrop').find('.active')[0].id;
 
-        // Populate views based on target
-        if (target == 'power'){
-            display_power();
-
-        }
-        else if (target == 'transit'){
-            display_transit();
-
-        }
-        else if (target == 'both'){
-            display_both();
-        }
+        populate_charts(target)
         
     });
 
@@ -504,6 +492,62 @@ Promise.all([
         //     transNetwork.updateLine()
         // }
         
+    }
+
+    function populate_charts(target){
+        // Populate views based on target
+        if (target == 'power'){
+            transNetwork.clearTransSelections()
+            table.clearBusSelections()
+
+            display_power();
+            //populate data
+            if (powNetwork.clickedNodes.length > 0){
+                powNetwork.updateLineNode()
+            }
+            if (powNetwork.clickedLinks.length > 0){
+                powNetwork.updateLine()
+            }
+            
+        }
+        else if (target == 'transit'){
+            powNetwork.clearPowerLinkSelections()
+            powNetwork.clearPowerNodeSelections()
+
+            display_transit();
+            //populate data
+            if (transNetwork.clickedStations.length > 0){
+                transNetwork.updateLine()
+            }
+            if (table.clickedBusses.length > 0){
+                table.updateLine()
+            }
+
+
+
+        }
+        else if (target == 'both'){
+            display_both();
+            //populate data
+            if (transNetwork.clickedStations.length > 0){
+                transNetwork.updateLine()
+            }
+            if (table.clickedBusses.length > 0){
+                table.updateLine()
+            }
+            if (powNetwork.clickedNodes.length > 0){
+                powNetwork.updateLineNode()
+            }
+            if (powNetwork.clickedLinks.length > 0){
+                powNetwork.updateLine()
+            }
+        }
+
+
+
+
+
+
     }
 
     function display_both(){

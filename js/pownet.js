@@ -376,6 +376,18 @@ class PowNet {
                 }
                 that.updateLineNode();
 
+                if(d3.select(this).classed("charge")){
+                    let line_clicked = d3.select(`#line-${d.id}`).classed("clicked-line")
+                    if (line_clicked){
+                        d3.select(`#line-${d.id}`)
+                            .classed("clicked-line",false)
+                            .classed("active-line",false);
+                        d3.select(`#line-${d.id}`).interrupt()
+                    }
+
+                }
+                
+
                 // if(d3.select(this).classed("charge")){
                 //     // remove other clicked nodes
                 //     that.clickedNodes = [];
@@ -1047,12 +1059,20 @@ class PowNet {
 
 
         // handling hovering 
-        // d3.select('.ALSvg').call(this.hover,faintalLines,alLines,this.aLoadLineScale,this.timeScale,this,node_data,"aLoad",d3.hsl("#8426cc"))
-        // d3.select('.RLSvg').call(this.hover,faintrlLines,rlLines,this.rLoadLineScale,this.timeScale,this,node_data,"rLoad",active_load_color)
-        // d3.select('.VoltSvg').call(this.hover,faintvoltLines,voltLines,this.voltLineScale,this.timeScale,this,node_data,"volt",voltage_color)
-        d3.select('.currentSvg').call(this.hover,faintcurrentLines,currentLines,this.currentLineScale,this.timeScale,this,link_data,"current",current_color)
-        d3.select('.APFSvg').call(this.hover,faintpfLines,pfLines,this.APFLineScale,this.timeScale,this,link_data,"aPF",d3.hsl("#3a7bbf"))
-        d3.select('.RPFSvg').call(this.hover,faintrpfLines,rpfLines,this.RPFLineScale,this.timeScale,this,link_data,"rPF",power_flow_color)
+        if (this.clickedLinks.length > 0){
+            d3.select('.current-dot').style("visibility","visible")
+            d3.select('.aPF-dot').style("visibility","visible")
+            d3.select('.rPF-dot').style("visibility","visible")
+            d3.select('.currentSvg').call(this.hover,faintcurrentLines,currentLines,this.currentLineScale,this.timeScale,this,link_data,"current",current_color)
+            d3.select('.APFSvg').call(this.hover,faintpfLines,pfLines,this.APFLineScale,this.timeScale,this,link_data,"aPF",d3.hsl("#3a7bbf"))
+            d3.select('.RPFSvg').call(this.hover,faintrpfLines,rpfLines,this.RPFLineScale,this.timeScale,this,link_data,"rPF",power_flow_color)
+        }
+        else{
+            d3.select('.current-dot').style("visibility","hidden")
+            d3.select('.aPF-dot').style("visibility","hidden")
+            d3.select('.rPF-dot').style("visibility","hidden")
+        }
+        
 
     }
 
@@ -1194,10 +1214,21 @@ class PowNet {
             .attr("d", d => lineVolt(d.volt));
 
 
-        // handling hovering 
-        d3.select('.ALSvg').call(this.hover,faintalLines,alLines,this.aLoadLineScale,this.timeScale,this,node_data,"aLoad",d3.hsl("#8426cc"))
-        d3.select('.RLSvg').call(this.hover,faintrlLines,rlLines,this.rLoadLineScale,this.timeScale,this,node_data,"rLoad",active_load_color)
-        d3.select('.VoltSvg').call(this.hover,faintvoltLines,voltLines,this.voltLineScale,this.timeScale,this,node_data,"volt",voltage_color)
+        // handling hovering
+        if (that.clickedNodes.length > 0){
+            d3.select('.aLoad-dot').style("visibility","visible")
+            d3.select('.rLoad-dot').style("visibility","visible")
+            d3.select('.volt-dot').style("visibility","visible")
+            d3.select('.ALSvg').call(this.hover,faintalLines,alLines,this.aLoadLineScale,this.timeScale,this,node_data,"aLoad",d3.hsl("#8426cc"))
+            d3.select('.RLSvg').call(this.hover,faintrlLines,rlLines,this.rLoadLineScale,this.timeScale,this,node_data,"rLoad",active_load_color)
+            d3.select('.VoltSvg').call(this.hover,faintvoltLines,voltLines,this.voltLineScale,this.timeScale,this,node_data,"volt",voltage_color)
+        }
+        else{
+            d3.select('.aLoad-dot').style("visibility","hidden")
+            d3.select('.rLoad-dot').style("visibility","hidden")
+            d3.select('.volt-dot').style("visibility","hidden")
+        }
+        
 
 
     }

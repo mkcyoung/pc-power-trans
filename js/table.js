@@ -499,8 +499,6 @@ class Table{
 
 
 
-
-
             })
             .on("click", function (d) {
                 let transNodes = that.transNet.data.nodes;
@@ -635,7 +633,7 @@ class Table{
             // Keeps correct and selected rows highlighted
             console.log( d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)))
             console.log(d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))))
-            d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","rgba(23, 162, 184, 0.15)")
+            d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","#7ab3a0")
             d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color",null)
             // d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color","null")
         }
@@ -1214,97 +1212,31 @@ class Table{
         
 
         // this code initiates the hover functionality, use only if have 1 or more line
-        d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
-        d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
         
-        // if (that.clickedBusses.length > 0){
-        //     d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
-        //     d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
-        // }
-        // else{
-        //     d3.select('.energySvg')
-        //         .on("mousemove",null)
-        //         .on("mouseenter",null)
-        //         .on("mouseleave",null)
-        //         .on("click",null);
-        //     d3.select('.energy-info-text').html('');
+        if (that.clickedBusses.length > 0){
+            d3.select('.energy-dot').style("visibility","visible")
+            d3.select('.power-dot').style("visibility","visible")
+            d3.select('.energySvg').call(this.hover,faintEnergyLines,this.energyLineScale,this,bus_data,"energy",energyColor,energyLines)
+            d3.select('.powerSvg').call(this.hover,faintPowerLines,this.powerLineScale,this,bus_data,"power",powerColor,powerLines)
+        }
+        else{
+            d3.select('.energy-dot').style("visibility","hidden")
+            d3.select('.power-dot').style("visibility","hidden")
 
-        //     d3.select('.powerSvg')
-        //         .on("mousemove",null)
-        //         .on("mouseenter",null)
-        //         .on("mouseleave",null)
-        //         .on("click",null);
-        //     d3.select('.power-info-text').html('');
-        // }
+            // d3.select('.energySvg')
+            //     .on("mousemove",null)
+            //     .on("mouseenter",null)
+            //     .on("mouseleave",null)
+            //     .on("click",null);
+            // d3.select('.energy-info-text').html('');
 
-        
-        //using join
-        // energyLines
-        //     .join("path")
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "rgb(163, 6, 12)")//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 4)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .style("mix-blend-mode", "multiply")
-        //     .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)));
-
-        // faintEnergyLines
-        //     .join("path")
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", 'rgba(163, 6, 12,0.1)')//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 4)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .style("mix-blend-mode", "multiply")
-        //     .attr("d", d => lineEnergy(d.energy));
-
-
-
-        // d3.select(".line-Energy")
-        //     .datum(bus_data.energy)
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "#a3060c")//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 4)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", lineEnergy);
-
-
-        // d3.select(".line-Energy-faint")
-        //     .datum(bus_data.energy)
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "#ccbbba")//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 3)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", lineEnergy);
-
-        // d3.select(".line-Power")
-        //     .datum(bus_data.power.slice(0,this.activeTime))
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "#3842c7")//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 4)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", linePower);
-
-        // d3.select(".line-Power-faint")
-        //     .datum(bus_data.power)
-        //     .style("visibility","visible")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "#bab6db")//d => that.stationColor(d.StationNode.id))
-        //     .attr("stroke-width", 3)
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("stroke-linecap", "round")
-        //     .attr("d", linePower);
-
-
+            // d3.select('.powerSvg')
+            //     .on("mousemove",null)
+            //     .on("mouseenter",null)
+            //     .on("mouseleave",null)
+            //     .on("click",null);
+            // d3.select('.power-info-text').html('');
+        }
 
 
 
