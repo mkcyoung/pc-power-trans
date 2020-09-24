@@ -272,7 +272,7 @@ Promise.all([
     //console.log("Trans net: ",transNet);
 
     function updateTime(time) {
-        console.log(time)
+        // console.log(time)
         transNetwork.activeTime = time;
         transNetwork.updateNet();
 

@@ -7,7 +7,7 @@
     display: grid;
     /* grid-template-columns: 1fr minmax(0,1.5fr) 1fr;
     grid-template-rows: repeat(13,minmax(0, 1fr)); */
-    grid-template-columns: 0.8fr 0.2fr minmax(0,1fr);
+    grid-template-columns: 0.7fr 0.3fr minmax(0,1fr);
     grid-template-rows: repeat(13,minmax(0, 1fr));
     grid-template-areas: 
             /* "title title title"
@@ -40,7 +40,7 @@
             "table1 data-panel chart-1"
             "table1 data-panel  chart-1"
             "table1 data-panel chart-1"
-            "table1 data-panel  chart-2"
+            "power power  chart-2"
             "power power chart-2"
             "power power chart-2"
             "power power chart-2"

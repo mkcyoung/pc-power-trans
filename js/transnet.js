@@ -400,11 +400,13 @@ class TransNet {
         let that = this;
         
         //Updates table with clicked seletion
-        if(that.clicked != null){
+        if(that.clickedStations.length > 0){
 
             // TODO - need to figure out how to not update table here when I originally click on a bus 
             // this.Clicked(that.clicked,false);
             this.updateLine();
+
+            // How do I keep stuff highlighted??
 
         }
 
@@ -420,6 +422,10 @@ class TransNet {
             .data(this.data.nodes)
             .join("circle")
             .attr("class",d => d.StationNode.id)
+            .classed("CHSP", d => {
+                if (that.clickedStations.includes(d)){
+                    return true
+                }})
             .classed("node",true)
             .classed("transNode",true)
             .attr("r", d => this.buscountScale(d.BusData[this.activeTime].total))

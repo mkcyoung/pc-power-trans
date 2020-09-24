@@ -450,18 +450,34 @@ class Table{
                 // d3.selectAll("."+that.station_mapping[d.Location[that.activeTime]]) 
                 //     .classed("CHSP",false);
 
-                // Dehighlight everything
-                if(that.station_mapping[current_station] != undefined){
-                    if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
+                // get station object
+                let current_Station_object = that.transNet.data.nodes.filter(f => f.StationName == current_station)[0]
+                // current bus is clicked 
+                if (that.transNet.clickedStations.includes(current_Station_object)){
+                    console.log("here")
+                    // just remove the color
+                    d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
+                        .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value));
 
-                        d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
-                        // Lesson here...this works because d refers to the data that's BOUND TO THE CIRCLE ELEMENT.. don't need the 
-                        // data in this class to access it... insane I didn't grasp that sooner...this makes things way easier moving forward.
-                            .classed("CHSP",false)
-                            .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value));
-
-                    }
                 }
+                else{
+                    d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
+                        .classed("CHSP",false)
+                        .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value));
+                }
+
+                // Dehighlight everything
+                // if(that.station_mapping[current_station] != undefined){
+                //     if (!d3.select(`#line-${that.station_mapping[current_station]}`).classed("clicked-line")){
+
+                //         d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
+                //         // Lesson here...this works because d refers to the data that's BOUND TO THE CIRCLE ELEMENT.. don't need the 
+                //         // data in this class to access it... insane I didn't grasp that sooner...this makes things way easier moving forward.
+                //             .classed("CHSP",false)
+                //             .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value));
+
+                //     }
+                // }
 
                 // Handle the next and previous de-highlighting
 
@@ -521,16 +537,16 @@ class Table{
                     //Remove net lines
                     // d3.selectAll(".netlineclick").remove();
 
-                    // stops animation
-                    d3.selectAll(".clicked-line").interrupt()
+                    // // stops animation
+                    // d3.selectAll(".clicked-line").interrupt()
 
-                    // removes classes
-                    d3.selectAll(".clicked-line")
-                        .classed("clicked-line",false)
-                        .classed("active-line",false)
-                        .classed("active-line-hover",false);
+                    // // removes classes
+                    // d3.selectAll(".clicked-line")
+                    //     .classed("clicked-line",false)
+                    //     .classed("active-line",false)
+                    //     .classed("active-line-hover",false);
 
-                    that.transNet.clicked = null;
+                    // that.transNet.clicked = null;
 
                     //Clear path from line chart
                     // d3.selectAll(".line-path").style("visibility","hidden");
@@ -561,45 +577,45 @@ class Table{
                     // console.log(that.transNet)
                     // console.log(that.station_mapping[d.Location[that.activeTime]])
 
-                    let station_id = that.station_mapping[d.Location[that.activeTime]]
+                    // let station_id = that.station_mapping[d.Location[that.activeTime]]
                     // console.log("hasn't been clicked")
 
 
                     // removes any other selected bus stations
                     //Remove tooltip
-                    d3.select("#s_tooltip_click")
-                        .style("opacity", 0);
+                    // d3.select("#s_tooltip_click")
+                    //     .style("opacity", 0);
                     
-                    //Remove net lines
-                    // d3.selectAll(".netlineclick").remove();
+                    // //Remove net lines
+                    // // d3.selectAll(".netlineclick").remove();
 
-                    // stops animation
-                    d3.selectAll(".clicked-line").interrupt()
+                    // // stops animation
+                    // d3.selectAll(".clicked-line").interrupt()
 
-                    // removes classes
-                    d3.selectAll(".clicked-line")
-                        .classed("clicked-line",false)
-                        .classed("active-line",false)
-                        .classed("active-line-hover",false);
+                    // // removes classes
+                    // d3.selectAll(".clicked-line")
+                    //     .classed("clicked-line",false)
+                    //     .classed("active-line",false)
+                    //     .classed("active-line-hover",false);
 
-                    that.transNet.clicked = null;
+                    // that.transNet.clicked = null;
 
                     //Clear path from line chart
                     // d3.selectAll(".line-path").style("visibility","hidden");
                     // d3.selectAll(".chart-text").style("visibility","hidden");
 
                     // Checks to make sure it's a bus at a station
-                    if (station_id != undefined){
+                    // if (station_id != undefined){
                         
-                        // Adds clicked class and active line class
-                        d3.select(`#line-${station_id}`).classed("clicked-line",true);
-                        d3.select(`#line-${station_id}`).classed("active-line",true);
-                        //starts animation indefinitely
-                        animate.call(d3.select(`#line-${station_id}`).node(),d)
-                        // Looping through data to select correct one
-                        let myNode = transNodes.filter(f => f.StationNode.id == station_id)[0]
-                        that.transNet.Clicked(myNode,true)
-                    }
+                    //     // Adds clicked class and active line class
+                    //     d3.select(`#line-${station_id}`).classed("clicked-line",true);
+                    //     d3.select(`#line-${station_id}`).classed("active-line",true);
+                    //     //starts animation indefinitely
+                    //     animate.call(d3.select(`#line-${station_id}`).node(),d)
+                    //     // Looping through data to select correct one
+                    //     let myNode = transNodes.filter(f => f.StationNode.id == station_id)[0]
+                    //     that.transNet.Clicked(myNode,true)
+                    // }
             
 
                 }
@@ -628,12 +644,12 @@ class Table{
         // checks to see if busses have been clicked and decides if it needs to update charts accordingly
         if(this.clickedBusses.length != 0){
             // UPDATING LINE CHART
-            console.log("UPDATING LINE CHART")
+            // console.log("UPDATING LINE CHART")
             this.updateLine();
             // Keeps correct and selected rows highlighted
-            console.log( d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)))
-            console.log(d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))))
-            d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","#7ab3a0")
+            // console.log( d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)))
+            // console.log(d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))))
+            d3.selectAll('tr').filter( f => this.clickedBusses.includes(f)).style("background-color","#7ab3a05e")
             d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color",null)
             // d3.selectAll('tr').filter( f => !(this.clickedBusses.includes(f))).style("background-color","null")
         }
@@ -1127,7 +1143,7 @@ class Table{
             .y(d => this.powerLineScale(d.value));
 
         
-        console.log('CLICKED BUS DATA:',bus_data)
+        // console.log('CLICKED BUS DATA:',bus_data)
         // console.log( d3.select('.energySvg').selectAll(".line-Energy"))
 
         let energyColor = d3.color('#ad2800')
@@ -1244,7 +1260,7 @@ class Table{
 
     hover(svg,path,yScale,scope,data,source,color,dark_path){
         let time = Array.from(Array(288).keys())
-        console.log("in hover",path)
+        // console.log("in hover",path)
         let that = scope;
 
         svg.on("mousemove",moved)
