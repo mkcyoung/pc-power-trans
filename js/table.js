@@ -16,9 +16,18 @@ class Table{
         this.transNet = transNet;
 
         //Margins for table cells- the bostock way
+        let table_div = d3.select('.view2').node().getBoundingClientRect()
+        let table_width = table_div.width
+        let table_height = table_div.height
+
+        d3.select("#mytable2").select("tbody").style("height",`${table_height}px;`)
+        let num_cols = 5
+        // let cell_width = table_width/num_cols
+        let cell_width = 150
+        let cell_height = 30
         this.margin = {top: 10, right: 10, bottom: 10, left: 10};
-        this.width = 150 - this.margin.left - this.margin.right;
-        this.height = 30 - this.margin.top-this.margin.bottom;
+        this.width = cell_width - this.margin.left - this.margin.right;
+        this.height = cell_height - this.margin.top-this.margin.bottom;
 
         //Margins - the bostock way - line chart
         //Margins - the bostock way - line chart
@@ -108,12 +117,6 @@ class Table{
     //Have to make a separate scale  with nodes as range b/c I'm a sloppy mthrfker
     this.stationColorNodes = d3.scaleOrdinal(d3.schemeTableau10).domain(pow_stations_nodes);
     //Create axes
-
-    // Scales from network used to recolor nodes of network after bus is de-highlighted
-    let min_aload = 29.43364003;
-    let min_chsp = 0;
-    let max_chsp = 500.0192227;
-    
 
     //Implement sorting
     // Binding headers column data to pre-existing html headers
