@@ -40,7 +40,7 @@
             "table1 data-panel chart-1"
             "table1 data-panel  chart-1"
             "table1 data-panel chart-1"
-            "power power  chart-2"
+            "table1 data-panel  chart-2"
             "power power chart-2"
             "power power chart-2"
             "power power chart-2"
@@ -89,7 +89,7 @@
     grid-area: data-panel;
     display:grid;
     grid-template-columns:1fr;
-    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-rows:0.7fr 3fr;
     grid-template-areas:
         "id"
         "info";
@@ -98,11 +98,14 @@
     margin: var(--border-margins);
     border: var(--border-width)solid var(--border-color);
     border-radius: var(--border-radius) var(--border-radius);
-    padding: 15px;
+    padding: 8px;
+    padding-top:50px;
+
 }
 
 #data-id{
     grid-area: id;
+    padding-bottom:5px;
 }
 
 #data-info{
@@ -524,31 +527,33 @@ Both: BEB energy / BEB power
 
 #data-id{
     position: relative;
-    text-align: right;
-    top:5%;
-    padding-right:20px;
+    text-align: center;
+    /* top:5%; */
+    /* padding-right:20px; */
     width: auto;
     height: auto;
     background: rgba(255, 255, 255, 0);
     pointer-events: none;
-    font-family: "Avenir Next";
+    /* font-family: "Avenir Next"; */
 }
 
 #data-info{
     position: relative;
-    text-align: left;
+    text-align: center;
     margin:3px;
+    overflow-wrap:break-word;
+    overflow:auto;
     width: auto;
     height: auto;
     /* padding: 2px; */
     border-radius: 2px;
     pointer-events: none;
-    font-family: "Avenir Next";
+    /* font-family: "Avenir Next"; */
 }
 
 #data-id h3{
     /* padding: auto; */
-    font-size: 40px;
+    font-size: 33px;
     font-weight:bold;
     margin: 0;
     padding: 0;
@@ -558,7 +563,7 @@ Both: BEB energy / BEB power
 #data-id p{
     margin: 0;
     padding: 0;
-    line-height: 0px;
+    line-height: 10px;
     font-size: 18px;
     font-weight: light;
     color: #808080;
@@ -568,7 +573,7 @@ Both: BEB energy / BEB power
     margin: 0;
     padding: 0;
     /* line-height: 20px; */
-    font-size: 18px;
+    font-size: 16px;
     font-weight: normal;
     color: #808080;
 }

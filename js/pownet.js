@@ -1456,12 +1456,7 @@ class PowNet {
         let text = '';
         //Adds in relevant data
         text = text + "<p> <b> Active Load:</b> "+ parseFloat(data.aLoad[that.activeTime].value).toFixed(2)+" kW</p>";
-        if (data.chSP != null){
-            text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV &emsp; <b> Active Power: </b> "+ parseFloat(data.chSP[that.activeTime].value).toFixed(2)+" kW</p>";
-        } 
-        else{
-            text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV</p>";
-        }
+        text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV</p>";
         return text;
     }
 
@@ -1480,7 +1475,7 @@ class PowNet {
         let that = this;
         let text = ''
         text = text + "<p> <b> Acitve Power Flow: </b> "+ parseFloat(data.aPF[that.activeTime].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b> Current: </b> "+ parseFloat(data.current[that.activeTime].value).toFixed(2)+" A &emsp; <b> Max Current: </b>"+ data.mLC.toFixed(2)+" A </p>";
+        text = text + "<p> <b> Current: </b> "+ parseFloat(data.current[that.activeTime].value).toFixed(2)+" A </p> <p> <b> Max Current: </b>"+ data.mLC.toFixed(2)+" A </p>";
         
         return text;
     }

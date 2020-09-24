@@ -491,7 +491,7 @@ class Table{
                 let current_Station_object = that.transNet.data.nodes.filter(f => f.StationName == current_station)[0]
                 // current bus is clicked 
                 if (that.transNet.clickedStations.includes(current_Station_object)){
-                    console.log("here")
+                    // console.log("here")
                     // just remove the color
                     d3.selectAll("."+that.station_mapping[current_station]).filter(".transNode")
                         .attr("fill", d => that.transNet.powLoadScale(d.chSP[that.activeTime].value));
@@ -1382,10 +1382,10 @@ class Table{
             // console.log(i1,i0)
             const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
             // console.log(i)
-            console.log("x",xm,"y",ym,"time",i)
+            // console.log("x",xm,"y",ym,"time",i)
             const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
             // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
-            console.log("S",s)
+            // console.log("S",s)
 
             // Updates current time by clicking on chart
             that.updateTime(i);
@@ -1468,8 +1468,8 @@ class Table{
     tooltipRenderINFO(data) {
         let that = this;
         let text = '';
-        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh &emsp; <b> Power : </b> "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh </p>";
-        text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph &emsp; <b> Route: </b> "+ data.route + "    </p>";
+        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh </p> <p> <b> Power : </b> "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh </p>";
+        text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph </p> <p> <b> Route: </b> "+ data.route + "    </p>";
         return text;
     }
 

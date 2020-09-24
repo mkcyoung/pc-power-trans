@@ -692,7 +692,7 @@ class TransNet {
                     .duration(200)
                     .style("opacity", 0.9);
                 d3.select("#data-id").html(that.tooltipRenderID(d))
-                d3.select("#data-info").html(that.tooltipRenderINFO_STATION(d))
+                d3.select("#data-info").html(that.tooltipRenderINFO_LINE(d))
 
                 // Checks first to see if its been clicked 
                 if (!d3.select(this).classed("clicked-line")){
@@ -778,7 +778,7 @@ class TransNet {
 
                     //Removes clicked node styling
                     that.powNet.clickedNodes = that.powNet.clickedNodes.filter( f => f != d.StationNode);
-                    console.log(that.powNet.clickedNodes)
+                    // console.log(that.powNet.clickedNodes)
                     d3.selectAll("."+d.StationNode.id).filter('.charge')
                         .classed("active-node",false);
                     that.powNet.updateLineNode()
@@ -924,7 +924,7 @@ class TransNet {
         //console.log("in clicked")
         //setting this so the tooltip updates on slider bar later - as well as table
         this.clicked = d;
-        console.log(this.clicked)
+        // console.log(this.clicked)
 
         //Call update line
         this.updateLine();
@@ -1753,7 +1753,7 @@ class TransNet {
             d3.select('.BusSvg').call(this.hover,faintbusLines,busLines,this.busLineScale,this.busTimeScale,this,station_data,"BusData")
         }
         else{
-            console.log("here")
+            // console.log("here")
             // remove all dots // need to dynamically create dots in this function I think / set dots display to none....
             d3.select('.chSP-dot').style("visibility","hidden")
             d3.select('.chSRP-dot').style("visibility","hidden") 
@@ -1986,8 +1986,20 @@ class TransNet {
         let that = this;
         let text = '';
         //Adds in relevant data
-        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses &emsp; <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW &emsp; <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
+        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p>";
+        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
+        // text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses &emsp; <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        // text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW &emsp; <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
+        return text;
+    }
+
+    tooltipRenderINFO_LINE(data,time){
+        time = this.activeTime;
+        let that = this;
+        let text = '';
+        //Adds in relevant data
+        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p> <p> <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW </p> <p> <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;
     }
 
