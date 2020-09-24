@@ -16,16 +16,28 @@ class Table{
         this.transNet = transNet;
 
         //Margins for table cells- the bostock way
-        let table_div = d3.select('.view2').node().getBoundingClientRect()
-        let table_width = table_div.width
-        let table_height = table_div.height
+        let table1_div = d3.select('.view2').node().getBoundingClientRect()
+        let table1_width = table1_div.width
+        let table1_height = table1_div.height
+        d3.select("#mytable2").select("tbody").style("height",`${table1_height}px;`)
 
-        d3.select("#mytable2").select("tbody").style("height",`${table_height}px;`)
-        let num_cols = 5
+
+        // let num_cols = 5
         // let cell_width = table_width/num_cols
-        let cell_width = 150
-        let cell_height = 30
-        this.margin = {top: 10, right: 10, bottom: 10, left: 10};
+        // // let cell_width = 150
+        // console.log(cell_width)
+        // let cell_height = 30
+        // this.margin = {top: 10, right: 10, bottom: 10, left: 10};
+        // this.width = cell_width - this.margin.left - this.margin.right;
+        // this.height = cell_height - this.margin.top-this.margin.bottom;
+
+        // get size of first table which should already by correct size via styling
+        let table_div = d3.select('#mytable').select('th').node().getBoundingClientRect()
+        let cell_width = table_div.width+5
+        let cell_height = table_div.height-10
+        // console.log(cell_width,cell_height)
+
+        this.margin = {top: 5, right: 0, bottom: 0, left: 0};
         this.width = cell_width - this.margin.left - this.margin.right;
         this.height = cell_height - this.margin.top-this.margin.bottom;
 
@@ -106,7 +118,8 @@ class Table{
     this.energybarScale = d3.scaleLinear().domain([this.min_energy,this.max_energy]).range([this.margin.left,this.width-this.margin.right]);
     this.energyColorScale = d3.scaleSequential(d3.interpolateReds).domain([this.min_energy,this.max_energy]);
     this.powerBarScale = d3.scaleLinear().domain([this.min_power,this.max_power]).range([this.margin.left,this.width-this.margin.right]);
-    this.powerColorScale = d3.scaleSequential(d3.interpolatePurples).domain([this.min_power,this.max_power]);
+    // this.powerColorScale = d3.scaleSequential(d3.interpolatePurples).domain([this.min_power,this.max_power]);
+    this.powerColorScale = d3.scaleSequential(d3.interpolate('#AEA9F8','#100881')).domain([this.min_power,this.max_power]);
     //Make an ordinal color scale for stations
     let pow_stations = ["OTTC","KJTC","CTH","JRPR","KPR","EH","GS"];
     let pow_stations_nodes = ["n2","n13","n9","n33","n25","n31","n8"];
@@ -220,7 +233,23 @@ class Table{
     this.updateTable();
     }
 
+
+    // gets bounding box margin and re-adjusts
+    updateTableSize(){
+        // get size of first table which should already by correct size via styling
+        let table_div = d3.select('#mytable').select('th').node().getBoundingClientRect()
+        let cell_width = table_div.width+5
+        let cell_height = table_div.height-10
+        // console.log(cell_width,cell_height)
+
+        this.margin = {top: 5, right: 0, bottom: 0, left: 0};
+        this.width = cell_width - this.margin.left - this.margin.right;
+        this.height = cell_height - this.margin.top-this.margin.bottom;
+
+    }
+
     updateTable(){
+
 
         /** Updates the table with data **/
         let that = this;
@@ -251,6 +280,8 @@ class Table{
 
         //Header
         rows.select(".busID")
+            .attr("width",this.width+this.margin.left+this.margin.right)
+            .attr("height",this.height+this.margin.top+this.margin.bottom)
             .html(d => d.id);
 
         //Location
@@ -291,7 +322,10 @@ class Table{
             .attr("height",this.height);
 
         // Speed
-        rows.select(".speedR").select("text")
+        rows.select(".speedR")
+            .attr("width",this.width+this.margin.left+this.margin.right)
+            .attr("height",this.height+this.margin.top+this.margin.bottom)
+            .select("text")
             .text((d,i) => {
                 //console.log(d)
                 let speed_list = [];
@@ -1150,7 +1184,7 @@ class Table{
         // console.log( d3.select('.energySvg').selectAll(".line-Energy"))
 
         let energyColor = d3.color('#ad2800')
-        let powerColor = d3.color('#1640b3')
+        let powerColor = d3.color('#100881')
 
         
         // I think this is just creating new lines

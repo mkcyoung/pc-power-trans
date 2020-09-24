@@ -1145,7 +1145,7 @@ class TransNet {
 
         let yScaleAP = this.powLoadLineScale;
         let yScaleRP = this.powRLoadLineScale; 
-        console.log(this.timeScale.range(),line_width)
+        // console.log(this.timeScale.range(),line_width)
         let xScale = this.timeScale;
 
         //Xaxis group

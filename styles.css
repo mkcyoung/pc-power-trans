@@ -71,6 +71,7 @@
     --border-radius: 5px;
     --chart-paddding: 0px;
     --min-table-width: 150px;
+    --table-text: 15px;
 
 }
 
@@ -124,10 +125,14 @@
 .view2{
     /* position:relative; */
     margin: var(--border-margins);
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius) var(--border-radius);
-    overflow: scroll;
+    /* border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius); */
+    overflow-y: scroll;
     grid-area: table1;
+}
+
+::-webkit-scrollbar { 
+    display: none; /* Chrome Safari */
 }
 
 .viewsHead{
@@ -553,7 +558,7 @@ Both: BEB energy / BEB power
 #data-id p{
     margin: 0;
     padding: 0;
-    line-height: 1px;
+    line-height: 0px;
     font-size: 18px;
     font-weight: light;
     color: #808080;
@@ -626,9 +631,13 @@ Both: BEB energy / BEB power
     /* height:760px; */
     /* overflow:scroll; */
 }
+
+
 table {
     /*border-collapse: collapse;*/
     font-family: "Avenir Next";
+    table-layout: fixed;
+    width: 100%;
 }
 
 /*th {*/
@@ -647,12 +656,12 @@ table {
 
 thead th{
     cursor: s-resize;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: normal;
     color: #ffffff;
     /*padding-left: 4px;*/
     /*padding-right: 4px;*/
-    min-width:  var(--min-table-width);
+    /* min-width:  var(--min-table-width); */
     text-align: center;
     /* rgba(23, 162, 184, 0.15); */
     background:  #7ab3a0; 
@@ -662,23 +671,23 @@ thead th{
 
 tbody th{
     font-weight: normal;
-    font-size: 16px;
+    font-size: 14px;
     text-align: left;
     color:#484b5a;
-    padding-left: 4px;
+    /* padding-left: 4px; */
     /*padding-right: 4px;*/
-    min-width:  var(--min-table-width);
+    /* min-width:  var(--min-table-width); */
 }
 
 tbody td{
-    font-size: 16px;
+    font-size: 14px;
     font-weight: normal;
     text-align: center;
     color: #484b5a;
     /*height: 32px;*/
-    padding-left: 3.75px;
+    /* padding-left: 3.75px; */
     /*padding-right: 4px;*/
-    min-width:  var(--min-table-width);
+    /* min-width:  var(--min-table-width); */
 
 }
 tbody tr:hover{
@@ -686,28 +695,28 @@ tbody tr:hover{
 }
 
 .view2 rect {
-    stroke: black;
-    stroke-width: 1.25px;
+    /* stroke: black; */
+    /* stroke-width: 0.5px; */
 }
 
 .locationR{
-    font-weight: bolder;
-    font-size: 20px;
+    font-weight: normal;
+    font-size: var(--table-text);
     /* -webkit-text-stroke-width: 0.5px;
     -webkit-text-stroke-color: rgb(80, 80, 80); */
 }
 
 .busID{
     text-align: center;
-    font-size: 20px;
-    font-weight: lighter;
+    font-size: var(--table-text);
+    font-weight: normal;
     
 
 }
 .speedR{
     text-align: center;
-    font-size: 20px;
-    font-weight: lighter;
+    font-size: var(--table-text);
+    font-weight: normal;
     
 
 }

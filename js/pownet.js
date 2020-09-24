@@ -51,7 +51,7 @@ class PowNet {
 
     /** Builds network based on data passed into object */
     createNet(){
-        console.log("Power Network Object: ",this.data)
+        // console.log("Power Network Object: ",this.data)
 
         // Setting height of svg dynamically
         this.width = this.WIDTH - this.margin.left - this.margin.right;

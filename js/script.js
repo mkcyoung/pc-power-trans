@@ -340,7 +340,7 @@ Promise.all([
 
         // // retrieves new size
         let boundingRect = view1.getBoundingClientRect();
-        console.log("BOUNDING RECT",boundingRect)
+        // console.log("BOUNDING RECT",boundingRect)
 
         // // stores new size width
         let newWidth = boundingRect.width;
@@ -369,6 +369,10 @@ Promise.all([
         // charts
         let target = $('#viewDrop').find('.active')[0].id;
         populate_charts(target)
+
+        //table
+        table.updateTableSize()
+        table.updateTable()
     }
 
     // Clears all charts 
