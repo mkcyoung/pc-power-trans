@@ -798,8 +798,12 @@ tbody tr:hover{
     shape-rendering: crispEdges;
 }
 
+path{
+    shape-rendering: auto;
+}
+
 .axis line{
-    stroke-width: 0.35px;
+    stroke-width: 1px;
 }
 
 .axis text{

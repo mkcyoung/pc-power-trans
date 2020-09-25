@@ -767,13 +767,13 @@ class Table{
         // energy
         energyG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 60)
             .attr("y",20)
             .text("BEB energy (kWh)");
         
         energyG.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - that.transNet.time_label)
             .attr("y",line_height-5)
             .text("time");
 
@@ -790,13 +790,13 @@ class Table{
         // power
         powerG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 50)
             .attr("y",20)
-            .text("BEB power(kWh)");
+            .text("BEB power(kW)");
         
         powerG.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - that.transNet.time_label)
             .attr("y",line_height-5)
             .text("time");
 
@@ -1183,6 +1183,9 @@ class Table{
         // console.log('CLICKED BUS DATA:',bus_data)
         // console.log( d3.select('.energySvg').selectAll(".line-Energy"))
 
+        let end_index = parseInt(this.activeTime) + 1;
+        console.log(end_index)
+
         let energyColor = d3.color('#ad2800')
         let powerColor = d3.color('#100881')
 
@@ -1220,7 +1223,7 @@ class Table{
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineEnergy(d.energy.slice(0,this.activeTime)))
+            .attr("d", d => lineEnergy(d.energy.slice(0,end_index)))
         
         faintEnergyLines = faintEnergyLines.enter().append('path')
             .merge(faintEnergyLines);
@@ -1248,7 +1251,7 @@ class Table{
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => linePower(d.power.slice(0,this.activeTime)))
+            .attr("d", d => linePower(d.power.slice(0,end_index)))
         
         faintPowerLines = faintPowerLines.enter().append('path')
             .merge(faintPowerLines);

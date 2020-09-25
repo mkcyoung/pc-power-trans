@@ -377,7 +377,7 @@ Promise.all([
 
     // Clears all charts 
     $('#clear-button').on('click', function(e){
-        console.log("here")
+        // console.log("here")
 
         // clear all clicked selections - these functions also handle styling related to each selection
         transNetwork.clearTransSelections()

@@ -748,38 +748,38 @@ class PowNet {
         // energy
         currentG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 30)
             .attr("y",20)
             .text("current (A)");
         
         currentG.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - that.transNet.time_label)
             .attr("y",line_height-5)
             .text("time");
 
         // power
         APFG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("x",line_width - line_width*0.5 - 70)
             .attr("y",23)
             .text("active power flow (kW)");
         
         APFG.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - that.transNet.time_label)
             .attr("y",line_height-5)
             .text("time");
 
         RPFG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("x",line_width - line_width*0.5 - 90)
             .attr("y",23)
-            .text("reactive power flow (kW)");
+            .text("reactive power flow (kVar)");
         
         RPFG.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - that.transNet.time_label)
             .attr("y",line_height-5)
             .text("time");
 
@@ -986,6 +986,9 @@ class PowNet {
 
         let current_color = d3.hsl("#ff524c")
 
+        let end_index = parseInt(this.activeTime) + 1;
+        // console.log(end_index)
+
         currentLines = currentLines.enter().append('path')
             .merge(currentLines);
         currentLines
@@ -998,7 +1001,7 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineCurrent(d.current.slice(0,that.activeTime)));
+            .attr("d", d => lineCurrent(d.current.slice(0,end_index)));
 
         faintcurrentLines = faintcurrentLines.enter().append('path')
             .merge(faintcurrentLines);
@@ -1028,7 +1031,7 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineAPF(d.aPF.slice(0,that.activeTime)));
+            .attr("d", d => lineAPF(d.aPF.slice(0,end_index)));
 
         faintpfLines = faintpfLines.enter().append('path')
             .merge(faintpfLines);
@@ -1058,7 +1061,7 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineRPF(d.rPF.slice(0,that.activeTime)));
+            .attr("d", d => lineRPF(d.rPF.slice(0,end_index)));
 
         faintrpfLines = faintrpfLines.enter().append('path')
             .merge(faintrpfLines);
@@ -1147,6 +1150,9 @@ class PowNet {
         
         let active_load_color = d3.hsl("#8426cc")
 
+        let end_index = parseInt(this.activeTime) + 1;
+        // console.log(end_index)
+
         alLines = alLines.enter().append('path')
             .merge(alLines);
         alLines
@@ -1159,7 +1165,7 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineAL(d.aLoad.slice(0,that.activeTime)));
+            .attr("d", d => lineAL(d.aLoad.slice(0,end_index)));
 
         faintalLines = faintalLines.enter().append('path')
             .merge(faintalLines);
@@ -1189,7 +1195,7 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineRL(d.rLoad.slice(0,that.activeTime)));
+            .attr("d", d => lineRL(d.rLoad.slice(0,end_index)));
 
         faintrlLines = faintrlLines.enter().append('path')
             .merge(faintrlLines);
@@ -1220,7 +1226,7 @@ class PowNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineVolt(d.volt.slice(0,that.activeTime)));
+            .attr("d", d => lineVolt(d.volt.slice(0,end_index)));
 
         faintvoltLines = faintvoltLines.enter().append('path')
             .merge(faintvoltLines);

@@ -53,6 +53,7 @@ class TransNet {
         this.clickedStations = []; // using this for implementing multiple station click functionality 
 
         this.chart_line_opacity = 0.1 //sets the opacity of the faint lines in the charts
+        this.time_label = 40 //controls where the time label is
 
 
     }
@@ -897,7 +898,7 @@ class TransNet {
 
     // clears all the clicked stations as well as clicked station line styling 
     clearTransSelections(){
-        console.log("here")
+        // console.log("here")
         this.clickedStations = []
         // stops animation
         d3.selectAll(".clicked-line").interrupt()
@@ -1120,25 +1121,25 @@ class TransNet {
         // Active power
         APStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("x",line_width - line_width*0.5 - 130)
             .attr("y",20)
             .text("charging station active power (kW)");
         
         APStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - this.time_label)
             .attr("y",line_height-5)
             .text("time");
 
         RPStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("x",line_width - line_width*0.5 - 145)
             .attr("y",20)
-            .text("charging station reactive power (kW)");
+            .text("charging station reactive power (kVar)");
         
         RPStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - this.time_label)
             .attr("y",line_height-5)
             .text("time");
 
@@ -1252,7 +1253,7 @@ class TransNet {
         
         BusStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - this.time_label)
             .attr("y",line_height-5)
             .text("time");
 
@@ -1395,39 +1396,39 @@ class TransNet {
         // Active load
         ALStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 50)
             .attr("y",20)
             .text("active load (kW)");
         
         ALStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - this.time_label)
             .attr("y",line_height - 5)
             .text("time");
 
         // REactive load
         RLStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 60)
             .attr("y",20)
-            .text("reactive load (kW)");
+            .text("reactive load (kVar)");
         
         RLStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - this.time_label)
             .attr("y",line_height - 5)
             .text("time");
 
         // Voltage
         VStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 70)
+            .attr("x",line_width - line_width*0.5 - 30)
             .attr("y",20)
             .text("voltage (kV)");
         
         VStatSvg.append("text")
             .attr("class","axis-text")
-            .attr("x",10)
+            .attr("x",line_width - this.time_label)
             .attr("y",line_height-5)
             .text("time");
 
@@ -1654,6 +1655,9 @@ class TransNet {
         busLines.exit().remove();
         faintbusLines.exit().remove();
 
+        let end_index = parseInt(this.activeTime) + 1;
+        // console.log(end_index)
+
         apLines = apLines.enter().append('path')
             .merge(apLines);
         apLines
@@ -1666,7 +1670,7 @@ class TransNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineAP(d.chSP.slice(0,this.activeTime))); //console.log(d.chSP.slice(0,this.activeTime)))
+            .attr("d", d => lineAP(d.chSP.slice(0,end_index))); //console.log(d.chSP.slice(0,this.activeTime)))
 
         faintapLines = faintapLines.enter().append('path')
             .merge(faintapLines);
@@ -1693,7 +1697,7 @@ class TransNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineRP(d.chSRP.slice(0,this.activeTime)));
+            .attr("d", d => lineRP(d.chSRP.slice(0,end_index)));
 
         faintrpLines = faintrpLines.enter().append('path')
             .merge(faintrpLines);
@@ -1720,7 +1724,7 @@ class TransNet {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => lineBus(d.BusData.slice(0,this.activeTime).map(f=>f.total)));
+            .attr("d", d => lineBus(d.BusData.slice(0,end_index).map(f=>f.total)));
 
         faintbusLines = faintbusLines.enter().append('path')
             .merge(faintbusLines);
