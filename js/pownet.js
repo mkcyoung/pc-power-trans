@@ -198,7 +198,8 @@ class PowNet {
         this.powLoadScale = d3.scaleSequential(d3.interpolateGreens).domain([min_chsp,max_chsp]);
 
         // scale for link line charts
-        this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.timeScale_Date = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ]);
+        this.timeScale = d3.scaleLinear().domain([1,288]) //.range([this.marginL.left,this.marginL.left+this.widthL]);
         this.currentLineScale = d3.scaleLinear().domain([min_current,max_current]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.APFLineScale = d3.scaleLinear().domain([min_apf,max_apf]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.RPFLineScale = d3.scaleLinear().domain([min_rpf,max_rpf]).range([this.heightL+this.marginL.top,this.marginL.top]);
@@ -694,6 +695,7 @@ class PowNet {
 
         // scale for link line charts
         this.timeScale = this.timeScale.range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.timeScale_Date = this.timeScale_Date.range([this.marginL.left,this.marginL.left+this.widthL]);
         this.currentLineScale = this.currentLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
         this.APFLineScale = this.APFLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
         this.RPFLineScale = this.RPFLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
@@ -752,11 +754,11 @@ class PowNet {
             .attr("y",20)
             .text("current (A)");
         
-        currentG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - that.transNet.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // currentG.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - that.transNet.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         // power
         APFG.append("text")
@@ -765,11 +767,11 @@ class PowNet {
             .attr("y",23)
             .text("active power flow (kW)");
         
-        APFG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - that.transNet.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // APFG.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - that.transNet.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         RPFG.append("text")
             .attr("class","axis-title")
@@ -777,11 +779,11 @@ class PowNet {
             .attr("y",23)
             .text("reactive power flow (kVar)");
         
-        RPFG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - that.transNet.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // RPFG.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - that.transNet.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         
         // Scales for line chart
@@ -789,11 +791,11 @@ class PowNet {
         let yScaleAPF = this.APFLineScale;
         let yScaleRPF = this.RPFLineScale; 
 
-        let xScale = this.timeScale;
+        let xScale = this.timeScale_Date;
 
 
         //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
+        let xAxis = d3.axisBottom().ticks(4, "%I %p");
         xAxis.scale(xScale);
 
         //Y axis group

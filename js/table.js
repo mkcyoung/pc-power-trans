@@ -110,7 +110,8 @@ class Table{
     createTable(){
 
     // Scales for line chart
-    this.timeScale = d3.scaleLinear().domain([1,288]).range([this.marginL.left,this.marginL.left+this.widthL]);
+    this.timeScale_Date = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ]);
+    this.timeScale = d3.scaleLinear().domain([1,288]) //.range([this.marginL.left,this.marginL.left+this.widthL]);
     this.energyLineScale = d3.scaleLinear().domain([this.min_energy,this.max_energy]).range([this.heightL+this.marginL.top,this.marginL.top]);
     this.powerLineScale = d3.scaleLinear().domain([this.min_power,this.max_power]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
@@ -719,6 +720,7 @@ class Table{
 
         // Scales for line chart
         this.timeScale = this.timeScale.range([this.marginL.left,this.marginL.left+this.widthL]);
+        this.timeScale_Date = this.timeScale_Date.range([this.marginL.left,this.marginL.left+this.widthL]);
         this.energyLineScale = this.energyLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
         this.powerLineScale = this.powerLineScale.range([this.heightL+this.marginL.top,this.marginL.top]);
     }
@@ -812,11 +814,11 @@ class Table{
         let yScaleEnergy = this.energyLineScale;
         let yScalePower = this.powerLineScale;
 
-        let xScale = this.timeScale;
+        let xScale = this.timeScale_Date;
 
 
         //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
+        let xAxis = d3.axisBottom().ticks(4, "%I %p");
         xAxis.scale(xScale);
 
         //Y axis group
@@ -943,218 +945,218 @@ class Table{
 
     }
 
-     /** Creates all bus line charts */
-    createLine(){
-        //console.log("data in line:",this.data.nodes[0])
+    //  /** Creates all bus line charts */
+    // createLine(){
+    //     //console.log("data in line:",this.data.nodes[0])
 
-        let that = this;
+    //     let that = this;
 
-        // Line chart height and width
-        let line_height = this.lineHeight; //300
-        let line_width = this.lineWidth; //700
+    //     // Line chart height and width
+    //     let line_height = this.lineHeight; //300
+    //     let line_width = this.lineWidth; //700
 
-        //Create line chart svg for active power
-        let energySvg = d3.select(".bus-charts").append("svg")
-            .attr("class","energySvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
+    //     //Create line chart svg for active power
+    //     let energySvg = d3.select(".bus-charts").append("svg")
+    //         .attr("class","energySvg")
+    //         .attr("height",line_height)
+    //         .attr("width",line_width);
 
-        let powerSvg = d3.select(".bus-charts").append("svg")
-            .attr("class","powerSvg")
-            .attr("height",line_height)
-            .attr("width",line_width);
+    //     let powerSvg = d3.select(".bus-charts").append("svg")
+    //         .attr("class","powerSvg")
+    //         .attr("height",line_height)
+    //         .attr("width",line_width);
         
 
-        //Create an energy chart group
-        let energyG = energySvg.append("g");
-            // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
+    //     //Create an energy chart group
+    //     let energyG = energySvg.append("g");
+    //         // .attr("transform",`translate(${this.marginL.left},${this.marginL.top})`);
 
-        //Create a power chart group
-        let powerG = powerSvg.append("g");
+    //     //Create a power chart group
+    //     let powerG = powerSvg.append("g");
 
-        //Create label for group
-        energyG.append("text")
-            .attr("class","chart-text")
-            .attr("x",line_width-160)
-            .attr("y",60);
+    //     //Create label for group
+    //     energyG.append("text")
+    //         .attr("class","chart-text")
+    //         .attr("x",line_width-160)
+    //         .attr("y",60);
 
-        //Create labels for axes
-        // energy
-        energyG.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("energy (kWh)");
+    //     //Create labels for axes
+    //     // energy
+    //     energyG.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",70)
+    //         .attr("y",15)
+    //         .text("energy (kWh)");
         
-        energyG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width-150)
-            .attr("y",line_height-10)
-            .text("intervals");
+    //     energyG.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",line_width-150)
+    //         .attr("y",line_height-10)
+    //         .text("intervals");
 
-        energyG.append('text')
-            .attr("class","energy-info-text")
-            .attr("font-weight","bold")
-            .attr("font-size","20px")
-            .attr("fill",'rgba(0, 0, 0, 0.378)')
-            .attr("x",70)
-            .attr("y",203);
-            // .attr("x",250) //Top left
-            // .attr("y",16);
+    //     energyG.append('text')
+    //         .attr("class","energy-info-text")
+    //         .attr("font-weight","bold")
+    //         .attr("font-size","20px")
+    //         .attr("fill",'rgba(0, 0, 0, 0.378)')
+    //         .attr("x",70)
+    //         .attr("y",203);
+    //         // .attr("x",250) //Top left
+    //         // .attr("y",16);
 
-        // power
-        powerG.append("text")
-            .attr("class","axis-text")
-            .attr("x",70)
-            .attr("y",15)
-            .text("power(kWh)");
+    //     // power
+    //     powerG.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",70)
+    //         .attr("y",15)
+    //         .text("power(kWh)");
         
-        powerG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width-150)
-            .attr("y",line_height-10)
-            .text("intervals");
+    //     powerG.append("text")
+    //         .attr("class","axis-text")
+    //         .attr("x",line_width-150)
+    //         .attr("y",line_height-10)
+    //         .text("intervals");
 
-        powerG.append('text')
-            .attr("class","power-info-text")
-            .attr("font-weight","lighter")
-            .attr("font-size","20px")
-            .attr("x",300)
-            .attr("y",18);
-
-        
-        // Scales for line chart
-        let yScaleEnergy = this.energyLineScale;
-        let yScalePower = this.powerLineScale;
-
-        let xScale = this.timeScale;
-
-
-        //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
-        xAxis.scale(xScale);
-
-        //Y axis group
-        let yAxisEnergy = d3.axisLeft().ticks(3);
-        yAxisEnergy.scale(yScaleEnergy);
-        let yAxisPower = d3.axisLeft().ticks(3);
-        yAxisPower.scale(yScalePower);
-
-        //Gridlines
-        // gridlines in y axis function 
-        // function make_y_gridlines() {		
-        //     return d3.axisLeft(yScale)
-        //         .ticks(5)
-        // }
-
-        // // add the Y gridlines
-        // powStatSvg.append("g")			
-        //     .attr("class", "grid")
-        //     .attr("transform",`translate(${this.marginL.left},0)`)
-        //     .call(make_y_gridlines()
-        //         .tickSize(-(this.widthL))
-        //         .tickFormat("")
-        //     );
-
-        //X-axis
-        energyG.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-            .call(xAxis);
-
-        powerG.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
-            .call(xAxis);
-        
-
-        //Y-axis
-        energyG.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisEnergy);
-
-        powerG.append("g")
-            .classed("axis",true)
-            .attr("transform",`translate(${this.marginL.left},${0})`)
-            .call(yAxisPower);
+    //     powerG.append('text')
+    //         .attr("class","power-info-text")
+    //         .attr("font-weight","lighter")
+    //         .attr("font-size","20px")
+    //         .attr("x",300)
+    //         .attr("y",18);
 
         
-        //Add data to chart
+    //     // Scales for line chart
+    //     let yScaleEnergy = this.energyLineScale;
+    //     let yScalePower = this.powerLineScale;
 
-        //Making line function
-        // let line = d3.line()
-        //     // .curve(d3.curveStep)
-        //     .defined(d => !isNaN(d.value))
-        //     .x((d,i) => this.timeScale(i))
-        //     .y(d => this.powLoadLineScale(d.value));
-
-        //Create data bindings here
-
-        //Creating paths
-        // energyG.append("path")
-        //     .attr("class","line-Energy-faint line-path");
-
-        // energyG.append("path")
-        //     .attr("class","line-Energy line-path");
-
-        // energyG.append("path")
-        //     .attr("class","line-Energy line-path");
-
-        // powerG.append("path")
-        //     .attr("class","line-Power-faint line-path");
-
-        // powerG.append("path")
-        //     .attr("class","line-Power line-path");
+    //     let xScale = this.timeScale;
 
 
-        // Make a group for line paths
-        d3.select('.energySvg').append('g').attr("class","faintEnergyLines")
-        d3.select('.energySvg').append('g').attr("class","energyLines")
+    //     //Xaxis group
+    //     let xAxis = d3.axisBottom().ticks(6);
+    //     xAxis.scale(xScale);
 
-        d3.select('.powerSvg').append('g').attr("class","faintPowerLines")
-        d3.select('.powerSvg').append('g').attr("class","powerLines")
+    //     //Y axis group
+    //     let yAxisEnergy = d3.axisLeft().ticks(3);
+    //     yAxisEnergy.scale(yScaleEnergy);
+    //     let yAxisPower = d3.axisLeft().ticks(3);
+    //     yAxisPower.scale(yScalePower);
+
+    //     //Gridlines
+    //     // gridlines in y axis function 
+    //     // function make_y_gridlines() {		
+    //     //     return d3.axisLeft(yScale)
+    //     //         .ticks(5)
+    //     // }
+
+    //     // // add the Y gridlines
+    //     // powStatSvg.append("g")			
+    //     //     .attr("class", "grid")
+    //     //     .attr("transform",`translate(${this.marginL.left},0)`)
+    //     //     .call(make_y_gridlines()
+    //     //         .tickSize(-(this.widthL))
+    //     //         .tickFormat("")
+    //     //     );
+
+    //     //X-axis
+    //     energyG.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+    //         .call(xAxis);
+
+    //     powerG.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+    //         .call(xAxis);
         
-        // making dot for highlighting line
-        let dot = d3.select('.energyLines').append("g")
-            .attr("class","energy-dot dot")
-            .attr("display","none");
 
-        dot.append("circle")
-            .attr("r",2.5);
+    //     //Y-axis
+    //     energyG.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${this.marginL.left},${0})`)
+    //         .call(yAxisEnergy);
 
-        dot.append("text")
-            // .attr("font-family", "sans-serif")
-            .attr("font-family", "Avenir Next")
-            .attr("font-size", 18)
-            .attr("font-weight","bold")
-            .attr("fill", "#484b5a")
-            .attr("text-anchor", "right")
-            .attr("y", -10);
+    //     powerG.append("g")
+    //         .classed("axis",true)
+    //         .attr("transform",`translate(${this.marginL.left},${0})`)
+    //         .call(yAxisPower);
 
-        let dotP = d3.select('.powerLines').append("g")
-            .attr("class","power-dot dot")
-            .attr("display","none");
-
-        dotP.append("circle")
-            .attr("r",2.5);
-
-        dotP.append("text")
-            // .attr("font-family", "sans-serif")
-            .attr("font-family", "Avenir Next")
-            .attr("font-size", 18)
-            .attr("font-weight","bold")
-            .attr("fill", "#484b5a")
-            .attr("text-anchor", "right")
-            .attr("y", -10);
         
-        // d3.select("#s_tooltip").html(that.tooltipRenderB(d))
-        //             .style("left","1220px") //(d3.event.pageX+30)
-        //             .style("top", "235px"); 
+    //     //Add data to chart
 
-        // Make tooltip for bus charts
+    //     //Making line function
+    //     // let line = d3.line()
+    //     //     // .curve(d3.curveStep)
+    //     //     .defined(d => !isNaN(d.value))
+    //     //     .x((d,i) => this.timeScale(i))
+    //     //     .y(d => this.powLoadLineScale(d.value));
 
-    }
+    //     //Create data bindings here
+
+    //     //Creating paths
+    //     // energyG.append("path")
+    //     //     .attr("class","line-Energy-faint line-path");
+
+    //     // energyG.append("path")
+    //     //     .attr("class","line-Energy line-path");
+
+    //     // energyG.append("path")
+    //     //     .attr("class","line-Energy line-path");
+
+    //     // powerG.append("path")
+    //     //     .attr("class","line-Power-faint line-path");
+
+    //     // powerG.append("path")
+    //     //     .attr("class","line-Power line-path");
+
+
+    //     // Make a group for line paths
+    //     d3.select('.energySvg').append('g').attr("class","faintEnergyLines")
+    //     d3.select('.energySvg').append('g').attr("class","energyLines")
+
+    //     d3.select('.powerSvg').append('g').attr("class","faintPowerLines")
+    //     d3.select('.powerSvg').append('g').attr("class","powerLines")
+        
+    //     // making dot for highlighting line
+    //     let dot = d3.select('.energyLines').append("g")
+    //         .attr("class","energy-dot dot")
+    //         .attr("display","none");
+
+    //     dot.append("circle")
+    //         .attr("r",2.5);
+
+    //     dot.append("text")
+    //         // .attr("font-family", "sans-serif")
+    //         .attr("font-family", "Avenir Next")
+    //         .attr("font-size", 18)
+    //         .attr("font-weight","bold")
+    //         .attr("fill", "#484b5a")
+    //         .attr("text-anchor", "right")
+    //         .attr("y", -10);
+
+    //     let dotP = d3.select('.powerLines').append("g")
+    //         .attr("class","power-dot dot")
+    //         .attr("display","none");
+
+    //     dotP.append("circle")
+    //         .attr("r",2.5);
+
+    //     dotP.append("text")
+    //         // .attr("font-family", "sans-serif")
+    //         .attr("font-family", "Avenir Next")
+    //         .attr("font-size", 18)
+    //         .attr("font-weight","bold")
+    //         .attr("fill", "#484b5a")
+    //         .attr("text-anchor", "right")
+    //         .attr("y", -10);
+        
+    //     // d3.select("#s_tooltip").html(that.tooltipRenderB(d))
+    //     //             .style("left","1220px") //(d3.event.pageX+30)
+    //     //             .style("top", "235px"); 
+
+    //     // Make tooltip for bus charts
+
+    // }
 
     // Updates the line chart with clicked data 
     updateLine(){
@@ -1184,7 +1186,7 @@ class Table{
         // console.log( d3.select('.energySvg').selectAll(".line-Energy"))
 
         let end_index = parseInt(this.activeTime) + 1;
-        console.log(end_index)
+        // console.log(end_index)
 
         let energyColor = d3.color('#ad2800')
         let powerColor = d3.color('#100881')

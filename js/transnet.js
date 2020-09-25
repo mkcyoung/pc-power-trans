@@ -189,12 +189,18 @@ class TransNet {
 
         /** Set Scales  */
 
+        // new scales for dealing with converting from intervals to time
         this.interval_to_time_scale = d3.scaleTime()
                                     .domain([0,288])
                                     .range([new Date(2020,0,1,5), new Date(2020,0,2,5)]);
 
+        this.timeScale_Date = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ])
+        this.busTimeScale_Date = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ])
+                    .range([this.busCountMargin.left,this.busCountMargin.left+this.busCountMarginWidth]);
+        // this.time_line_scale = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ])
+
         //Make circle size scale for bus count
-        this.buscountScale = d3.scaleSqrt().domain([min_bus_count,max_bus_count]).range([5,35]);
+        this.buscountScale = d3.scaleSqrt().domain([min_bus_count,max_bus_count]).range([10,35]);
 
         //Color scale for station power
         this.powLoadScale = d3.scaleSequential(d3.interpolateGreens).domain([min_chsp,max_chsp]);
@@ -988,7 +994,7 @@ class TransNet {
 
         //Slider to change the activeTime of the data
         //May want to adjust these values later
-        let timeScale = d3.scaleLinear().domain([0, 287]).range([25, gBox.width-60]);
+        let timeScale = d3.scaleLinear().domain([0, 287]).range([25, gBox.width-55]);
 
         let timeSlider = d3.select('#activeTime-bar')
             .append('div').classed('slider-wrap', true)
@@ -1069,6 +1075,7 @@ class TransNet {
             that.busCountMarginHeight = that.busCountHeight - that.busCountMargin.top-that.busCountMargin.bottom; 
 
             that.busLineScale = that.busLineScale.range([that.busCountMarginHeight+that.busCountMargin.top,that.busCountMargin.top]);
+            that.busTimeScale_Date = that.busTimeScale_Date.range([that.busCountMargin.left,that.busCountMargin.left+that.busCountMarginWidth]);
             that.busTimeScale = that.busTimeScale.range([that.busCountMargin.left,that.busCountMargin.left+that.busCountMarginWidth]);
 
         }
@@ -1085,6 +1092,7 @@ class TransNet {
             that.powLoadLineScale = that.powLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.powRLoadLineScale = that.powRLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.timeScale = that.timeScale.range([that.marginL.left,that.marginL.left+that.widthL]);
+            that.timeScale_Date = that.timeScale_Date.range([that.marginL.left,that.marginL.left+that.widthL]);
             that.aLoadLineScale = that.aLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.rLoadLineScale = that.rLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.voltLineScale = that.voltLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
@@ -1139,11 +1147,11 @@ class TransNet {
             .attr("y",20)
             .text("charging station active power (kW)");
         
-        APStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - this.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // APStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - this.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         RPStatSvg.append("text")
             .attr("class","axis-title")
@@ -1151,22 +1159,23 @@ class TransNet {
             .attr("y",20)
             .text("charging station reactive power (kVar)");
         
-        RPStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - this.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // RPStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - this.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
 
         let yScaleAP = this.powLoadLineScale;
         let yScaleRP = this.powRLoadLineScale; 
         // console.log(this.timeScale.range(),line_width)
-        let xScale = this.timeScale;
+        let xScale = this.timeScale_Date;
 
         //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
+        let xAxis = d3.axisBottom()
+            .ticks(4, "%I %p");
+        // xAxis.scale(xScale);
         xAxis.scale(xScale);
-
 
         let yAxisAP = d3.axisLeft().ticks(3);
         yAxisAP.scale(yScaleAP);
@@ -1265,22 +1274,22 @@ class TransNet {
             .attr("y",20)
             .text("BEB count");
         
-        BusStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - this.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // BusStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - this.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         
         // Scales for line chart
         
         let yScaleBus = this.busLineScale;
 
-        xScale = this.busTimeScale;
+        xScale = this.busTimeScale_Date;
 
 
         //Xaxis group
-        xAxis = d3.axisBottom().ticks(6);
+        xAxis = d3.axisBottom().ticks(6, "%I %p");;
         xAxis.scale(xScale);
 
         //Y axis group
@@ -1414,11 +1423,11 @@ class TransNet {
             .attr("y",20)
             .text("active load (kW)");
         
-        ALStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - this.time_label)
-            .attr("y",line_height - 5)
-            .text("time");
+        // ALStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - this.time_label)
+        //     .attr("y",line_height - 5)
+        //     .text("time");
 
         // REactive load
         RLStatSvg.append("text")
@@ -1427,11 +1436,11 @@ class TransNet {
             .attr("y",20)
             .text("reactive load (kVar)");
         
-        RLStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - this.time_label)
-            .attr("y",line_height - 5)
-            .text("time");
+        // RLStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - this.time_label)
+        //     .attr("y",line_height - 5)
+        //     .text("time");
 
         // Voltage
         VStatSvg.append("text")
@@ -1440,11 +1449,11 @@ class TransNet {
             .attr("y",20)
             .text("voltage (kV)");
         
-        VStatSvg.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - this.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // VStatSvg.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - this.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         
         // Scales for line chart
@@ -1452,11 +1461,11 @@ class TransNet {
         let yScaleRL = this.rLoadLineScale; //TODO set to reactive load when I get data
         let yScaleV = this.voltLineScale;
 
-        let xScale = this.timeScale;
+        let xScale = this.timeScale_Date;
 
 
         //Xaxis group
-        let xAxis = d3.axisBottom().ticks(6);
+        let xAxis = d3.axisBottom().ticks(4, "%I %p");
         xAxis.scale(xScale);
 
         //Y axis group

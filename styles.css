@@ -771,6 +771,7 @@ tbody tr:hover{
 }
 
 .slider-label svg text {
+    font-size:18px;
     text-anchor: middle;
 }
 
@@ -778,11 +779,12 @@ tbody tr:hover{
     display: inline-block;
     position: relative;
     /* float: left; */
-    /* align-items: center; */
-    margin:0;
+    align-content: center;
+    margin:0 auto;
+    /* padding:10px; */
     /* width: 750px; */
     /* left: 50%; */
-    margin-top:20px;
+    /* margin-top:20px; */
 }
 
 /* Scale Legend */
