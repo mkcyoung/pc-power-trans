@@ -188,6 +188,11 @@ class TransNet {
         
 
         /** Set Scales  */
+
+        this.interval_to_time_scale = d3.scaleTime()
+                                    .domain([0,288])
+                                    .range([new Date(2020,0,1,5), new Date(2020,0,2,5)]);
+
         //Make circle size scale for bus count
         this.buscountScale = d3.scaleSqrt().domain([min_bus_count,max_bus_count]).range([5,35]);
 
@@ -983,7 +988,7 @@ class TransNet {
 
         //Slider to change the activeTime of the data
         //May want to adjust these values later
-        let timeScale = d3.scaleLinear().domain([0, 287]).range([10, gBox.width-45]);
+        let timeScale = d3.scaleLinear().domain([0, 287]).range([25, gBox.width-60]);
 
         let timeSlider = d3.select('#activeTime-bar')
             .append('div').classed('slider-wrap', true)
@@ -1001,7 +1006,9 @@ class TransNet {
             .append('svg')
             .attr("width",gBox.width-margin);
 
-        let sliderText = sliderLabel.append('text').text(this.activeTime);
+        // Make time conversion scale 
+
+        let sliderText = sliderLabel.append('text').text(this.interval_to_time_string(this.activeTime));
 
         sliderText.attr('x', timeScale(this.activeTime));
         sliderText.attr('y', 25);
@@ -1011,7 +1018,7 @@ class TransNet {
 
             // d3.select("#backtext")
             //     .text(this.value);
-            sliderText.text(this.value);
+            sliderText.text(that.interval_to_time_string(this.value));
             sliderText.attr('x', timeScale(this.value));
             that.updateTime(this.value);
             if(that.clicked != null){
@@ -1020,6 +1027,13 @@ class TransNet {
                     .html(that.tooltipRenderS(that.clicked));
             }
         });
+    }
+
+    interval_to_time_string(interval){
+        let current_time = this.interval_to_time_scale(interval)
+        let [hour, minute, second] = ( current_time ).toTimeString().slice(0,7).split(":")
+        let time_string = hour + ':' + minute
+        return time_string
     }
 
     removeNet(){
