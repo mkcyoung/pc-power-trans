@@ -2,7 +2,7 @@
 class TransNet {
 
     // Creates a Transportation Network object
-    constructor(data,pow_data,bebs,time,table,updateTime,powNet){
+    constructor(data,pow_data,bebs,time,table,updateTime,powNet,price){
         //Assigning data variable
         console.log("Trans data:",data);
         this.data = data;
@@ -12,6 +12,7 @@ class TransNet {
         this.table = table;
         this.updateTime = updateTime;
         this.powNet = powNet;
+        this.price = price;
 
         //getting bouding box for svg
         let boundingRect =  d3.select(".view1").node().getBoundingClientRect()
@@ -67,6 +68,16 @@ class TransNet {
         //console.log("In trans net");
         //Select view1 and append an svg to it
         let that = this;
+
+        // Find max and min of price (use same scale when both visualized)
+        let LMP_range = d3.extent(this.price.power_price.map( m => parseFloat(m.value)))
+        let TOU_range = d3.extent(this.price.transit_price.map( m => parseFloat(m.value)))
+        // console.log("LMP RANGE:",LMP_range)
+        // console.log("TOU RANGE:",TOU_range)
+        let price_max = d3.max([LMP_range[1],TOU_range[1]])
+        let price_min = d3.min([LMP_range[0],TOU_range[0]])
+        let both_price_range = [price_min,price_max]
+        // console.log("BOTH",both_price_range)
 
         //Create bus count scale
         let max_bus_count = d3.max(this.data.nodes.map((d) => {
@@ -198,6 +209,11 @@ class TransNet {
         this.busTimeScale_Date = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ])
                     .range([this.busCountMargin.left,this.busCountMargin.left+this.busCountMarginWidth]);
         // this.time_line_scale = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ])
+
+        // Create price scale 
+        this.LMP_line_scale = d3.scaleLinear().domain(LMP_range).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.TOU_line_scale = d3.scaleLinear().domain(TOU_range).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.both_price_line_scale = d3.scaleLinear().domain(both_price_range).range([this.heightL+this.marginL.top,this.marginL.top]);
 
         //Make circle size scale for bus count
         this.buscountScale = d3.scaleSqrt().domain([min_bus_count,max_bus_count]).range([10,35]);
@@ -1053,11 +1069,11 @@ class TransNet {
         d3.select(".chart-1").selectAll("svg").remove()
         d3.select(".chart-2").selectAll("svg").remove()
         d3.select(".chart-3").selectAll("svg").remove()
-        // d3.select(".chart-4").select("svg").remove()
+        d3.select(".chart-4").selectAll("svg").remove()
     }
 
 
-    updateChartSize(bounding_div,is_bus=false){
+    updateChartSize(bounding_div,is_long=false){
         // Everything will have same dimensions besides the bus count - 
         // So will make unique bus count variables 
 
@@ -1066,7 +1082,7 @@ class TransNet {
         let chart = d3.select(bounding_div).node().getBoundingClientRect()
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
         let that = this
-        if (is_bus == true){
+        if (is_long == true){
             
             //Margins - the bostock way - bus count line chart
             that.busCountHeight = chart.height-10;
@@ -1089,6 +1105,10 @@ class TransNet {
 
             // Tackles scaling
             // Scales for line chart - need to rescale because we changed sizes
+            that.LMP_line_scale = that.LMP_line_scale.range([that.heightL+that.marginL.top,that.marginL.top]);
+            that.TOU_line_scale = that.TOU_line_scale.range([that.heightL+that.marginL.top,that.marginL.top]);
+            that.both_price_line_scale = that.both_price_line_scale.range([that.heightL+that.marginL.top,that.marginL.top]);
+
             that.powLoadLineScale = that.powLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.powRLoadLineScale = that.powRLoadLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
             that.timeScale = that.timeScale.range([that.marginL.left,that.marginL.left+that.widthL]);
@@ -1098,6 +1118,90 @@ class TransNet {
             that.voltLineScale = that.voltLineScale.range([that.heightL+that.marginL.top,that.marginL.top]);
 
         }
+    }
+
+    createPriceCharts(price_div,view){
+        let that = this
+        this.updateChartSize(price_div[0])
+        let line_height = this.lineHeight //this.lineHeight; //300
+        let line_width = this.lineWidth //this.lineWidth; //700
+        
+
+        let PriceSvg = d3.select(price_div[0]).append("svg")
+            .attr("class","PriceSvg")
+            .attr("height",line_height)
+            .attr("width",line_width);
+
+        let PriceStatSvg = PriceSvg.append("g")
+        //Create labels for axes
+        // Active power
+        PriceStatSvg.append("text")
+            .attr("class","axis-title")
+            .attr("x",line_width - line_width*0.5 - 130)
+            .attr("y",20)
+            .text("price ($/MWh)");
+
+        let yScalePrice = null; 
+        if (view == 'both'){
+            yScalePrice = that.both_price_line_scale; 
+        }
+        else if (view == 'power'){
+            yScalePrice = that.LMP_line_scale
+        }
+        else if (view == 'transit'){
+            yScalePrice = that.TOU_line_scale
+        }
+        // console.log(this.timeScale.range(),line_width)
+        let xScale = this.timeScale_Date;
+
+        //Xaxis group
+        let xAxis = d3.axisBottom()
+            .ticks(4, "%I %p");
+        // xAxis.scale(xScale);
+        xAxis.scale(xScale);
+
+        let yAxisPrice = d3.axisLeft().ticks(3);
+        yAxisPrice.scale(yScalePrice);
+
+
+        //X-axis
+        PriceStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${0},${this.heightL+this.marginL.top})`)
+            .call(xAxis);
+
+
+        //Y-axis
+        PriceStatSvg.append("g")
+            .classed("axis",true)
+            .attr("transform",`translate(${this.marginL.left},${0})`)
+            .call(yAxisPrice);
+
+        //Drawing path
+
+        PriceStatSvg.append("g").attr("class",'line-Price')
+        PriceStatSvg.append("g").attr("class",'line-Price-faint')
+
+
+        // making dot for highlighting line
+        let dot = d3.select('.line-Price').append("g")
+            .attr("class","Price-dot")
+            .attr("display","none");
+
+        dot.append("circle")
+            .attr("r",2.5);
+
+        dot.append("text")
+            // .attr("font-family", "sans-serif")
+            // .attr("font-family", "Avenir Next")
+            .attr("font-size", 18)
+            .attr("font-weight","bold")
+            .attr("fill", "#484b5a")
+            .attr("text-anchor", "right")
+            .attr("y", -10);
+        
+
+
     }
 
     // Function to handle transit view charts - just putting up axes and everything
@@ -1289,7 +1393,7 @@ class TransNet {
 
 
         //Xaxis group
-        xAxis = d3.axisBottom().ticks(6, "%I %p");;
+        xAxis = d3.axisBottom().ticks(4, "%I %p");;
         xAxis.scale(xScale);
 
         //Y axis group
@@ -2034,7 +2138,7 @@ class TransNet {
         //Adds in relevant data
         text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p>";
         text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b> Reactive Power:</b> "+  parseFloat(data.chSRP[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Reactive Power:</b> "+  parseFloat(data.chSRP[time].value).toFixed(2)+" kVar</p>";
         // text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses &emsp; <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
         // text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW &emsp; <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;

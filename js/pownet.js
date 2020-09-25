@@ -1483,6 +1483,7 @@ class PowNet {
         let text = '';
         //Adds in relevant data
         text = text + "<p> <b> Active Load:</b> "+ parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Reactive Load:</b> "+ parseFloat(data.rLoad[time].value).toFixed(2)+" kVar</p>";
         text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;
     }
@@ -1505,6 +1506,7 @@ class PowNet {
         let that = this;
         let text = ''
         text = text + "<p> <b> Acitve Power Flow: </b> "+ parseFloat(data.aPF[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Reacitve Power Flow: </b> "+ parseFloat(data.rPF[time].value).toFixed(2)+" kVar</p>";
         text = text + "<p> <b> Current: </b> "+ parseFloat(data.current[time].value).toFixed(2)+" A </p> <p> <b> Max Current: </b>"+ data.mLC.toFixed(2)+" A </p>";
         
         return text;

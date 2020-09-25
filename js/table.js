@@ -37,7 +37,7 @@ class Table{
         let cell_height = table_div.height-10
         // console.log(cell_width,cell_height)
 
-        this.margin = {top: 5, right: 0, bottom: 0, left: 0};
+        this.margin = {top: 2, right: 2, bottom: 0, left: 0};
         this.width = cell_width - this.margin.left - this.margin.right;
         this.height = cell_height - this.margin.top-this.margin.bottom;
 
@@ -243,7 +243,7 @@ class Table{
         let cell_height = table_div.height-10
         // console.log(cell_width,cell_height)
 
-        this.margin = {top: 5, right: 0, bottom: 0, left: 0};
+        // this.margin = {top: 5, right: 0, bottom: 0, left: 0};
         this.width = cell_width - this.margin.left - this.margin.right;
         this.height = cell_height - this.margin.top-this.margin.bottom;
 
@@ -1489,7 +1489,7 @@ class Table{
         }
         let that = this;
         let text = '';
-        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[time].value).toFixed(2)+" kWh </p> <p> <b> Power : </b> "+  parseFloat(data.power[time].value).toFixed(2)+" kWh </p>";
+        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[time].value).toFixed(2)+" kWh </p> <p> <b> Power need: </b> "+  parseFloat(data.power[time].value).toFixed(2)+" kW </p>";
         text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[time]) * 12).toFixed(2)+" mph </p> <p> <b> Route: </b> "+ data.route + "    </p>";
         return text;
     }

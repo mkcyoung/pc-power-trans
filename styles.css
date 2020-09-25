@@ -35,7 +35,7 @@
             "chart-4 power table1 "
             "chart-4 power table1 "
             "chart-4 power table1 "; */
-            "title title title"
+            /* "title title title"
             "slider slider  chart-1"
             "table1 data-panel chart-1"
             "table1 data-panel  chart-1"
@@ -47,7 +47,20 @@
             "power power chart-3"
             "power power chart-3"
             "power power chart-3"
-            "power power chart-3";
+            "power power chart-3"; */
+            "title title title"
+            "slider slider  charts"
+            "table1 data-panel charts"
+            "table1 data-panel  charts"
+            "table1 data-panel charts"
+            "table1 data-panel  charts"
+            "power power charts"
+            "power power charts"
+            "power power charts"
+            "power power charts"
+            "power power charts"
+            "power power charts"
+            "power power charts";
     /* width: 100vw;
     height: 100vh; */
     width: 100vw;
@@ -156,6 +169,29 @@ chart-1-half then has another grid which splits it up again
 
 Each chart-variable has its own class and dynamically gets assigned 
 to new grid areas based on what view is selected */
+
+.charts{
+    grid-area: charts;
+    overflow: auto;
+    /* margin: var(--border-margins);
+    padding: var(--chart-paddding); */
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(12,minmax(0,1fr));
+    grid-template-areas:
+        "chart-1"
+        "chart-1"
+        "chart-1"
+        "chart-1"
+        "chart-2"
+        "chart-2"
+        "chart-2"
+        "chart-2"
+        "chart-3"
+        "chart-3"
+        "chart-3"
+        "chart-3";
+}
 
 /* Chart 1:
 Transit View: acitve power / reactive power
@@ -352,12 +388,12 @@ Both: BEB energy / BEB power
     grid-area:chart-3-col2-row2
 }
 
-/* .chart-4{
+.chart-4{
     overflow: auto;
     grid-area: chart-4;
     margin: var(--border-margins);
     padding: var(--chart-paddding);
-} */
+}
 
 
 

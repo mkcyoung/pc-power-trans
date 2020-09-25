@@ -30,9 +30,30 @@ Promise.all([
     //New "reactive" data
     d3.csv("data/PowerSystem_csvs/reactivePowerFlow.csv"),
     d3.csv("data/PowerSystem_csvs/reactiveLoad.csv"),
-    d3.csv("data/PowerSystem_csvs/chargingStationReactivePower.csv")
+    d3.csv("data/PowerSystem_csvs/chargingStationReactivePower.csv"),
+    // PRICE DATA
+    d3.csv("data/PowerSystem_csvs/price.csv")
 
 ]).then(function(files){
+
+    // Loading price data into object
+    let price = {
+        "power_price": [],
+        "transit_price": []
+    }
+    files[14].forEach ( (d,i) => {
+        // console.log(d)
+        price.power_price.push({
+            "key":i,
+            "value":d['LMP']
+        })
+        price.transit_price.push({
+            "key":i,
+            "value":d['TOU']
+        })
+    })
+    console.log(price)
+
 
     //Initializaing power network object
     let powNet = {
@@ -295,7 +316,7 @@ Promise.all([
     // table.createLine();
     
     /** Pass data into TransNet class */
-    let transNetwork = new TransNet(transNet,powNet,bebs,time,table,updateTime);
+    let transNetwork = new TransNet(transNet,powNet,bebs,time,table,updateTime,null,price);
     transNetwork.createNet();
     transNetwork.createSlider();
     transNetwork.updateNet();
@@ -425,26 +446,29 @@ Promise.all([
         // show just the relevant transit system charts
         console.log("TRANSIT")
         transNetwork.removeCharts()
-        unmake_both_Chart3() // restores previous layout if coming from both layout
+        make_transit_layout()
+        // unmake_both_Chart3() // restores previous layout if coming from both layout
         // transNetwork.createTransitCharts()
         // table.createBusLines()
         let row2_div = ['.chart-1-col1','.chart-1-col2']
         let row1_div = ['.chart-2-col1','.chart-2-col2']
         let row3_div = ['.chart-3']
+        let price_div = ['.chart-4']
         // Because the whole of chart 3 is being visualzied,
         // set display of .chart-3-col1 and .chart-3-col2 to none
         // might need to use this trick when I split up charts even further
-        d3.select('.chart-3-col1').style("display", "none")
-        d3.select('.chart-3-col2').style("display", "none")
-        // Make all other blocks a none display
-        d3.select('.chart-1-col1').selectAll('div').style("display", "none")
-        d3.select('.chart-1-col2').selectAll('div').style("display", "none")
-        d3.select('.chart-2-col1').selectAll('div').style("display", "none")
-        d3.select('.chart-2-col2').selectAll('div').style("display", "none")
-        d3.select('.chart-3-col1').selectAll('div').style("display", "none")
-        d3.select('.chart-3-col2').selectAll('div').style("display", "none")
+        // d3.select('.chart-3-col1').style("display", "none")
+        // d3.select('.chart-3-col2').style("display", "none")
+        // // Make all other blocks a none display
+        // d3.select('.chart-1-col1').selectAll('div').style("display", "none")
+        // d3.select('.chart-1-col2').selectAll('div').style("display", "none")
+        // d3.select('.chart-2-col1').selectAll('div').style("display", "none")
+        // d3.select('.chart-2-col2').selectAll('div').style("display", "none")
+        // d3.select('.chart-3-col1').selectAll('div').style("display", "none")
+        // d3.select('.chart-3-col2').selectAll('div').style("display", "none")
 
         // pass in correct div levels
+        transNetwork.createPriceCharts(price_div,'transit')
         transNetwork.createTransitCharts(row1_div,row3_div)
         table.createBusLines(row2_div)
 
@@ -461,26 +485,29 @@ Promise.all([
         // show just the relevant power station charts
         console.log("POWER")
         transNetwork.removeCharts()
-        unmake_both_Chart3() // restores previous layout if coming from both layout
+        make_power_layout()
+        // unmake_both_Chart3() // restores previous layout if coming from both layout
         // transNetwork.createPowerCharts()
         // powNetwork.createPowerCharts()
         // Make chart-3-col1 and 2 grids again
-        d3.select('.chart-3-col1').style("display", "grid")
-        d3.select('.chart-3-col2').style("display", "grid")
-        // Make all other blocks a none display
-        d3.select('.chart-1-col1').selectAll('div').style("display", "none")
-        d3.select('.chart-1-col2').selectAll('div').style("display", "none")
-        d3.select('.chart-2-col1').selectAll('div').style("display", "none")
-        d3.select('.chart-2-col2').selectAll('div').style("display", "none")
-        d3.select('.chart-3-col1').selectAll('div').style("display", "none")
-        d3.select('.chart-3-col2').selectAll('div').style("display", "none")
+        // d3.select('.chart-3-col1').style("display", "grid")
+        // d3.select('.chart-3-col2').style("display", "grid")
+        // // Make all other blocks a none display
+        // d3.select('.chart-1-col1').selectAll('div').style("display", "none")
+        // d3.select('.chart-1-col2').selectAll('div').style("display", "none")
+        // d3.select('.chart-2-col1').selectAll('div').style("display", "none")
+        // d3.select('.chart-2-col2').selectAll('div').style("display", "none")
+        // d3.select('.chart-3-col1').selectAll('div').style("display", "none")
+        // d3.select('.chart-3-col2').selectAll('div').style("display", "none")
 
 
         let row1_div = ['.chart-1-col1','.chart-1-col2'] // active load, reactive load
         let row3_div = ['.chart-2-col1','.chart-2-col2'] // active pflow, reactive pflow
         let row2_div = ['.chart-3-col1','.chart-3-col2'] // current, voltage 
+        let price_div = ['.chart-4']
 
         // pass in correct divs
+        transNetwork.createPriceCharts(price_div,'power')
         transNetwork.createPowerCharts(row1_div,row3_div) // active load (and reactive load) and voltage 
         powNetwork.createPowerCharts(row2_div,row3_div) // active pflow (and reactive pflow) and current
 
@@ -557,14 +584,17 @@ Promise.all([
     function display_both(){
         console.log("BOTH")
         transNetwork.removeCharts()
+        make_both_layout()
         // Make chart-3-col1 and 2 grids again
-        d3.select('.chart-3-col1').style("display", "grid")
-        d3.select('.chart-3-col2').style("display", "grid")
+        // d3.select('.chart-3-col1').style("display", "grid")
+        // d3.select('.chart-3-col2').style("display", "grid")
         // Make all other blocks a block display 
-        d3.select('.chart-1-col1').selectAll('div').style("display", "block")
-        d3.select('.chart-1-col2').selectAll('div').style("display", "block")
-        d3.select('.chart-2-col1').selectAll('div').style("display", "block")
-        d3.select('.chart-2-col2').selectAll('div').style("display", "block")
+        // d3.select('.chart-1-col1').selectAll('div').style("display", "block")
+        // d3.select('.chart-1-col2').selectAll('div').style("display", "block")
+        // d3.select('.chart-2-col1').selectAll('div').style("display", "block")
+        // d3.select('.chart-2-col2').selectAll('div').style("display", "block")
+        // d3.select('.chart-3-col1').selectAll('div').style("display", "block")
+        // d3.select('.chart-3-col2').selectAll('div').style("display", "block")
         
         // Block layout
         // Chart 1 
@@ -584,12 +614,12 @@ Promise.all([
         Transit View: BEB count
         Power View: current / voltage
         Both: active power / reactive power
-                    BEB count
+                price /  BEB count
         */
 
         // Remakes grid area of chart 3 to work with this 'both' configuration
-        unmake_both_Chart3()
-        make_both_Chart3()
+        // unmake_both_Chart3()
+        // make_both_Chart3()
 
         // HANDLE POWER CHARTS
         let row1_div = ['.chart-1-col1-row1','.chart-1-col2-row1'] // active load, reactive load
@@ -603,13 +633,15 @@ Promise.all([
 
         // HANDLE TRANSIT CHARTS
         let row2_div_trans = ['.chart-2-col1-row2','.chart-2-col2-row2'] // bus energy and power
-        // let row1_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // active power reactive power
-        let row1_div_trans = ['.chart-3-top-col1','.chart-3-top-col2'] // active power reactive power
-        // let row3_div_trans = ['.chart-3-col1-row2'] // bus count
-        let row3_div_trans = ['.chart-3-bottom-row'] // bus count
+        let row1_div_trans = ['.chart-3-col1-row1','.chart-3-col2-row1'] // active power reactive power
+        // let row1_div_trans = ['.chart-3-top-col1','.chart-3-top-col2'] // active power reactive power
+        let row3_div_trans = ['.chart-3-col2-row2'] // bus count
+        let price_div = ['.chart-3-col1-row2']
+        // let row3_div_trans = ['.chart-3-bottom-row'] // bus count
 
         // pass in correct div levels
-        transNetwork.createTransitCharts(row1_div_trans,row3_div_trans) 
+        transNetwork.createTransitCharts(row1_div_trans,row3_div_trans)
+        transNetwork.createPriceCharts(price_div,'both')
         table.createBusLines(row2_div_trans)
 
 
@@ -621,57 +653,122 @@ Promise.all([
 
     }
 
-    function make_both_Chart3(){
+    function make_power_layout(){
+        // new grid system for power layout"
+        // d3.select('.chart-3').selectAll('div').style("display", "none")
+        // d3.select('.chart-3').selectAll('div').style("display", "none")
 
-        // Chart-3 old grid
-        // grid-template-columns:repeat(2,minmax(0,1fr));
-        // grid-template-rows:1fr;
-        // grid-template-areas:"chart-3-col1 chart-3-col2";
+        // set chart-4 to display: block
+        d3.select('.chart-3-col1').style("display", "grid")
+        d3.select('.chart-3-col2').style("display", "grid")
+        // Make all other blocks a none display
+        d3.select('.chart-1-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-1-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-4').style("display",'block')
 
-        // Chart 3 new grid
-        // grid-template-columns:repeat(2,minmax(0,1fr));
-        // grid-template-rows: repeat(2,minmax(0,1fr));
-        // grid-template-areas:"chart-3-col1-row1 chart-3-col2-row2" "chart-3-bottom-row chart-3-bottom-row";
 
-        // Altering the grid of chart 3 
-        d3.select('.chart-3').selectAll('div').style("display", "none")
-        d3.select('.chart-3').selectAll('div').style("display", "none")
+        // Shift grid of charts container
+        let new_template_string = ' "chart-1" "chart-1" "chart-1" "chart-2" "chart-2" "chart-2" "chart-3" "chart-3" "chart-3" "chart-4" "chart-4" "chart-4"'
+        // d3.select(".charts").style('grid-template-rows','repeat(12,minmax(0,1fr))')
+        d3.select(".charts").style('grid-template-areas',new_template_string)
 
-        // Shift grid of chart 3
-        d3.select(".chart-3").style('grid-template-rows','repeat(2,minmax(0,1fr))')
-        d3.select(".chart-3").style('grid-template-areas',' "chart-3-top-col1 chart-3-top-col2" "chart-3-bottom-row chart-3-bottom-row" ')
-        // Create bottom row div and set old bottom row divs to display:none
-        d3.select(".chart-3").append('div').attr("class","chart-3-top-col1").style("grid-area","chart-3-top-col1")
-        d3.select(".chart-3").append('div').attr("class","chart-3-top-col2").style("grid-area","chart-3-top-col2")
-        d3.select(".chart-3").append('div').attr("class","chart-3-bottom-row").style("grid-area","chart-3-bottom-row")
+        
+
+    }
+
+    function make_transit_layout(){
+        // set chart-4 to display: block
+        d3.select('.chart-3-col1').style("display", "none")
+        d3.select('.chart-3-col2').style("display", "none")
+        // Make all other blocks a none display
+        d3.select('.chart-1-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-1-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-2-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col1').selectAll('div').style("display", "none")
+        d3.select('.chart-3-col2').selectAll('div').style("display", "none")
+        d3.select('.chart-4').style("display",'block')
+
+
+        // Shift grid of charts container
+        let new_template_string = ' "chart-1" "chart-1" "chart-1" "chart-2" "chart-2" "chart-2" "chart-3" "chart-3" "chart-3" "chart-4" "chart-4" "chart-4"'
+        // d3.select(".charts").style('grid-template-rows','repeat(12,minmax(0,1fr))')
+        d3.select(".charts").style('grid-template-areas',new_template_string)
 
     }
 
-
-    function unmake_both_Chart3(){
-        // Chart-3 old grid
-        // grid-template-columns:repeat(2,minmax(0,1fr));
-        // grid-template-rows:1fr;
-        // grid-template-areas:"chart-3-col1 chart-3-col2";
-
-        // Chart 3 new grid
-        // grid-template-columns:repeat(2,minmax(0,1fr));
-        // grid-template-rows: repeat(2,minmax(0,1fr));
-        // grid-template-areas:"chart-3-col1-row1 chart-3-col2-row2" "chart-3-bottom-row chart-3-bottom-row";
-
-        d3.select('.chart-3').selectAll('div').style("display", "block")
-        d3.select('.chart-3').selectAll('div').style("display", "block")
-
-        // Shift grid of chart 3 to original configuration
-        d3.select(".chart-3").style('grid-template-rows','1fr')
-        d3.select(".chart-3").style('grid-template-areas',' "chart-3-col1 chart-3-col2"')
-        // Remove previously created divs 
-        d3.select(".chart-3-top-col1").remove()
-        d3.select(".chart-3-top-col2").remove()
-        d3.select(".chart-3-bottom-row").remove()
-
+    function make_both_layout(){
+        d3.select('.chart-3-col1').style("display", "grid")
+        d3.select('.chart-3-col2').style("display", "grid")
+        d3.select('.chart-1-col1').selectAll('div').style("display", "block")
+        d3.select('.chart-1-col2').selectAll('div').style("display", "block")
+        d3.select('.chart-2-col1').selectAll('div').style("display", "block")
+        d3.select('.chart-2-col2').selectAll('div').style("display", "block")
+        d3.select('.chart-3-col1').selectAll('div').style("display", "block")
+        d3.select('.chart-3-col2').selectAll('div').style("display", "block")
+        d3.select('.chart-4').style("display", "none")
+        // reset to original 
+        let new_template_string = ' "chart-1" "chart-1" "chart-1" "chart-1" "chart-2" "chart-2" "chart-2" "chart-2" "chart-3" "chart-3" "chart-3" "chart-3"'
+        // d3.select(".charts").style('grid-template-rows','repeat(12,minmax(0,1fr))')
+        d3.select(".charts").style('grid-template-areas',new_template_string)
 
     }
+
+    // function make_both_Chart3(){
+
+    //     // Chart-3 old grid
+    //     // grid-template-columns:repeat(2,minmax(0,1fr));
+    //     // grid-template-rows:1fr;
+    //     // grid-template-areas:"chart-3-col1 chart-3-col2";
+
+    //     // Chart 3 new grid
+    //     // grid-template-columns:repeat(2,minmax(0,1fr));
+    //     // grid-template-rows: repeat(2,minmax(0,1fr));
+    //     // grid-template-areas:"chart-3-col1-row1 chart-3-col2-row2" "chart-3-bottom-row chart-3-bottom-row";
+
+    //     // Altering the grid of chart 3 
+    //     d3.select('.chart-3').selectAll('div').style("display", "none")
+    //     d3.select('.chart-3').selectAll('div').style("display", "none")
+
+    //     // Shift grid of chart 3
+    //     d3.select(".chart-3").style('grid-template-rows','repeat(2,minmax(0,1fr))')
+    //     d3.select(".chart-3").style('grid-template-areas',' "chart-3-top-col1 chart-3-top-col2" "chart-3-bottom-row chart-3-bottom-row" ')
+    //     // Create bottom row div and set old bottom row divs to display:none
+    //     d3.select(".chart-3").append('div').attr("class","chart-3-top-col1").style("grid-area","chart-3-top-col1")
+    //     d3.select(".chart-3").append('div').attr("class","chart-3-top-col2").style("grid-area","chart-3-top-col2")
+    //     d3.select(".chart-3").append('div').attr("class","chart-3-bottom-row").style("grid-area","chart-3-bottom-row")
+
+    // }
+
+
+    // function unmake_both_Chart3(){
+    //     // Chart-3 old grid
+    //     // grid-template-columns:repeat(2,minmax(0,1fr));
+    //     // grid-template-rows:1fr;
+    //     // grid-template-areas:"chart-3-col1 chart-3-col2";
+
+    //     // Chart 3 new grid
+    //     // grid-template-columns:repeat(2,minmax(0,1fr));
+    //     // grid-template-rows: repeat(2,minmax(0,1fr));
+    //     // grid-template-areas:"chart-3-col1-row1 chart-3-col2-row2" "chart-3-bottom-row chart-3-bottom-row";
+
+    //     d3.select('.chart-3').selectAll('div').style("display", "block")
+    //     d3.select('.chart-3').selectAll('div').style("display", "block")
+
+    //     // Shift grid of chart 3 to original configuration
+    //     d3.select(".chart-3").style('grid-template-rows','1fr')
+    //     d3.select(".chart-3").style('grid-template-areas',' "chart-3-col1 chart-3-col2"')
+    //     // Remove previously created divs 
+    //     d3.select(".chart-3-top-col1").remove()
+    //     d3.select(".chart-3-top-col2").remove()
+    //     d3.select(".chart-3-bottom-row").remove()
+
+
+    // }
 
 
 });
