@@ -1769,15 +1769,16 @@ class TransNet {
         //     .style("visibility","visible")
         //     .text(`${that.clicked.StationName}`);
 
+        let scope = this;
         // Handling hovering
         if (station_data.length > 0){
             d3.select('.chSP-dot').style("visibility","visible")
             d3.select('.chSRP-dot').style("visibility","visible") 
             d3.select('.BusData-dot').style("visibility","visible") 
 
-            d3.select('.APSvg').call(this.hover,faintapLines,apLines,this.powLoadLineScale,this.timeScale,this,station_data,"chSP")
-            d3.select('.RPSvg').call(this.hover,faintrpLines,rpLines,this.powRLoadLineScale,this.timeScale,this,station_data,"chSRP")
-            d3.select('.BusSvg').call(this.hover,faintbusLines,busLines,this.busLineScale,this.busTimeScale,this,station_data,"BusData")
+            d3.select('.APSvg').call(this.hover,faintapLines,apLines,this.powLoadLineScale,this.timeScale,scope,station_data,"chSP")
+            d3.select('.RPSvg').call(this.hover,faintrpLines,rpLines,this.powRLoadLineScale,this.timeScale,scope,station_data,"chSRP")
+            d3.select('.BusSvg').call(this.hover,faintbusLines,busLines,this.busLineScale,this.busTimeScale,scope,station_data,"BusData")
         }
         else{
             // console.log("here")
@@ -1797,6 +1798,7 @@ class TransNet {
         let time = Array.from(Array(288).keys())
         // console.log("in hover",path)
         let that = scope;
+        // let that2 = this;
 
         svg.on("mousemove",moved)
         svg.on("mouseenter",entered)
@@ -1854,6 +1856,13 @@ class TransNet {
             // dot.select("text").text(s.StationName + " - " + parseFloat(s[source][i].value).toFixed(2));
             dot.select("text").text(s.StationName)
             // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
+            // console.log(that.tooltipRenderID(s))
+            // console.log(d3.select("#data-id"))
+            d3.selectAll(".info-panel").transition()
+                    .duration(10)
+                    .style("opacity", 0.9);
+            d3.select("#data-id").html(that.tooltipRenderID(s))
+            d3.select("#data-info").html(that.tooltipRenderINFO_STATION(s,i))
         }
         
         function entered() {
@@ -1874,6 +1883,11 @@ class TransNet {
 
             // path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
             dot.attr("display", "none");
+
+            // Remove info panel
+            d3.selectAll(".info-panel").transition()
+                    .duration(500)
+                    .style("opacity", 0);
         }
 
         function clicked() {
@@ -2009,12 +2023,16 @@ class TransNet {
     }
 
     tooltipRenderINFO_STATION(data,time){
-        time = this.activeTime;
+        if (time==undefined){
+            time = this.activeTime;
+        }
+        
         let that = this;
         let text = '';
         //Adds in relevant data
         text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p>";
         text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Reactive Power:</b> "+  parseFloat(data.chSRP[time].value).toFixed(2)+" kW</p>";
         // text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses &emsp; <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
         // text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW &emsp; <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;

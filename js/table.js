@@ -773,11 +773,11 @@ class Table{
             .attr("y",20)
             .text("BEB energy (kWh)");
         
-        energyG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - that.transNet.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // energyG.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - that.transNet.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         energyG.append('text')
             .attr("class","energy-info-text")
@@ -792,15 +792,15 @@ class Table{
         // power
         powerG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 50)
+            .attr("x",line_width - line_width*0.5 - 90)
             .attr("y",20)
-            .text("BEB power(kW)");
+            .text("BEB charging need (kW)");
         
-        powerG.append("text")
-            .attr("class","axis-text")
-            .attr("x",line_width - that.transNet.time_label)
-            .attr("y",line_height-5)
-            .text("time");
+        // powerG.append("text")
+        //     .attr("class","axis-text")
+        //     .attr("x",line_width - that.transNet.time_label)
+        //     .attr("y",line_height-5)
+        //     .text("time");
 
         powerG.append('text')
             .attr("class","power-info-text")
