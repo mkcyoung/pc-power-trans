@@ -1346,6 +1346,11 @@ class Table{
             // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
             dot.select("text").text(s.id);
             // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
+            d3.selectAll(".info-panel").transition()
+                    .duration(10)
+                    .style("opacity", 0.9);
+            d3.select("#data-id").html(that.tooltipRenderID(s,i))
+            d3.select("#data-info").html(that.tooltipRenderINFO(s,i))
         }
         
         function entered() {
@@ -1362,6 +1367,11 @@ class Table{
             // Re color lines
             dark_path.attr("stroke", color)
             path.attr("stroke", color.copy({opacity:0.1}));
+
+            // Remove info panel
+            d3.selectAll(".info-panel").transition()
+                    .duration(500)
+                    .style("opacity", 0);
 
             // Need to rehighlight the latest clicked and populate with current time
             // d3.select('.energy-info-text').html('');
@@ -1462,19 +1472,25 @@ class Table{
 
     }
 
-    tooltipRenderID(data) {
+    tooltipRenderID(data,time) {
+        if (time==undefined){
+            time = this.activeTime;
+        }
         let that = this;
         let text = '';
         text = "<h3>" + data.id + "</h3>";
-        text = text + "<p>"+ data.Location[that.activeTime] + " </p>";
+        text = text + "<p>"+ data.Location[time] + " </p>";
         return text;
     }
 
-    tooltipRenderINFO(data) {
+    tooltipRenderINFO(data,time) {
+        if (time==undefined){
+            time = this.activeTime;
+        }
         let that = this;
         let text = '';
-        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[that.activeTime].value).toFixed(2)+" kWh </p> <p> <b> Power : </b> "+  parseFloat(data.power[that.activeTime].value).toFixed(2)+" kWh </p>";
-        text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[that.activeTime]) * 12).toFixed(2)+" mph </p> <p> <b> Route: </b> "+ data.route + "    </p>";
+        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[time].value).toFixed(2)+" kWh </p> <p> <b> Power : </b> "+  parseFloat(data.power[time].value).toFixed(2)+" kWh </p>";
+        text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[time]) * 12).toFixed(2)+" mph </p> <p> <b> Route: </b> "+ data.route + "    </p>";
         return text;
     }
 

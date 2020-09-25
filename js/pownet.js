@@ -1321,10 +1321,21 @@ class PowNet {
             let links = ['current','aPF','rPF']
             if (links.includes(source)){
                 dot.select("text").text(s.source.id + ':' + s.target.id);
+                d3.selectAll(".info-panel").transition()
+                    .duration(10)
+                    .style("opacity", 0.9);
+                d3.select("#data-id").html(that.tooltipRenderID_L(s))
+                d3.select("#data-info").html(that.tooltipRenderINFO_L(s,i))
             }
             else{
                 dot.select("text").text(s.id);
+                d3.selectAll(".info-panel").transition()
+                    .duration(10)
+                    .style("opacity", 0.9);
+                d3.select("#data-id").html(that.tooltipRenderID_N(s))
+                d3.select("#data-info").html(that.tooltipRenderINFO_N(s,i))
             }
+            
             
             // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
         }
@@ -1347,6 +1358,11 @@ class PowNet {
 
             // path.style("mix-blend-mode", "multiply").attr("stroke", color.copy({opacity: 0.1}));
             dot.attr("display", "none");
+
+            // Remove info panel
+            d3.selectAll(".info-panel").transition()
+                    .duration(500)
+                    .style("opacity", 0);
         }
 
         function clicked() {
@@ -1459,12 +1475,15 @@ class PowNet {
         return text;
     }
 
-    tooltipRenderINFO_N(data) {
+    tooltipRenderINFO_N(data,time) {
+        if (time==undefined){
+            time = this.activeTime;
+        }
         let that = this;
         let text = '';
         //Adds in relevant data
-        text = text + "<p> <b> Active Load:</b> "+ parseFloat(data.aLoad[that.activeTime].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[that.activeTime].value).toFixed(2)+" kV</p>";
+        text = text + "<p> <b> Active Load:</b> "+ parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Voltage:</b> "+ parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;
     }
 
@@ -1479,11 +1498,14 @@ class PowNet {
         return text;
     }
 
-    tooltipRenderINFO_L(data) {
+    tooltipRenderINFO_L(data,time) {
+        if (time==undefined){
+            time = this.activeTime;
+        }
         let that = this;
         let text = ''
-        text = text + "<p> <b> Acitve Power Flow: </b> "+ parseFloat(data.aPF[that.activeTime].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b> Current: </b> "+ parseFloat(data.current[that.activeTime].value).toFixed(2)+" A </p> <p> <b> Max Current: </b>"+ data.mLC.toFixed(2)+" A </p>";
+        text = text + "<p> <b> Acitve Power Flow: </b> "+ parseFloat(data.aPF[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b> Current: </b> "+ parseFloat(data.current[time].value).toFixed(2)+" A </p> <p> <b> Max Current: </b>"+ data.mLC.toFixed(2)+" A </p>";
         
         return text;
     }

@@ -967,10 +967,10 @@ class TransNet {
         
 
         //Want to keep lines connecting other nodes and tooltip (copied from above - should make this a function)
-        d3.select("#s_tooltip_click").transition()
-            .duration(200)
-            .style("opacity", 1);
-        d3.select("#s_tooltip_click").html(this.tooltipRenderS(d))
+        // d3.select("#s_tooltip_click").transition()
+        //     .duration(200)
+        //     .style("opacity", 1);
+        // d3.select("#s_tooltip_click").html(this.tooltipRenderS(d))
             // .style("left","1220px") //(d3.event.pageX+30)
             // .style("top", "235px"); //(d3.event.pageY-80)
         
@@ -1027,11 +1027,11 @@ class TransNet {
             sliderText.text(that.interval_to_time_string(this.value));
             sliderText.attr('x', timeScale(this.value));
             that.updateTime(this.value);
-            if(that.clicked != null){
-                //Updatiting tooltip
-                d3.select("#s_tooltip_click")
-                    .html(that.tooltipRenderS(that.clicked));
-            }
+            // if(that.clicked != null){
+            //     //Updatiting tooltip
+            //     d3.select("#s_tooltip_click")
+            //         .html(that.tooltipRenderS(that.clicked));
+            // }
         });
     }
 
@@ -1997,19 +1997,21 @@ class TransNet {
         return text;
     }
 
-    tooltipRenderS(data,time) {
-        time = this.activeTime;
-        let that = this;
-        let text = null;
-        // console.log(data)
-        text = "<h3>" + data.StationName + " ("+ data.StationNode.id +")</h3>";
-        //Adds in relevant data
-        text = text + "<p> BEB Count: "+ data.BusData[time].total+ " busses</p>";
-        text = text + "<p> Active Power : "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
-        text = text + "<p> Active Load : "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
-        text = text + "<p> Voltage : "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
-        return text;
-    }
+    // tooltipRenderS(data,time) {
+    //     time = this.activeTime;
+    //     let that = this;
+    //     let text = null;
+    //     // console.log(data)
+    //     text = "<h3>" + data.StationName + " ("+ data.StationNode.id +")</h3>";
+    //     //Adds in relevant data
+    //     text = text + "<p> BEB Count: "+ data.BusData[time].total+ " busses</p>";
+    //     text = text + "<p> Active Power : "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW</p>";
+    //     text = text + "<p> <b> Reactive Power:</b> "+  parseFloat(data.chSRP[time].value).toFixed(2)+" kW</p>";
+    //     text = text + "<p> Active Load : "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+    //     text = text + "<p> Reactive Load : "+  parseFloat(data.rLoad[time].value).toFixed(2)+" kW</p>";
+    //     text = text + "<p> Voltage : "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
+    //     return text;
+    // }
 
     tooltipRenderID(data,time){
         time = this.activeTime;
@@ -2039,12 +2041,19 @@ class TransNet {
     }
 
     tooltipRenderINFO_LINE(data,time){
+        // console.log(data)
         time = this.activeTime;
         let that = this;
         let text = '';
         //Adds in relevant data
-        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p> <p> <b>Active Load:</b> "+  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
-        text = text + "<p> <b> Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW </p> <p> <b>Voltage:</b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
+        // text = text + "<p> <b> Trans </b> <p>"
+        text = text + "<p> <b>BEB Count:</b> "+ data.BusData[time].total+ " busses</p>"
+        text = text + "<p> <b>Active Power:</b> "+  parseFloat(data.chSP[time].value).toFixed(2)+" kW </p>";
+        text = text + "<p> <b>Reactive Power:</b> "+  parseFloat(data.chSRP[time].value).toFixed(2)+" kVar </p>";
+        // text = text + "<p> <b> Power </b> <p>"
+        text = text +  "<p> <b>Active Load:</b> " +  parseFloat(data.aLoad[time].value).toFixed(2)+" kW</p>";
+        text = text + "<p> <b>Reactive Load:</b> "+  parseFloat(data.StationNode.rLoad[time].value).toFixed(2)+" kVar</p>";
+        text = text + "<p> <b>Voltage: </b> "+  parseFloat(data.volt[time].value).toFixed(2)+" kV</p>";
         return text;
     }
 
