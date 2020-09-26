@@ -792,9 +792,9 @@ class Table{
         // power
         powerG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 90)
+            .attr("x",line_width - line_width*0.5 - 120)
             .attr("y",20)
-            .text("BEB charging need (kW)");
+            .text("BEB charging requirement (kW)");
         
         // powerG.append("text")
         //     .attr("class","axis-text")
@@ -1281,18 +1281,18 @@ class Table{
             d3.select('.energy-dot').style("visibility","hidden")
             d3.select('.power-dot').style("visibility","hidden")
 
-            // d3.select('.energySvg')
-            //     .on("mousemove",null)
-            //     .on("mouseenter",null)
-            //     .on("mouseleave",null)
-            //     .on("click",null);
+            d3.select('.energySvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
             // d3.select('.energy-info-text').html('');
 
-            // d3.select('.powerSvg')
-            //     .on("mousemove",null)
-            //     .on("mouseenter",null)
-            //     .on("mouseleave",null)
-            //     .on("click",null);
+            d3.select('.powerSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
             // d3.select('.power-info-text').html('');
         }
 
@@ -1489,7 +1489,7 @@ class Table{
         }
         let that = this;
         let text = '';
-        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[time].value).toFixed(2)+" kWh </p> <p> <b> Power need: </b> "+  parseFloat(data.power[time].value).toFixed(2)+" kW </p>";
+        text = text + "<p>  <b>Energy : </b>"+  parseFloat(data.energy[time].value).toFixed(2)+" kWh </p> <p> <b> Charging requirement: </b> "+  parseFloat(data.power[time].value).toFixed(2)+" kW </p>";
         text = text + "<p>  <b> Speed : </b> "+  (parseFloat(data.current_speed[time]) * 12).toFixed(2)+" mph </p> <p> <b> Route: </b> "+ data.route + "    </p>";
         return text;
     }

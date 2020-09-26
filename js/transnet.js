@@ -2022,6 +2022,30 @@ class TransNet {
             d3.select('.chSP-dot').style("visibility","hidden")
             d3.select('.chSRP-dot').style("visibility","hidden") 
             d3.select('.BusData-dot').style("visibility","hidden") 
+            
+            d3.select('.energy-dot').style("visibility","hidden")
+            d3.select('.power-dot').style("visibility","hidden")
+
+            d3.select('.APSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+            // d3.select('.energy-info-text').html('');
+
+            d3.select('.RPSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+
+            d3.select('.BusSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+            // d3.select('.power-info-text').html('');
+        
 
         }
         

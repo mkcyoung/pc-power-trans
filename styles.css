@@ -484,6 +484,7 @@ Both: BEB energy / BEB power
     filter: saturate(300%);
 }
 .node:hover{
+    stroke: rgb(255, 130, 14);
     stroke-width: 7px;
     filter: saturate(300%);
 }
@@ -511,11 +512,13 @@ Both: BEB energy / BEB power
 
 .CHSP{
     /* stroke: #7ab3a0; */
+    stroke: rgb(255, 130, 14);
     stroke-width: 7px;
     /* filter: saturate(1); */
 }
 
 .active-node{
+    stroke: rgb(255, 130, 14);
     stroke-width: 7px;
 }
 
@@ -642,16 +645,17 @@ Both: BEB energy / BEB power
     stroke-dasharray: none;
 }
 
+/* rgb(252, 236, 13); */
 .active-line-hover{
     stroke-width: 10;
-    stroke: rgb(252, 236, 13);
+    stroke:rgb(255, 130, 14);
     opacity: 1;
     stroke-dasharray: none;
 }
 
 .active-line{
     fill: none;
-    stroke: rgb(252, 236, 13);
+    stroke: rgb(255, 130, 14);
     opacity: 1;
     stroke-width: 6;
     stroke-dasharray: 10, 4;

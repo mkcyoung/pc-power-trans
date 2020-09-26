@@ -1092,6 +1092,24 @@ class PowNet {
             d3.select('.current-dot').style("visibility","hidden")
             d3.select('.aPF-dot').style("visibility","hidden")
             d3.select('.rPF-dot').style("visibility","hidden")
+            d3.select('.currentSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+            // d3.select('.energy-info-text').html('');
+
+            d3.select('.APFSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+
+            d3.select('.RPFSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
         }
         
 
@@ -1257,6 +1275,24 @@ class PowNet {
             d3.select('.aLoad-dot').style("visibility","hidden")
             d3.select('.rLoad-dot').style("visibility","hidden")
             d3.select('.volt-dot').style("visibility","hidden")
+            d3.select('.ALSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+            // d3.select('.energy-info-text').html('');
+
+            d3.select('.RLSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
+
+            d3.select('.VoltSvg')
+                .on("mousemove",null)
+                .on("mouseenter",null)
+                .on("mouseleave",null)
+                .on("click",null);
         }
         
 
