@@ -15,7 +15,7 @@
 
 Promise.all([
     //Power grid data 
-    d3.csv("data/PowerSystem_csvs/activeLoad.csv"),
+    d3.csv("data/PowerSystem_csvs/activeLoad_updated.csv"),
     d3.csv("data/PowerSystem_csvs/voltage.csv"),
     d3.csv("data/PowerSystem_csvs/chargingStationPower.csv"),
     d3.csv("data/PowerSystem_csvs/current1.csv"),

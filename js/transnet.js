@@ -236,13 +236,13 @@ class TransNet {
         // this.aLoadLineScale = d3.scaleLinear().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
         // this.aLoadLineScale = d3.scaleLog().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
         // this.rLoadLineScale = d3.scaleLog().domain([min_rload,max_rload]).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.aLoadLineScale = d3.scaleLinear().domain([min_aload,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.rLoadLineScale = d3.scaleLinear().domain([min_rload,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = d3.scaleLinear().domain([min_aload,600]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.rLoadLineScale = d3.scaleLinear().domain([min_rload,600]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.busLineScale = d3.scaleLinear().domain([min_bus_count,max_bus_count]).range([this.busCountMarginHeight+this.busCountMargin.top,this.busCountMargin.top]);
 
         //Setting custom max because the first node skews it - have this for color setting
-        this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,420])
+        this.aLoadScale = d3.scaleSequential(d3.interpolatePurples).domain([min_aload,600])
         //Make an ordinal color scale for stations
         let pow_stations = ["n2","n13","n9","n33","n25","n31","n8"];
         this.stationColor = d3.scaleOrdinal(d3.schemeTableau10).domain(pow_stations);
@@ -305,7 +305,7 @@ class TransNet {
         powLoadG.append("text")
             .attr("x",5)
             .attr("y",15)
-            .attr("fill","white")
+            .attr("fill","grey")
             .style("font-weight","light")
             .text(`${min_chsp.toFixed(1)}`);
 
@@ -332,7 +332,7 @@ class TransNet {
             .attr("y",15)
             .attr("fill","white")
             .style("font-weight","light")
-            .text('420+')
+            .text('600+')
             // .text(`${max_aload.toFixed(1)}`);
 
         //Draw the rectangle and fill with gradient (active power flow)

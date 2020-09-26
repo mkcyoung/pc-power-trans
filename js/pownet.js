@@ -205,8 +205,8 @@ class PowNet {
         this.RPFLineScale = d3.scaleLinear().domain([min_rpf,max_rpf]).range([this.heightL+this.marginL.top,this.marginL.top]);
 
         // scale for node line charts
-        this.aLoadLineScale = d3.scaleLinear().domain([min_aload,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.rLoadLineScale = d3.scaleLinear().domain([min_rload,420]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.aLoadLineScale = d3.scaleLinear().domain([min_aload,600]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.rLoadLineScale = d3.scaleLinear().domain([min_rload,600]).range([this.heightL+this.marginL.top,this.marginL.top]);
         // this.aLoadLineScale = d3.scaleLog().domain([min_aload,max_aload]).range([this.heightL+this.marginL.top,this.marginL.top]);
         // this.rLoadLineScale = d3.scaleLog().domain([min_rload,max_rload]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.voltLineScale = d3.scaleLinear().domain([min_volt,max_volt]).range([this.heightL+this.marginL.top,this.marginL.top]);
