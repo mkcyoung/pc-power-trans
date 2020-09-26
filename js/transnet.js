@@ -14,6 +14,10 @@ class TransNet {
         this.powNet = powNet;
         this.price = price;
 
+        this.price_colors = ['#01ad74','#ff3002']
+
+        this.current_view = null;
+
         //getting bouding box for svg
         let boundingRect =  d3.select(".view1").node().getBoundingClientRect()
         this.WIDTH = 3200; //boundingRect.width;
@@ -76,7 +80,7 @@ class TransNet {
         // console.log("TOU RANGE:",TOU_range)
         let price_max = d3.max([LMP_range[1],TOU_range[1]])
         let price_min = d3.min([LMP_range[0],TOU_range[0]])
-        let both_price_range = [price_min,price_max]
+        let both_price_range = [0,price_max]
         // console.log("BOTH",both_price_range)
 
         //Create bus count scale
@@ -211,9 +215,10 @@ class TransNet {
         // this.time_line_scale = d3.scaleTime().domain([new Date(2020,0,1,5), new Date(2020,0,2,5) ])
 
         // Create price scale 
-        this.LMP_line_scale = d3.scaleLinear().domain(LMP_range).range([this.heightL+this.marginL.top,this.marginL.top]);
-        this.TOU_line_scale = d3.scaleLinear().domain(TOU_range).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.LMP_line_scale = d3.scaleLinear().domain([0,LMP_range[1]]).range([this.heightL+this.marginL.top,this.marginL.top]);
+        this.TOU_line_scale = d3.scaleLinear().domain([0,TOU_range[1]]).range([this.heightL+this.marginL.top,this.marginL.top]);
         this.both_price_line_scale = d3.scaleLinear().domain(both_price_range).range([this.heightL+this.marginL.top,this.marginL.top]);
+        
 
         //Make circle size scale for bus count
         this.buscountScale = d3.scaleSqrt().domain([min_bus_count,max_bus_count]).range([10,35]);
@@ -430,6 +435,7 @@ class TransNet {
     updateNet(){
         let that = this;
         
+        this.updatePriceLine(this.current_view)
         //Updates table with clicked seletion
         if(that.clickedStations.length > 0){
 
@@ -1073,7 +1079,7 @@ class TransNet {
     }
 
 
-    updateChartSize(bounding_div,is_long=false){
+    updateChartSize(bounding_div,is_bus=false){
         // Everything will have same dimensions besides the bus count - 
         // So will make unique bus count variables 
 
@@ -1082,7 +1088,7 @@ class TransNet {
         let chart = d3.select(bounding_div).node().getBoundingClientRect()
         // let chart2 = d3.select('.chart-2').node().getBoundingClientRect()
         let that = this
-        if (is_long == true){
+        if (is_bus == true){
             
             //Margins - the bostock way - bus count line chart
             that.busCountHeight = chart.height-10;
@@ -1121,8 +1127,16 @@ class TransNet {
     }
 
     createPriceCharts(price_div,view){
+        this.current_view = view;
         let that = this
-        this.updateChartSize(price_div[0])
+        if (view =='both'){
+            this.updateChartSize(price_div[0])
+        }
+        else{
+            this.updateChartSize(price_div[0],true)
+            this.updateChartSize(price_div[0])
+        }
+        
         let line_height = this.lineHeight //this.lineHeight; //300
         let line_width = this.lineWidth //this.lineWidth; //700
         
@@ -1140,6 +1154,24 @@ class TransNet {
             .attr("x",line_width - line_width*0.5 - 130)
             .attr("y",20)
             .text("price ($/MWh)");
+
+        if (view == "both"){
+            PriceStatSvg.append("text")
+                .attr("class","axis-title")
+                .attr("x",line_width - 140)
+                .attr("y",20)
+                .attr("stroke",that.price_colors[0])
+                .text("LMP");
+
+            PriceStatSvg.append("text")
+                .attr("class","axis-title")
+                .attr("x",line_width - 90)
+                .attr("y",20)
+                .attr("stroke",that.price_colors[1])
+                .text("TOU");
+
+        }
+        
 
         let yScalePrice = null; 
         if (view == 'both'){
@@ -1199,9 +1231,8 @@ class TransNet {
             .attr("fill", "#484b5a")
             .attr("text-anchor", "right")
             .attr("y", -10);
-        
 
-
+        this.updatePriceLine(view);
     }
 
     // Function to handle transit view charts - just putting up axes and everything
@@ -1720,8 +1751,96 @@ class TransNet {
             .attr("y", -10);
 
 
+        
 
+    }
 
+    updatePriceLine(view){
+        let that = this;
+
+        let time_scale = null
+        let y_scale = null
+
+        let price_data = null;
+        let line = null;
+        if(view == 'transit'){
+            time_scale = this.busTimeScale;
+            y_scale = this.TOU_line_scale;
+            price_data = [that.price.transit_price]
+            line = d3.line()
+                // .curve(d3.curveStep)
+                .defined(d => !isNaN(d.value))
+                .x((d,i) => this.busTimeScale(i)) //same width as bus in this view
+                .y(d => this.TOU_line_scale(d.value));
+
+        }
+        else if (view == 'power'){
+            time_scale = this.busTimeScale;
+            price_data = [that.price.power_price]
+            y_scale = this.LMP_line_scale;
+            line = d3.line()
+                // .curve(d3.curveStep)
+                .defined(d => !isNaN(d.value))
+                .x((d,i) => this.busTimeScale(i)) // Same width as bus in this view
+                .y(d => this.LMP_line_scale(d.value));
+        }
+        else{ //both
+            time_scale = this.timeScale;
+            y_scale = this.both_price_line_scale;
+            price_data = [that.price.power_price,that.price.transit_price]
+            line = d3.line()
+                // .curve(d3.curveStep)
+                .defined(d => !isNaN(d.value))
+                .x((d,i) => this.timeScale(i))
+                .y(d => this.both_price_line_scale(d.value));
+
+        }
+        
+         // I think this is just creating new lines
+        let Lines = d3.select('.line-Price').selectAll("path")
+            .data(price_data)
+        let faintLines = d3.select('.line-Price-faint').selectAll("path")
+            .data(price_data)
+
+        // Remove stuff from exit array
+        Lines.exit().remove();
+        faintLines.exit().remove();
+        let end_index = parseInt(this.activeTime) + 1;
+        // colors
+        Lines = Lines.enter().append('path')
+            .merge(Lines);
+        Lines
+            // .datum(this.data.nodes[that.clicked.index].chSP.slice(0,this.activeTime))
+            .style("visibility","visible")
+            .attr("class","line-path")
+            .attr("fill", "none")
+            .attr("stroke", (d,i) => that.current_view == 'transit' ? that.price_colors[1] : that.price_colors[i])//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => line(d.slice(0,end_index))); //console.log(d.chSP.slice(0,this.activeTime)))
+
+        faintLines = faintLines.enter().append('path')
+            .merge(faintLines);
+        faintLines
+            // .datum(this.data.nodes[that.clicked.index].chSP)
+            .style("visibility","visible")
+            .attr("class","line-path")
+            .attr("fill", "none")
+            .attr("stroke", (d,i) => that.current_view == 'transit' ? d3.color(that.price_colors[1]).copy({opacity:that.chart_line_opacity}) : d3.color(that.price_colors[i]).copy({opacity:that.chart_line_opacity}))//d => that.stationColor(d.StationNode.id))
+            .attr("stroke-width", 4)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => line(d));
+
+        
+        d3.select('.Price-dot').style("visibility","visible")
+
+        d3.select('.PriceSvg').call(this.hover,faintLines,Lines,y_scale,time_scale,this,price_data,"Price")
+        
+        
     }
 
 
@@ -1752,6 +1871,8 @@ class TransNet {
             .defined(d => !isNaN(d))
             .x((d,i) => this.busTimeScale(i))
             .y(d => this.busLineScale(d));
+
+        
 
 
         // I think this is just creating new lines
@@ -1936,6 +2057,9 @@ class TransNet {
             if (source == "BusData"){
                 s = d3.least(data, d => Math.abs(d[source][i].total - ym));
             }
+            else if (source == "Price"){
+                s = d3.least(data, d => Math.abs(d[i].value - ym));
+            }
             else{
                 s = d3.least(data, d => Math.abs(d[source][i].value - ym));
             }
@@ -1944,8 +2068,35 @@ class TransNet {
             // raise brings current to the top
             // path.attr("stroke",d => console.log("D",d))
             // path.attr("stroke", d => d === s ? "rgb(163, 6, 12,0.5)" : "rgb(163, 6, 12,0.1)").filter(d => d === s).raise();
-            dark_path.attr("stroke", d =>  d === s ? d3.color(that.stationColor(d.StationNode.id)).copy({opacity:1}) : d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.1})).filter(d => d === s).raise()
-            path.attr("stroke", d => d === s ? d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.5}) : d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.1})).filter(d => d === s).raise();
+            if (source != "Price"){
+                dark_path.attr("stroke", d =>  d === s ? d3.color(that.stationColor(d.StationNode.id)).copy({opacity:1}) : d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.1})).filter(d => d === s).raise()
+                path.attr("stroke", d => d === s ? d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.5}) : d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.1})).filter(d => d === s).raise();
+            }
+            else{
+                // let dark_color = d3.color(dark_path.attr("stroke"
+                if (that.current_view == 'transit'){
+                    dark_path
+                        .attr("stroke", (d,i) => d === s ? d3.color(that.price_colors[1]).copy({opacity:1}) : d3.color(that.price_colors[1]).copy({opacity:0.1}))
+                        .filter(d => d === s)
+                        .raise()
+                    path.attr("stroke", (d,i) => d === s ? d3.color(that.price_colors[1]).copy({opacity:0.5}) : d3.color(that.price_colors[1]).copy({opacity:0.1}))
+                        .filter(d => d === s)
+                        .raise();
+
+                }
+                else{
+                    dark_path
+                        .attr("stroke", (d,i) => d === s ? d3.color(that.price_colors[i]).copy({opacity:1}) : d3.color(that.price_colors[i]).copy({opacity:0.1}))
+                        .filter(d => d === s)
+                        .raise()
+                    path.attr("stroke", (d,i) => d === s ? d3.color(that.price_colors[i]).copy({opacity:0.5}) : d3.color(that.price_colors[i]).copy({opacity:0.1}))
+                        .filter(d => d === s)
+                        .raise();
+                }
+                
+
+            }
+          
             // path.attr("stroke-width", d => d === s ? 4 : 2).filter(d => d === s).raise();
 
             dot.raise();
@@ -1953,20 +2104,47 @@ class TransNet {
             if (source == "BusData"){
                 dot.attr("transform", `translate(${xScale(time[i])},${yScale(s[source][i].total)})`);
             }
+            else if (source == "Price"){
+                dot.attr("transform", `translate(${xScale(time[i])},${yScale(s[i].value)})`);
+            }
             else{
                 dot.attr("transform", `translate(${xScale(time[i])},${yScale(s[source][i].value)})`);
             }
             // dot.attr("transform", `translate(${that.timeScale(10)},${yScale(50)})`);
             // dot.select("text").text(s.StationName + " - " + parseFloat(s[source][i].value).toFixed(2));
-            dot.select("text").text(s.StationName)
-            // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
-            // console.log(that.tooltipRenderID(s))
-            // console.log(d3.select("#data-id"))
-            d3.selectAll(".info-panel").transition()
-                    .duration(10)
-                    .style("opacity", 0.9);
-            d3.select("#data-id").html(that.tooltipRenderID(s))
-            d3.select("#data-info").html(that.tooltipRenderINFO_STATION(s,i))
+            
+            if (source == "Price"){
+                // console.log(s)
+                let dot_text = null;
+                // check first values to see which line this is.... need to do this better
+                if(s[0].value == that.price.power_price[0].value){
+                    // It's power
+                    dot_text = 'LMP'
+                }
+                else{
+                    dot_text = "TOU"
+                }
+                dot.select("text").text(dot_text)
+                d3.selectAll(".info-panel").transition()
+                        .duration(10)
+                        .style("opacity", 0.9);
+                d3.select("#data-id").html(that.tooltipRenderID_Price(dot_text))
+                d3.select("#data-info").html(that.tooltipRenderINFO_Price(s,i))
+
+
+            }
+            else{
+                dot.select("text").text(s.StationName)
+                // d3.select(`.${source}-info-text`).text(s.id + ": " + parseFloat(s[source][i].value).toFixed(2) + " kWh  /  Location: " + s.Location[i])
+                // console.log(that.tooltipRenderID(s))
+                // console.log(d3.select("#data-id"))
+                d3.selectAll(".info-panel").transition()
+                        .duration(10)
+                        .style("opacity", 0.9);
+                d3.select("#data-id").html(that.tooltipRenderID(s))
+                d3.select("#data-info").html(that.tooltipRenderINFO_STATION(s,i))
+            }
+            
         }
         
         function entered() {
@@ -1979,8 +2157,22 @@ class TransNet {
         function left() {
             // console.log("LEFT")
             // Re color lines
-            dark_path.attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:1}))
-            path.attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.1}));
+            if (source =="Price"){
+                if (that.current_view == "transit"){
+                    dark_path.attr("stroke", (d,i) => d3.color(that.price_colors[1]).copy({opacity:1}))
+                    path.attr("stroke", (d,i) => d3.color(that.price_colors[1]).copy({opacity:0.1}));
+                }
+                else{
+                    dark_path.attr("stroke", (d,i) => d3.color(that.price_colors[i]).copy({opacity:1}))
+                    path.attr("stroke", (d,i) => d3.color(that.price_colors[i]).copy({opacity:0.1}));
+                }
+                
+            }
+            else{
+                dark_path.attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:1}))
+                path.attr("stroke", d => d3.color(that.stationColor(d.StationNode.id)).copy({opacity:0.1}));
+            }
+            
 
             // Need to rehighlight the latest clicked and populate with current time
             d3.select('.energy-info-text').html('');
@@ -2012,9 +2204,9 @@ class TransNet {
             const i = xm - time[i0] > time[i1] - xm ? i1 : i0;
             // console.log(i)
             console.log("x",xm,"y",ym,"time",i)
-            const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
+            // const s = d3.least(data, d => Math.abs(d[source][i].value - ym));
             // const s = d3.least(data, d => console.log("here",d.energy[i].value - ym));
-            console.log("S",s)
+            // console.log("S",s)
 
             // Updates current time by clicking on chart
             that.updateTime(i);
@@ -2117,6 +2309,35 @@ class TransNet {
     //     return text;
     // }
 
+    tooltipRenderID_Price(my_text){
+        let that = this;
+        let text = null;
+        let color = null;
+        if(my_text == 'TOU'){
+            color = that.price_colors[1]
+        }
+        else{
+            color = that.price_colors[0]
+        }
+        text = `<h3 style = color:${color}>`+my_text+"</h3>";
+        return text;
+    }
+
+    tooltipRenderINFO_Price(data,time){
+        // console.log(data)
+        if (time==undefined){
+            time = this.activeTime;
+        }
+        
+        let that = this;
+        let text = '';
+        //Adds in relevant data
+        text = text + "<p> <b>electricty price:</b> "+ parseFloat(data[time].value).toFixed(2) + " ($/MWh)</p>";
+        return text;
+    }
+
+
+
     tooltipRenderID(data,time){
         time = this.activeTime;
         // console.log(this.stationColor(data['StationNode'].id))
@@ -2127,6 +2348,8 @@ class TransNet {
         text = `<h3 style = color:${this.stationColor(data['StationNode'].id)}>` + data.StationName + " ("+ data.StationNode.id +")</h3>";
         return text;
     }
+
+   
 
     tooltipRenderINFO_STATION(data,time){
         if (time==undefined){
