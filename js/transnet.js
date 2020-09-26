@@ -376,7 +376,7 @@ class TransNet {
 
         //Create labels
         this.labelLayer = netGroup.append("g")
-        .attr("class","labelsT");
+            .attr("class","labelsT");
 
         // Now we create the node group, and the nodes inside it
         this.nodeLayer = netGroup.append("g")
@@ -390,15 +390,15 @@ class TransNet {
         labelGroup.append("text")
             .attr("transform","translate("+(100)+","+-this.margin.top+")")
             .attr("font-size","35px")
-            .attr("font-weight","light")
-            .attr("fill","rgba(0,0,0,0.5")
+            .attr("font-weight","normal")
+            .attr("fill","rgb(90, 90, 90)")
             .text("IEEE 33 bus system")
 
         labelGroup.append("text")
             .attr("transform","translate("+(500)+","+-this.margin.top+")")
             .attr("font-size","35px")
-            .attr("font-weight","light")
-            .attr("fill","rgba(0,0,0,0.5")
+            .attr("font-weight","normal")
+            .attr("fill","rgb(90, 90, 90)") //#7ab3a0
             .text("Park City transit system")
 
          //Add text above nets
@@ -589,7 +589,10 @@ class TransNet {
         let labels = this.labelLayer
             .selectAll("text")
             .data(this.data.nodes)
-            .enter().append("text");
+            .enter()
+            .append("text")
+            .attr("stroke", d => that.stationColor)
+            .attr("class","station-titles");
 
         nodes
             .attr("cx", function (d,i) {
@@ -661,10 +664,16 @@ class TransNet {
             });
 
         labels
-            .attr("x",d => d.x-60)
+            .attr("x",d => d.x+30)
             .attr("y",d => d.y-10)
             .text( d=> d.StationName)
-            .attr("fill","black");
+            .attr("id",d => `label-${d.StationName}`)
+            .attr("stroke", d=> that.stationColor( d.StationNode.id))
+            .attr("fill", d=> that.stationColor( d.StationNode.id));
+
+        d3.select("#label-CTH")
+            .attr("x",d => d.x+30)
+            .attr("y",d => d.y+40)
 
         // Creating lines that connect the power and trans nodes together
         // Faint until they are highlighted, then they darken, or maybe pulse or something cool
@@ -685,8 +694,8 @@ class TransNet {
         this.lineKPR = [{"x":-50,"y":245},{"x":-175,"y":245},
         {"x":-175,"y":5},{"x":-470,"y":5}, {"x":-470,"y":245}];
 
-        this.lineGS = [{"x":150,"y":263},{"x":-135,"y":263},
-        {"x":-135,"y":282},{"x":-320,"y":282}];
+        this.lineGS = [{"x":150,"y":263},{"x":-20,"y":263},
+        {"x":-20,"y":282},{"x":-320,"y":282}];
 
         this.lineCTH = [{"x":130,"y":282},{"x":0,"y":282},
         {"x":0,"y":330},{"x":-295,"y":330},{"x":-295,"y":317},{"x":-320,"y":317}];
@@ -1160,6 +1169,7 @@ class TransNet {
                 .attr("class","axis-title")
                 .attr("x",line_width - 140)
                 .attr("y",20)
+                .attr("fill",that.price_colors[0])
                 .attr("stroke",that.price_colors[0])
                 .text("LMP");
 
@@ -1167,6 +1177,7 @@ class TransNet {
                 .attr("class","axis-title")
                 .attr("x",line_width - 90)
                 .attr("y",20)
+                .attr("fill",that.price_colors[1])
                 .attr("stroke",that.price_colors[1])
                 .text("TOU");
 
