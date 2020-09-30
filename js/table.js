@@ -50,7 +50,7 @@ class Table{
         //Margins - the bostock way - line chart
         this.lineHeight = chart1.height -10;
         this.lineWidth = chart1.width - 5;
-        this.marginL = {top: 30, right: 10, bottom: 30, left: 60};
+        this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
 
@@ -769,7 +769,7 @@ class Table{
         // energy
         energyG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 60)
+            .attr("x",'50%')
             .attr("y",20)
             .text("BEB energy (kWh)");
         
@@ -792,7 +792,7 @@ class Table{
         // power
         powerG.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 120)
+            .attr("x",'50%')
             .attr("y",20)
             .text("BEB charging requirement (kW)");
         
@@ -904,7 +904,7 @@ class Table{
         
         // making dot for highlighting line
         let dot = d3.select('.energyLines').append("g")
-            .attr("class","energy-dot")
+            .attr("class","energy-dot dot")
             .attr("display","none");
 
         dot.append("circle")
@@ -920,7 +920,7 @@ class Table{
             .attr("y", -10);
 
         let dotP = d3.select('.powerLines').append("g")
-            .attr("class","power-dot")
+            .attr("class","power-dot dot")
             .attr("display","none");
 
         dotP.append("circle")

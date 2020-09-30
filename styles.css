@@ -65,7 +65,7 @@
     /* width: 100vw;
     height: 100vh; */
     width: 100vw;
-    height: 99vh;
+    height: 100vh;
 }
 
 /* Setting variables */
@@ -85,7 +85,18 @@
     --border-radius: 5px;
     --chart-paddding: 0px;
     --min-table-width: 150px;
-    --table-text: 15px;
+    --table-text: 1.8vmin;
+    /* FONTS */
+    /* --table-body-fonts: 1vw; */
+    --table-header-fonts: 1.2vw;
+    --panel-header-font: 3vh;
+    --panel-font: 1.6vh;
+    --slider-font: 2vh;
+
+    --axis-title: 1.75vmin;
+    --axis-text: 1.3vmin;
+    --axis-labels: 1vh;
+    --dot-text: 1.4vh;
 
 }
 
@@ -93,7 +104,7 @@
     position:relative;
     overflow: auto;
     grid-area: title;
-    font-size: 25px;
+    font-size: 2.4vh;
     /* margin: 1px; */
     text-align: center;
     font-weight: bolder;
@@ -594,7 +605,7 @@ Both: BEB energy / BEB power
 
 #data-id h3{
     /* padding: auto; */
-    font-size: 33px;
+    font-size: var(--panel-header-font);
     font-weight:bold;
     margin: 0;
     padding: 0;
@@ -605,7 +616,7 @@ Both: BEB energy / BEB power
     margin: 0;
     padding: 0;
     line-height: 10px;
-    font-size: 18px;
+    font-size: var(--panel-font);
     font-weight: light;
     color: #808080;
 }
@@ -614,7 +625,7 @@ Both: BEB energy / BEB power
     margin: 0;
     padding: 0;
     /* line-height: 20px; */
-    font-size: 16px;
+    font-size: var(--panel-font);
     font-weight: normal;
     color: #808080;
 }
@@ -703,7 +714,7 @@ table {
 
 thead th{
     cursor: s-resize;
-    font-size: 18px;
+    font-size: var(--table-header-fonts);
     font-weight: normal;
     color: #ffffff;
     /*padding-left: 4px;*/
@@ -718,7 +729,7 @@ thead th{
 
 tbody th{
     font-weight: normal;
-    font-size: 14px;
+    font-size: var(--table-body-fonts);
     text-align: left;
     color:#484b5a;
     /* padding-left: 4px; */
@@ -727,7 +738,7 @@ tbody th{
 }
 
 tbody td{
-    font-size: 14px;
+    font-size: var(--table-body-fonts);
     font-weight: normal;
     text-align: center;
     color: #484b5a;
@@ -816,7 +827,7 @@ tbody tr:hover{
     font-weight:normal;
     stroke: "rgb(90, 90, 90)";
     fill: "rgb(90, 90, 90)";
-    font-size:18px;
+    font-size: var(--slider-font);
     text-anchor: middle;
 }
 
@@ -855,7 +866,7 @@ path{
 
 .axis text{
     /* font-family: "Avenir Next"; */
-    font-size: 14px;
+    font-size: var(--axis-text);
     font-weight: normal;
 }
 
@@ -881,13 +892,15 @@ path{
 }
 
 .axis-title{
-    font-size: 18px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-size: var(--axis-title);
     font-weight:normal;
     fill: rgba(0, 0, 0, 0.747);
 }
 
 .axis-text{
-    font-size: 14px;
+    font-size: var(--axis-labels);
     font-weight: normal;
     fill: rgba(0, 0, 0, 0.76);
 }
@@ -895,5 +908,6 @@ path{
 
 /* Dot on charts */
 .dot text{
+    font-size: var(--dot-text);
     text-anchor: left;
 }

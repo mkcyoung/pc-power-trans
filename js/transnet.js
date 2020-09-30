@@ -36,7 +36,7 @@ class TransNet {
         //Margins - the bostock way - line chart
         this.lineHeight = chart1.height-10;
         this.lineWidth = chart1.width-5;
-        this.marginL = {top: 30, right: 10, bottom: 30, left: 60};
+        this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom; 
 
@@ -49,7 +49,7 @@ class TransNet {
         //Margins - the bostock way - bus count line chart
         this.busCountHeight = chart3.height-10;
         this.busCountWidth = chart3.width-5;
-        this.busCountMargin = {top: 30, right: 10, bottom: 30, left: 60};
+        this.busCountMargin = {top: 30, right: 10, bottom: 30, left: 40};
         this.busCountMarginWidth = this.busCountWidth - this.busCountMargin.left - this.busCountMargin.right;
         this.busCountMarginHeight = this.busCountHeight - this.busCountMargin.top-this.busCountMargin.bottom; 
         
@@ -1160,14 +1160,14 @@ class TransNet {
         // Active power
         PriceStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 130)
+            .attr("x",'50%')
             .attr("y",20)
             .text("price ($/MWh)");
 
         if (view == "both"){
             PriceStatSvg.append("text")
                 .attr("class","axis-title")
-                .attr("x",line_width - 140)
+                .attr("x",'75%')
                 .attr("y",20)
                 .attr("fill",that.price_colors[0])
                 .attr("stroke",that.price_colors[0])
@@ -1175,7 +1175,7 @@ class TransNet {
 
             PriceStatSvg.append("text")
                 .attr("class","axis-title")
-                .attr("x",line_width - 90)
+                .attr("x",'85%')
                 .attr("y",20)
                 .attr("fill",that.price_colors[1])
                 .attr("stroke",that.price_colors[1])
@@ -1228,7 +1228,7 @@ class TransNet {
 
         // making dot for highlighting line
         let dot = d3.select('.line-Price').append("g")
-            .attr("class","Price-dot")
+            .attr("class","Price-dot dot")
             .attr("display","none");
 
         dot.append("circle")
@@ -1289,7 +1289,7 @@ class TransNet {
         // Active power
         APStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 130)
+            .attr("x",'50%')
             .attr("y",20)
             .text("charging station active power (kW)");
         
@@ -1301,7 +1301,7 @@ class TransNet {
 
         RPStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 145)
+            .attr("x",'50%')
             .attr("y",20)
             .text("charging station reactive power (kVar)");
         
@@ -1362,7 +1362,7 @@ class TransNet {
 
         // making dot for highlighting line
         let dot = d3.select('.line-AP').append("g")
-            .attr("class","chSP-dot")
+            .attr("class","chSP-dot dot")
             .attr("display","none");
 
         dot.append("circle")
@@ -1379,7 +1379,7 @@ class TransNet {
 
         // making dot for highlighting line
         dot = d3.select('.line-RP').append("g")
-            .attr("class","chSRP-dot")
+            .attr("class","chSRP-dot dot")
             .attr("display","none");
 
         dot.append("circle")
@@ -1416,7 +1416,7 @@ class TransNet {
         // Bus count
         BusStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 50)
+            .attr("x",'50%')
             .attr("y",20)
             .text("BEB count");
         
@@ -1487,7 +1487,7 @@ class TransNet {
 
         // making dot for highlighting line
         dot = d3.select('.line-Bus').append("g")
-        .attr("class","BusData-dot")
+        .attr("class","BusData-dot dot")
         .attr("display","none");
 
         dot.append("circle")
@@ -1565,7 +1565,7 @@ class TransNet {
         // Active load
         ALStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 50)
+            .attr("x",'50%')
             .attr("y",20)
             .text("active load (kW)");
         
@@ -1578,7 +1578,7 @@ class TransNet {
         // REactive load
         RLStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 60)
+            .attr("x",'50%')
             .attr("y",20)
             .text("reactive load (kVar)");
         
@@ -1591,7 +1591,7 @@ class TransNet {
         // Voltage
         VStatSvg.append("text")
             .attr("class","axis-title")
-            .attr("x",line_width - line_width*0.5 - 30)
+            .attr("x",'50%')
             .attr("y",20)
             .text("voltage (kV)");
         
