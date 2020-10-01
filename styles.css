@@ -110,6 +110,10 @@
     font-weight: bolder;
 }
 
+.navbar{
+    max-height:7vh;
+}
+
 .data-panel{
     grid-area: data-panel;
     display:grid;
