@@ -41,7 +41,7 @@ class PowNet {
         //Margins - the bostock way - line chart
         this.lineHeight = chart1.height -10;
         this.lineWidth = chart1.width - 5;
-        this.marginL = {top: 30, right: 10, bottom: 30, left: 40};
+        this.marginL = {top: 20, right: 10, bottom: 30, left: 60};
         this.widthL = this.lineWidth - this.marginL.left - this.marginL.right;
         this.heightL = this.lineHeight - this.marginL.top-this.marginL.bottom;
 
@@ -751,7 +751,7 @@ class PowNet {
         currentG.append("text")
             .attr("class","axis-title")
             .attr("x",'50%')
-            .attr("y",20)
+            .attr("y",10)
             .text("current (A)");
         
         // currentG.append("text")
@@ -764,7 +764,7 @@ class PowNet {
         APFG.append("text")
             .attr("class","axis-title")
             .attr("x",'50%')
-            .attr("y",23)
+            .attr("y",10)
             .text("active power flow (kW)");
         
         // APFG.append("text")
@@ -776,7 +776,7 @@ class PowNet {
         RPFG.append("text")
             .attr("class","axis-title")
             .attr("x",'50%')
-            .attr("y",23)
+            .attr("y",10)
             .text("reactive power flow (kVar)");
         
         // RPFG.append("text")
